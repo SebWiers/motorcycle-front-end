@@ -53,17 +53,14 @@ function getLegPythag(hyp, leg){
 	var diffSquare = Math.pow(hyp,2) - Math.pow(leg,2);
 	return Math.pow(diffSquare,0.5);
 };
-
 function getHypPythag(a,b){
 	var sumSquare = Math.pow(a,2) + Math.pow(b,2);
 	return Math.pow(sumSquare,0.5);
 };
-
 function precisionRound(number, precision) {
   var factor = Math.pow(10, precision);
   return Math.round(number * factor) / factor;
 };
-
 //diagram dimensions
 function getBikeDiagramDims(){
 	var groundY = parseFloat( document.getElementById('diagramCanvas').height);
@@ -99,11 +96,8 @@ function getBikeDiagramDims(){
 			neckRakeRad: (90-parseFloat(document.getElementById('FNR').value)) * Math.PI/180,
 		}
 	};
-	
-	//validate
 	return bikeDraw;
 };
-
 //drawing functions
 function drawTire(ctx,tire,x,y){
 	//x and y optional, overide tire defaults
@@ -115,9 +109,7 @@ function drawTire(ctx,tire,x,y){
   ctx.fillStyle = '#999'; ctx.fill();
   ctx.fillStyle = '#000'; ctx.fillRect(x-2, y-2, 5, 5);
 };
-
 function newDrawFork(ctx,bike){
-
 	// find leg top and bottom
 	bike.fork.legBottomX = bike.frontTire.groundX + bike.fork.axleOffset * Math.sin(bike.fork.neckRakeRad);
 	bike.fork.legBottomY = bike.frontTire.groundY + bike.fork.axleOffset * Math.cos(bike.fork.neckRakeRad);
@@ -148,30 +140,24 @@ function newDrawFork(ctx,bike){
 	//draw fork leg
 	ctx.beginPath(); ctx.lineWidth = 7;  ctx.strokeStyle = '#B33'
 	ctx.moveTo(bike.fork.legTopX, bike.fork.legTopY); ctx.lineTo(bike.fork.legBottomX, bike.fork.legBottomY); ctx.stroke();
-
-	console.log(bike,bike.fork.neckGroundIntersectX, parseFloat(document.getElementById('diagramCanvas'.height)));
+	//draw lower tree / leg offset
+	ctx.beginPath(); ctx.lineWidth = 7;  ctx.strokeStyle = '#833'
+	ctx.moveTo(bike.fork.legTopX, bike.fork.legTopY); ctx.lineTo(bike.fork.neckBottomX, bike.fork.neckBottomY); //ctx.stroke();
+	ctx.moveTo(bike.fork.legBottomX, bike.fork.legBottomY); ctx.lineTo(bike.frontTire.groundX, bike.frontTire.groundY); ctx.stroke();
 }
-
-
-// intial drawing
 function newDraw(ctx,bike){
 	ctx.clearRect(0, 0, diagram.width, diagram.height);
 	drawTire(ctx, bike.frontTire);
 	newDrawFork(ctx, bike);
 	drawTire(ctx, bike.rearTire);
 };
-
-var diagram = document.getElementById('diagramCanvas');
-var dc = diagram.getContext('2d');
-
 function reDrawButton(){
 	newDraw(dc,getBikeDiagramDims()); 
 };
-
+//page load draw
+var diagram = document.getElementById('diagramCanvas');
+var dc = diagram.getContext('2d');
 newDraw(dc,getBikeDiagramDims());
-
 </script>
-
-
 </body>
 </html>
