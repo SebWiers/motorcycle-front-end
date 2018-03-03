@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
-<title>MFE wheelbase & trail calculator 0.1</title>
+<title></title>
 <style type='text/css'>
 body {	
 	background-color: #eee;
 	color: #333;
 	padding: 20px;
 }
-input class="number".number { 
-	text-align: right; 
-}
+input class="number".number { text-align: right; }
 canvas{
 	background-color: #fff;
-	/* transform: scale(1, -1); flip vertical for 0,0 in bottom left?*/
+	transform: scale(1, -1); flip vertical for 0,0 in bottom left?
 }
 button{margin:20px}
 </style>
@@ -30,19 +28,13 @@ button{margin:20px}
 <tr><td>Rear Wheel Outside Diameter</td><td> <input class="number" id='RWOD' type='number' style='width:99%' value='22'> </td></tr>
 <tr title="degrees back from vertical"><td>Neck Rake</td><td> <input class="number" id='FNR' type='number' style='width:99%' value='30'></td></tr>
 <tr title="axle to neck bottom, parallel with neck or tree rake"><td>Fork Length</td><td> <input class="number" id='FL' type='number' style='width:99%' value='15'> </td></tr>
-<tr title="measure parallel to ground"><td>Rear Axle to Neck Bottom</td><td> <input class="number" id='RANB' type='number' style='width:99%' value='45.8'> </td></tr>
+<tr title="measure parallel to ground"><td>Wheelbase</td><td> <input class="number" id='WB' type='number' style='width:99%' value='45.8'> </td></tr>
 <tr title="leg ahead of steerer, perpendicular to neck rake"><td>Tree Offset</td><td> <input class="number" id='FTO' type='number' style='width:99%' value='1'> </td></tr>
 <tr title="axle ahead fork legs, perpendicular to neck rake"><td>Axle Offset</td><td> <input class="number" id='FAO' type='number' style='width:99%' value='1'> </td></tr>
 <tr title="degrees forward from neck"><td>Raked Tree</td><td> <input class="number" id='FTR' type='number' style='width:99%' value='' disabled> </td></tr>
 <tr><td>Fork Slider Travel</td><td> <input class="number" id='FST' type='number' style='width:99%' value='' disabled> </td></tr>
-
-</table>
-
-<table style='float: right'>
-<tbody>
 <tr><td>Ground to Neck Bottom</td><td> <input class="number" id='GNB' style='width:99%' value='' disabled> </td></tr>
 <tr><td>Trail</td><td> <input class="number" id='TRAIL' style='width:99%' value='' disabled> </td></tr>
-<tr><td>Wheelbase</td><td> <input class="number" id='WB' style='width:99%' value='' disabled> </td></tr>
 </tbody>
 </table>
 </div>
@@ -89,10 +81,10 @@ function getBikeDiagramDims(){
 		},
 		fork:{
 			length: parseFloat(document.getElementById('FL').value) * scale,
-			travel: parseFloat(document.getElementById('FST').value) * scale || 0,
-			treeOffset: parseFloat(document.getElementById('FTO').value) * scale || 0,
-			treeRake: parseFloat(document.getElementById('FTR').value) * scale || 0,
-			axleOffset: parseFloat(document.getElementById('FAO').value) * scale || 0,
+			travel: parseFloat(document.getElementById('FST').value) * scale,
+			treeOffset: parseFloat(document.getElementById('FTO').value) * scale,
+			treeRake: parseFloat(document.getElementById('FTR').value) * scale,
+			axleOffset: parseFloat(document.getElementById('FAO').value) * scale,
 			axleCrown: axleCrown,
 			axleToGroundX: parseFloat(document.getElementById('FWOD').value)/2 * scale, 
 			axleToGroundY: groundY - parseFloat(document.getElementById('FWOD').value)/2 * scale,
@@ -117,15 +109,14 @@ function drawTire(ctx,tire,x,y){
 };
 
 function newDrawFork(ctx,bike){
-
-	// find leg top and bottom - does not account for raked trees	
+	// find neck bottom via rake - does not account for raked trees
+	bike.fork.neckBottomX = bike.frontTire.groundX + (bike.fork.treeOffset + bike.fork.axleOffset) * Math.sin(bike.fork.neckRakeRad) + bike.fork.length * Math.cos(bike.fork.neckRakeRad);
+	bike.fork.neckBottomY = bike.frontTire.groundY + (bike.fork.treeOffset + bike.fork.axleOffset) * Math.cos(bike.fork.neckRakeRad) - bike.fork.length * Math.sin(bike.fork.neckRakeRad);
+	// find leg top and bottom - does not account for raked trees
+	bike.fork.legTopX = bike.frontTire.groundX + bike.fork.axleOffset * Math.sin(bike.fork.neckRakeRad) + bike.fork.length * Math.cos(bike.fork.neckRakeRad);
+	bike.fork.legTopY = bike.frontTire.groundY + bike.fork.axleOffset * Math.cos(bike.fork.neckRakeRad) - bike.fork.length * Math.sin(bike.fork.neckRakeRad);
 	bike.fork.legBottomX = bike.frontTire.groundX + bike.fork.axleOffset * Math.sin(bike.fork.neckRakeRad);
 	bike.fork.legBottomY = bike.frontTire.groundY + bike.fork.axleOffset * Math.cos(bike.fork.neckRakeRad);
-	bike.fork.legTopX = bike.fork.legBottomX + bike.fork.length * Math.cos(bike.fork.neckRakeRad + bike.fork.treeRake);
-	bike.fork.legTopY = bike.fork.legBottomY - bike.fork.length * Math.sin(bike.fork.neckRakeRad + bike.fork.treeRake);
-	// find neck bottom via rake - does not account for raked trees
-	bike.fork.neckBottomX = bike.frontTire.groundX + (bike.fork.treeOffset + bike.fork.axleOffset) * Math.sin(bike.fork.neckRakeRad) + bike.fork.length * Math.cos(bike.fork.neckRakeRad + bike.fork.treeRake);
-	bike.fork.neckBottomY = bike.frontTire.groundY + (bike.fork.treeOffset + bike.fork.axleOffset) * Math.cos(bike.fork.neckRakeRad) - bike.fork.length * Math.sin(bike.fork.neckRakeRad + bike.fork.treeRake);
 	
 	//draw neck bottom dots
 	ctx.fillStyle = '#000'; ctx.fillRect(bike.fork.neckBottomX-2, bike.fork.neckBottomY-2, 5, 5);	
