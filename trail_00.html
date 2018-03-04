@@ -7,7 +7,7 @@ body {
 	color: #333;
 	padding: 20px;
 }
-input class="number".number { 
+input[type="number"] { 
 	text-align: right; 
 }
 canvas{
@@ -34,15 +34,14 @@ button{margin:20px}
 <tr title="leg ahead of steerer, perpendicular to neck rake"><td>Tree Offset</td><td> <input class="number" id='FTO' type='number' style='width:99%' value='1'> </td></tr>
 <tr title="axle ahead fork legs, perpendicular to neck rake"><td>Axle Offset</td><td> <input class="number" id='FAO' type='number' style='width:99%' value='1'> </td></tr>
 <tr title="degrees forward from neck"><td>Raked Tree</td><td> <input class="number" id='FTR' type='number' style='width:99%' value='0'> </td></tr>
-<tr><td>Fork Slider Travel</td><td> <input class="number" id='FST' type='number' style='width:99%' value='' disabled> </td></tr>
 
 </table>
 
 <table style='float: right'>
 <tbody>
-<tr><td>Ground to Neck Bottom</td><td> <input class="number" id='GNB' style='width:99%' value='' disabled> </td></tr>
-<tr><td>Trail</td><td> <input class="number" id='TRAIL' style='width:99%' value='' disabled> </td></tr>
-<tr><td>Wheelbase</td><td> <input class="number" id='WB' style='width:99%' value='' disabled> </td></tr>
+<tr><td>Ground to Neck Bottom</td><td> <input type="number" id='GNB' style='width:99%' value='' disabled> </td></tr>
+<tr><td>Trail</td><td> <input type="number" id='TRAIL' style='width:99%' value='' disabled> </td></tr>
+<tr><td>Wheelbase</td><td> <input type="number" id='WB' style='width:99%' value='' disabled> </td></tr>
 </tbody>
 </table>
 </div>
@@ -82,7 +81,6 @@ function getBikeDiagramDims(){
 		},
 		fork:{
 			length: parseFloat(document.getElementById('FL').value) * scale,
-			travel: parseFloat(document.getElementById('FST').value) * scale || 0,
 			treeOffset: parseFloat(document.getElementById('FTO').value) * scale || 0,
 			treeRake: parseFloat(document.getElementById('FTR').value) * Math.PI/-180 || 0,
 			axleOffset: parseFloat(document.getElementById('FAO').value) * scale || 0,
@@ -140,6 +138,8 @@ function newDrawFork(ctx,bike){
 	ctx.beginPath(); ctx.lineWidth = 7;  ctx.strokeStyle = '#833'
 	ctx.moveTo(bike.fork.legTopX, bike.fork.legTopY); ctx.lineTo(bike.fork.neckBottomX, bike.fork.neckBottomY); //ctx.stroke();
 	ctx.moveTo(bike.fork.legBottomX, bike.fork.legBottomY); ctx.lineTo(bike.frontTire.groundX, bike.frontTire.groundY); ctx.stroke();
+	
+	console.log(bike)
 }
 function newDraw(ctx,bike){
 	ctx.clearRect(0, 0, diagram.width, diagram.height);

@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
-<title></title>
+<title>MFE Chopper Planner</title>
 <style type='text/css'>
 body {	
 	background-color: #eee;
 	color: #333;
 	padding: 20px;
 }
-input class="number".number { text-align: right; }
+input[type="number"] { 
+	text-align: right; 
+}
 canvas{
 	background-color: #fff;
-	transform: scale(1, -1); flip vertical for 0,0 in bottom left?
+	transform: scale(1, -1); /* flip vertical for 0,0 in bottom left */
 }
 button{margin:20px}
 </style>
@@ -19,147 +21,190 @@ button{margin:20px}
 
 <body>
 
-<div id='diagramCanvasDiv'><canvas id='diagramCanvas' width='1000' height='618'></canvas></div>
-<button onclick='reDrawButton()'>Redraw</button>
-<div id='forkData' style='width: 1000px;' title="input class="number" units are arbitrary; results can be read in same units">
+<div id='bikeCanvasDiv'><canvas id='bikeCanvas' width='1000' height='500'></canvas></div>
+
+<div id='data' style='width: 1000px;' title="input class="number" units are arbitrary; results can be read in same units">
 <table style='float: left'>
-<tr><th colspan="2">Measured Setup</th></tr>
-<tr><td>Front Wheel Outside Diameter</td><td> <input class="number" id='FWOD' type='number' style='width:99%' value='22'> </td></tr>
-<tr><td>Rear Wheel Outside Diameter</td><td> <input class="number" id='RWOD' type='number' style='width:99%' value='22'> </td></tr>
-<tr title="degrees back from vertical"><td>Neck Rake</td><td> <input class="number" id='FNR' type='number' style='width:99%' value='30'></td></tr>
-<tr title="axle to neck bottom, parallel with neck or tree rake"><td>Fork Length</td><td> <input class="number" id='FL' type='number' style='width:99%' value='15'> </td></tr>
-<tr title="measure parallel to ground"><td>Wheelbase</td><td> <input class="number" id='WB' type='number' style='width:99%' value='45.8'> </td></tr>
-<tr title="leg ahead of steerer, perpendicular to neck rake"><td>Tree Offset</td><td> <input class="number" id='FTO' type='number' style='width:99%' value='1'> </td></tr>
-<tr title="axle ahead fork legs, perpendicular to neck rake"><td>Axle Offset</td><td> <input class="number" id='FAO' type='number' style='width:99%' value='1'> </td></tr>
-<tr title="degrees forward from neck"><td>Raked Tree</td><td> <input class="number" id='FTR' type='number' style='width:99%' value='' disabled> </td></tr>
-<tr><td>Fork Slider Travel</td><td> <input class="number" id='FST' type='number' style='width:99%' value='' disabled> </td></tr>
-<tr><td>Ground to Neck Bottom</td><td> <input class="number" id='GNB' style='width:99%' value='' disabled> </td></tr>
-<tr><td>Trail</td><td> <input class="number" id='TRAIL' style='width:99%' value='' disabled> </td></tr>
+<tr><th colspan="2">Measured Setup <button onclick='reDrawButtonA()'>Draw</button></th></tr>
+<tr><td>Front Wheel Outside Diameter</td><td> <input class="number" id='aFWD' type='number' style='width:99%' value='22'> </td></tr>
+<tr><td>Rear Wheel Outside Diameter</td><td> <input class="number" id='aRWD' type='number' style='width:99%' value='22'> </td></tr>
+<tr title="degrees back from vertical"><td>Neck Rake</td><td> <input class="number" id='aFNR' type='number' style='width:99%' value='30'></td></tr>
+<tr title="axle to neck bottom, parallel with neck or tree rake"><td>Fork Length</td><td> <input class="number" id='aFL' type='number' style='width:99%' value='15'> </td></tr>
+<tr title="measure parallel to ground; include changes from any planned rear stretch"><td>Wheelbase</td><td> <input class="number" id='aWB' type='number' style='width:99%' value='45.8'> </td></tr>
+<tr title="leg ahead of steerer, perpendicular to neck rake"><td>Tree Offset</td><td> <input class="number" id='aFTO' type='number' style='width:99%' value='1'> </td></tr>
+<tr title="axle ahead fork legs, perpendicular to neck rake"><td>Axle Offset</td><td> <input class="number" id='aFAO' type='number' style='width:99%' value='1'> </td></tr>
+<tr title="degrees forward from neck"><td>Raked Tree</td><td> <input class="number" id='aRT' type='number' style='width:99%' value='0'> </td></tr>
+<tr><td>Ground to Neck Bottom</td><td> <input type="number" id='aGNB' style='width:99%' value='' disabled> </td></tr>
+<tr><td>Trail</td><td> <input type="number" id='aTR' style='width:99%' value='' disabled> </td></tr>
+</tbody>
+</table>
+
+<table style='float: right'>
+<tr><th colspan="2">Custom Setup  <button onclick='reDrawButtonB()'>Draw</button></th></tr>
+<tr><td>Front Wheel Outside Diameter</td><td> <input class="number" id='bFWD' type='number' style='width:99%' value='22'> </td></tr>
+<tr><td>Rear Wheel Outside Diameter</td><td> <input class="number" id='bRWD' type='number' style='width:99%' value='22'> </td></tr>
+<tr title="degrees back from vertical"><td>Neck Rake</td><td> <input class="number" id='bFNR' type='number' style='width:99%' value='30'></td></tr>
+<tr title="axle to neck bottom, parallel with neck or tree rake"><td>Fork Length</td><td> <input class="number" id='bFL' type='number' style='width:99%' value='20'> </td></tr>
+<tr><td>Neck Out</td><td> <input class="number" id='bNO' type='number' style='width:99%' value='0'></td></tr>
+<tr><td>Neck Up</td><td> <input class="number" id='bNU' type='number' style='width:99%' value='0'></td></tr>
+<tr title="leg ahead of steerer, perpendicular to neck rake"><td>Tree Offset</td><td> <input class="number" id='bFTO' type='number' style='width:99%' value='1'> </td></tr>
+<tr title="axle ahead fork legs, perpendicular to neck rake"><td>Axle Offset</td><td> <input class="number" id='bFAO' type='number' style='width:99%' value='1'> </td></tr>
+<tr title="degrees forward from neck"><td>Raked Tree</td><td> <input class="number" id='bTR' type='number' style='width:99%' value='0'> </td></tr>
+<tr><td>Ground to Neck Bottom</td><td> <input type="number" id='bGNB' style='width:99%' value='' disabled> </td></tr>
+<tr><td>Trail</td><td> <input type="number" id='bTR' style='width:99%' value='' disabled> </td></tr>
+<tr><td>Wheelbase</td><td> <input type="number" id='bWB' style='width:99%' value='' disabled> </td></tr>
 </tbody>
 </table>
 </div>
 
 <script type='text/javascript'>
 //helper functions
-function getLegPythag(hyp, leg){
-	var diffSquare = Math.pow(hyp,2) - Math.pow(leg,2);
-	return Math.pow(diffSquare,0.5);
-};
-
-function getHypPythag(a,b){
-	var sumSquare = Math.pow(a,2) + Math.pow(b,2);
-	return Math.pow(sumSquare,0.5);
-};
-
 function precisionRound(number, precision) {
   var factor = Math.pow(10, precision);
   return Math.round(number * factor) / factor;
 };
+function pAdd(p1,p2) {
+	var bad = {x:Nan, y:NaN};
+	if (! p1 instanceof Object){return bad;}
+	if (! p1.hasOwnProperty('x') || ! p1.hasOwnProperty('y')){return bad;}
+	if (! p2 instanceof Object){return bad;}
+	if (! p2.hasOwnProperty('x') || ! p2.hasOwnProperty('y')){return bad;}
+	return {x:p1.x+p2.x, y:p1.y+p2.y}
+}
+function pAddVector(p1,rad,l) {
+var bad = {x:Nan, y:NaN};
+	if (! p1 instanceof Object){return bad;}
+	if (! p1.hasOwnProperty('x') || ! p1.hasOwnProperty('y')){return bad;}
+	rad = parseFloat(rad);
+	l = parseFloat(l);
+	return pAdd(p1, {x: Math.cos(rad)*l, y: Math.sin(rad)*l})
+}
+function greaterOf(a,b){
+	if(a>b){return a;}
+	return b;
+}
 
-//diagram dimensions
-function getBikeDiagramDims(){
-	var groundY = parseFloat( document.getElementById('diagramCanvas').height);
-	var maxWheelbase = parseFloat(document.getElementById('RANB').value) + parseFloat(document.getElementById('FL').value)
-	var maxLength = parseFloat(document.getElementById('FWOD').value)/2 + parseFloat(document.getElementById('RWOD').value)/2 + maxWheelbase
-	var scale = parseFloat(diagram.width) / maxLength;
-	var axleCrown = getHypPythag(parseFloat(document.getElementById('FL').value) * scale, parseFloat(document.getElementById('FTO').value) * scale + parseFloat(document.getElementById('FAO').value) * scale)
-	var bikeDraw = 
-	{
-		height: document.getElementById('diagramCanvas').height,
-		width: document.getElementById('diagramCanvas').width,
-		scale: scale,
-		wheelbase: NaN,
-		frontTire:{ 
-			radius : parseFloat(document.getElementById('FWOD').value)/2 * scale,
-			groundX : parseFloat(document.getElementById('FWOD').value)/2 * scale, 
-			groundY : groundY - parseFloat(document.getElementById('FWOD').value)/2 * scale
+// diagram dimensions
+function getData(){	
+	// a is "measured setup" 
+	var aDims = 
+	{	
+		wheelbase: parseFloat(document.getElementById('aWB').value),
+		frontWheel:{
+			radius: parseFloat(document.getElementById('aFWD').value)/2,
+			axle: {x:parseFloat(document.getElementById('aFWD').value)/2, y:parseFloat(document.getElementById('aFWD').value)/2}
 		},
-		rearTire:{ 
-			radius : parseFloat(document.getElementById('RWOD').value)/2 * scale,
-			groundX : NaN, 
-			groundY : groundY - parseFloat(document.getElementById('RWOD').value)/2 * scale
+		rearWheel:{
+			radius: parseFloat(document.getElementById('aRWD').value)/2,
+			axle: {x: parseFloat(document.getElementById('aRWD').value)/2 + parseFloat(document.getElementById('aWB').value), y: parseFloat(document.getElementById('aRWD').value)/2}
+		},
+		neck: {
+			rake: (90-parseFloat(document.getElementById('aFNR').value)) * Math.PI/180,
+			out: 0,
+			up: 0,
 		},
 		fork:{
-			length: parseFloat(document.getElementById('FL').value) * scale,
-			travel: parseFloat(document.getElementById('FST').value) * scale,
-			treeOffset: parseFloat(document.getElementById('FTO').value) * scale,
-			treeRake: parseFloat(document.getElementById('FTR').value) * scale,
-			axleOffset: parseFloat(document.getElementById('FAO').value) * scale,
-			axleCrown: axleCrown,
-			axleToGroundX: parseFloat(document.getElementById('FWOD').value)/2 * scale, 
-			axleToGroundY: groundY - parseFloat(document.getElementById('FWOD').value)/2 * scale,
-			neckRakeRad: (90-parseFloat(document.getElementById('FNR').value)) * Math.PI/180,
-		}
+			length: parseFloat(document.getElementById('aFL').value),
+			axleOffset: parseFloat(document.getElementById('aFAO').value),
+			treeOffset: parseFloat(document.getElementById('aFTO').value),
+			treeRake: parseFloat(document.getElementById('aRT').value) * Math.PI/-180
+		}	
 	};
+	// b is "custom setup" - modified version of a
+	var bDims = 
+	{
+		wheelbase: NaN,
+		frontWheel:{
+			radius: parseFloat(document.getElementById('bFWD').value)/2,
+			axle: {x:parseFloat(document.getElementById('bFWD').value)/2, y:parseFloat(document.getElementById('bFWD').value)/2}
+		},
+		rearWheel:{
+			radius: parseFloat(document.getElementById('bRWD').value)/2,
+			axle: {x:NaN, y:NaN}
+		},	
+		neck: { 
+			rake: NaN,
+			out: parseFloat(document.getElementById('bNO').value),
+			up: parseFloat(document.getElementById('bNU').value),
+		},
+		fork:{
+			length: parseFloat(document.getElementById('bFL').value),
+			axleOffset: parseFloat(document.getElementById('bFAO').value),
+			treeOffset: parseFloat(document.getElementById('bFTO').value),
+			treeRake: parseFloat(document.getElementById('bFTO').value) * Math.PI/-180
+		}
+	}
+	// maxlength = longest fork + wheelbase + neck out + front radius + rear radius
+	var maxLength = greaterOf (aDims.fork.length, bDims.fork.length );
+	maxLength += aDims.wheelbase;
+	maxLength += bDims.neck.out;
+	maxLength += greaterOf (aDims.frontWheel.radius, bDims.frontWheel.radius);
+	maxLength += greaterOf (aDims.rearWheel.radius, bDims.rearWheel.radius);
+	// scaling to near fill bikeCanvas
+	var scale = document.getElementById('bikeCanvas').width / maxLength;
+	aDims.scale = scale; bDims.scale = scale; 
 	
-	//validate
-	return bikeDraw;
+	return {a:aDims , b:bDims};
 };
 
 //drawing functions
-function drawTire(ctx,tire,x,y){
+function drawTire(ctx,radius,axleP,scale){
 	//x and y optional, overide tire defaults
-  if (!x){x = tire.groundX};
-  if (!y){y = tire.groundY};
   ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.arc(x, y, tire.radius, 0 , Math.PI*2);
+  ctx.beginPath(); ctx.arc(axleP.x*scale, axleP.y*scale, radius*scale, 0 , Math.PI*2);
   ctx.strokeStyle = '#333'; ctx.stroke();
   ctx.fillStyle = '#999'; ctx.fill();
-  ctx.fillStyle = '#000'; ctx.fillRect(x-2, y-2, 5, 5);
+  ctx.fillStyle = '#000'; ctx.fillRect(axleP.x*scale-2, axleP.y*scale-2, 5, 5);
 };
 
-function newDrawFork(ctx,bike){
-	// find neck bottom via rake - does not account for raked trees
-	bike.fork.neckBottomX = bike.frontTire.groundX + (bike.fork.treeOffset + bike.fork.axleOffset) * Math.sin(bike.fork.neckRakeRad) + bike.fork.length * Math.cos(bike.fork.neckRakeRad);
-	bike.fork.neckBottomY = bike.frontTire.groundY + (bike.fork.treeOffset + bike.fork.axleOffset) * Math.cos(bike.fork.neckRakeRad) - bike.fork.length * Math.sin(bike.fork.neckRakeRad);
-	// find leg top and bottom - does not account for raked trees
-	bike.fork.legTopX = bike.frontTire.groundX + bike.fork.axleOffset * Math.sin(bike.fork.neckRakeRad) + bike.fork.length * Math.cos(bike.fork.neckRakeRad);
-	bike.fork.legTopY = bike.frontTire.groundY + bike.fork.axleOffset * Math.cos(bike.fork.neckRakeRad) - bike.fork.length * Math.sin(bike.fork.neckRakeRad);
-	bike.fork.legBottomX = bike.frontTire.groundX + bike.fork.axleOffset * Math.sin(bike.fork.neckRakeRad);
-	bike.fork.legBottomY = bike.frontTire.groundY + bike.fork.axleOffset * Math.cos(bike.fork.neckRakeRad);
-	
-	//draw neck bottom dots
-	ctx.fillStyle = '#000'; ctx.fillRect(bike.fork.neckBottomX-2, bike.fork.neckBottomY-2, 5, 5);	
-	bike.fork.neckBottomHeight = bike.height - bike.fork.neckBottomY;
-	document.getElementById('GNB').value = precisionRound(bike.fork.neckBottomHeight/bike.scale, 1).toFixed(1);
-	//define and display wheelbase
-	bike.rearTire.groundX = parseFloat(document.getElementById('RANB').value) * bike.scale + bike.fork.neckBottomX
-	bike.wheelbase = bike.rearTire.groundX - bike.frontTire.groundX;
-	document.getElementById('WB').value = precisionRound(bike.wheelbase/bike.scale, 1).toFixed(1);
-	
-	// find & draw rake line, calculate and show trail
-	bike.fork.rakeLineGroundX = bike.fork.neckBottomX - Math.tan(Math.PI/2-bike.fork.neckRakeRad) * bike.fork.neckBottomHeight
-	bike.fork.rakeLineGroundY = bike.height;
-	//ctx.fillRect(bike.fork.rakeLineGroundX-2, bike.fork.rakeLineGroundY-2, 5, 5);
-	ctx.beginPath(); ctx.lineWidth = 1;  ctx.strokeStyle = '#f99'
-	ctx.moveTo(bike.fork.neckBottomX, bike.fork.neckBottomY); ctx.lineTo(bike.fork.rakeLineGroundX, bike.fork.rakeLineGroundY); ctx.stroke();
-	bike.fork.trail = bike.frontTire.groundX - bike.fork.rakeLineGroundX;
-	document.getElementById('TRAIL').value = precisionRound(bike.fork.trail/bike.scale, 1).toFixed(1);
-	
-	//draw fork leg
-	ctx.beginPath(); ctx.lineWidth = 7;  ctx.strokeStyle = '#B33'
-	ctx.moveTo(bike.fork.legTopX, bike.fork.legTopY); ctx.lineTo(bike.fork.legBottomX, bike.fork.legBottomY); ctx.stroke();
+function drawForkA(ctx,a){
 
-	console.log(bike,bike.fork.neckGroundIntersectX, parseFloat(document.getElementById('diagramCanvas'.height)));
+	// fork & neck points
+	a.fork.legBottom = {}; a.fork.legTop = {}; a.neck.bottom = {};
+	a.fork.legBottom.x = a.frontWheel.axle.x + a.fork.axleOffset * Math.sin(a.neck.rake);//
+	a.fork.legBottom.y = a.frontWheel.axle.x - a.fork.axleOffset * Math.cos(a.neck.rake);//
+	a.fork.legTop.x = a.fork.legBottom.x + a.fork.length * Math.cos(a.neck.rake + a.fork.treeRake);
+	a.fork.legTop.y = a.fork.legBottom.y + a.fork.length * Math.sin(a.neck.rake + a.fork.treeRake);
+	a.neck.bottom.x = a.fork.legTop.x + a.fork.treeOffset * Math.sin(a.neck.rake);
+	a.neck.bottom.y = a.fork.legTop.y - a.fork.treeOffset * Math.cos(a.neck.rake);
+	// display neck data
+	document.getElementById('aGNB').value = precisionRound(a.neck.bottom.y,1).toFixed(1);
+	// draw fork leg
+	ctx.beginPath(); ctx.lineWidth = 7;  ctx.strokeStyle = '#B33'
+	ctx.moveTo(a.fork.legTop.x * a.scale, a.fork.legTop.y * a.scale); ctx.lineTo(a.fork.legBottom.x * a.scale, a.fork.legBottom.y * a.scale); ctx.stroke();
+	//draw lower tree & axle offset
+	ctx.beginPath(); ctx.lineWidth = 7;  ctx.strokeStyle = '#833'
+	ctx.moveTo(a.fork.legTop.x * a.scale, a.fork.legTop.y * a.scale); ctx.lineTo(a.neck.bottom.x * a.scale, a.neck.bottom.y * a.scale); ctx.stroke();	
+debugger;	
+	console.log(a);
 }
 
-
-// intial drawing
-function newDraw(ctx,bike){
+function groundDrawA(ctx){
 	ctx.clearRect(0, 0, diagram.width, diagram.height);
-	drawTire(ctx, bike.frontTire);
-	newDrawFork(ctx, bike);
-	drawTire(ctx, bike.rearTire);
+	var a = getData().a;
+	//draw a front & rear tires
+	drawTire(ctx,a.frontWheel.radius,a.frontWheel.axle,a.scale);
+	drawTire(ctx,a.rearWheel.radius,a.rearWheel.axle,a.scale);
+	drawForkA(ctx,a);
 };
 
-var diagram = document.getElementById('diagramCanvas');
+function groundDrawB(ctx){
+	//do drawing a to get a dims set up, then do drawing b based on a dims
+	groundDrawA(ctx); 
+	ctx.clearRect(0, 0, diagram.width, diagram.height);
+}
+
+// do drawings
+var diagram = document.getElementById('bikeCanvas');
 var dc = diagram.getContext('2d');
-
-function reDrawButton(){
-	newDraw(dc,getBikeDiagramDims()); 
+function reDrawButtonA(){
+	groundDrawA(dc); 
+};
+function reDrawButtonB(){
+	groundDrawB(dc); 
 };
 
-newDraw(dc,getBikeDiagramDims());
+groundDrawA(dc);
 
 </script>
 
