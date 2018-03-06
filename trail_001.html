@@ -34,7 +34,7 @@ table {
 <button onclick="drawAllButton()">redraw all</button>
 
 <div id='data' style='width: 1000px;' title="input units are arbitrary; results can be read in same units">
-<table style='float: left'>
+<table id="tableA" style='float: left'>
 <tr><th colspan="2">Measured Setup</th></tr>
 <tr><td>Front Tire Outside Diameter</td><td> <input id='aFWD' type='number' style='width:99%' value='22'> </td></tr>
 <tr><td>Rear Tire Outside Diameter</td><td> <input id='aRWD' type='number' style='width:99%' value='22'> </td></tr>
@@ -55,7 +55,7 @@ table {
 </tbody>
 </table>
 
-<table style='float: right'>
+<table id="tableB" style='float: right'>
 <tr><th colspan="2">Custom Setup</th></tr>
 <tr><td>Front Tire Outside Diameter</td><td> <input id='bFWD' type='number' style='width:99%' value='24'> </td></tr>
 <tr><td>Rear Tire Outside Diameter</td><td> <input id='bRWD' type='number' style='width:99%' value='20'> </td></tr>
@@ -226,6 +226,8 @@ function getInput(){
 	// scaling to near fill bikeCanvas
 	var scale = document.getElementById('bikeCanvas').width / maxLength;
 	aInput.scale = scale; bInput.scale = scale; 
+	document.getElementById("tableA").style.color = "hsla(" + aInput.hue + ", 90%, 30%, .9)";
+	document.getElementById("tableB").style.color = "hsla(" + bInput.hue + ", 90%, 30%, .9)";
 	return {a: aInput , b: bInput};
 };
 
