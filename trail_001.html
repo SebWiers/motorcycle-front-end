@@ -31,6 +31,8 @@ table {
 
 <div id='bikeCanvasDiv'><canvas id='bikeCanvas' width='1000' height='500'></canvas></div>
 
+<button onclick="drawAllButton()">redraw all</button>
+
 <div id='data' style='width: 1000px;' title="input units are arbitrary; results can be read in same units">
 <table style='float: left'>
 <tr><th colspan="2">Measured Setup</th></tr>
@@ -55,17 +57,17 @@ table {
 
 <table style='float: right'>
 <tr><th colspan="2">Custom Setup</th></tr>
-<tr><td>Front Tire Outside Diameter</td><td> <input id='bFWD' type='number' style='width:99%' value='22'> </td></tr>
-<tr><td>Rear Tire Outside Diameter</td><td> <input id='bRWD' type='number' style='width:99%' value='22'> </td></tr>
+<tr><td>Front Tire Outside Diameter</td><td> <input id='bFWD' type='number' style='width:99%' value='24'> </td></tr>
+<tr><td>Rear Tire Outside Diameter</td><td> <input id='bRWD' type='number' style='width:99%' value='20'> </td></tr>
 <tr title="you probably don't know what this will be if you change stuff..."><td>Neck Rake</td><td> <input id='bFNR' type='number' style='width:99%' value='' disabled></td></tr>
-<tr title="degrees added to measured setup"><td>Neck Rake Change</td><td> <input id='bCHOP' type='number' style='width:99%' value='0'></td></tr>
-<tr title="axle to neck bottom, parallel with neck or tree rake"><td>Fork Length</td><td> <input id='bFL' type='number' style='width:99%' value='15'> </td></tr>
+<tr title="degrees added to measured setup"><td>Neck Rake Change</td><td> <input id='bCHOP' type='number' style='width:99%' value='10'></td></tr>
+<tr title="axle to neck bottom, parallel with neck or tree rake"><td>Fork Length</td><td> <input id='bFL' type='number' style='width:99%' value='20'> </td></tr>
 <tr title="you probably don't know what this will be if you change stuff..."><td>Wheelbase</td><td> <input type="number" id='bWB' style='width:99%' value='' disabled> </td></tr>
 <tr title="leg ahead of steerer, perpendicular to neck rake"><td>Tree Offset</td><td> <input id='bFTO' type='number' style='width:99%' value='1'> </td></tr>
 <tr title="axle ahead fork legs, perpendicular to neck rake"><td>Axle Offset</td><td> <input id='bFAO' type='number' style='width:99%' value='1'> </td></tr>
-<tr title="degrees forward from neck"><td>Raked Tree</td><td> <input id='bRT' type='number' style='width:99%' value='0'> </td></tr>
-<tr><td>Neck Out</td><td> <input id='bNO' type='number' style='width:99%' value='0'></td></tr>
-<tr><td>Neck Up</td><td> <input id='bNU' type='number' style='width:99%' value='0'></td></tr>
+<tr title="degrees forward from neck"><td>Raked Tree</td><td> <input id='bRT' type='number' style='width:99%' value='5'> </td></tr>
+<tr><td>Neck Out</td><td> <input id='bNO' type='number' style='width:99%' value='2'></td></tr>
+<tr><td>Neck Up</td><td> <input id='bNU' type='number' style='width:99%' value='2'></td></tr>
 <tr><td>Ground to Neck Bottom</td><td> <input type="number" id='bGNB' style='width:99%' value='' disabled> </td></tr>
 <tr><td>Axle to Crown</td><td> <input type="number" id='bAC' style='width:99%' value='' disabled> </td></tr>
 <tr  class="hidden" title="measured parallel to ground / wheelbase"><td>Front Axle to Neck Bottom (horizontal)</td><td> <input type="number" id='bFANB' style='width:99%' value='' disabled> </td></tr>
@@ -160,18 +162,19 @@ function getInput(){
 	{	
 		bike: "a",
 		hue: 0,
+		rotation: 0,
 		wheelbase: parseFloat(document.getElementById('aWB').value),
-		frontWheel:{
-			radius: parseFloat(document.getElementById('aFWD').value)/2,
-			axle: {x:parseFloat(document.getElementById('aFWD').value)/2, y:parseFloat(document.getElementById('aFWD').value)/2}
-		},
 		rearWheel:{
 			radius: parseFloat(document.getElementById('aRWD').value)/2,
-			axle: {x: parseFloat(document.getElementById('aRWD').value)/2 + parseFloat(document.getElementById('aWB').value), y: parseFloat(document.getElementById('aRWD').value)/2}
+			axle: {x:parseFloat(document.getElementById('aRWD').value)/2, y:parseFloat(document.getElementById('aRWD').value)/2}
+		},
+		frontWheel:{
+			radius: parseFloat(document.getElementById('aFWD').value)/2,
+			axle: {x: parseFloat(document.getElementById('aFWD').value)/2 + parseFloat(document.getElementById('aWB').value), y: parseFloat(document.getElementById('aFWD').value)/2}
 		},
 		neck: {
 			bottom: {x:NaN, y:NaN},
-			rake: (parseFloat(document.getElementById('aFNR').value)) * Math.PI/180,
+			rake: (parseFloat(document.getElementById('aFNR').value)) * Math.PI/-180,
 			chop: NaN,
 			out: 0,
 			up: 0,
@@ -190,13 +193,14 @@ function getInput(){
 		bike:"b",
 		hue: 240,
 		wheelbase: NaN,
+		rotation: NaN,
 		frontWheel:{
 			radius: parseFloat(document.getElementById('bFWD').value)/2,
-			axle: {x:parseFloat(document.getElementById('bFWD').value)/2, y:parseFloat(document.getElementById('bFWD').value)/2}
+			axle: {x:NaN, y:NaN}
 		},
 		rearWheel:{
 			radius: parseFloat(document.getElementById('bRWD').value)/2,
-			axle: {x:NaN, y:parseFloat(document.getElementById('bRWD').value)/2}
+			axle: {x:NaN, y:NaN}
 		},	
 		neck: { 
 			bottom: {x:NaN, y:NaN},
@@ -204,7 +208,7 @@ function getInput(){
 			chop: parseFloat(document.getElementById('bCHOP').value) * Math.PI/180,
 			out: parseFloat(document.getElementById('bNO').value),
 			up: parseFloat(document.getElementById('bNU').value),
-			rakeGround: {x:NaN, y:0}
+			rakeGround: {x:NaN, y:NaN}
 		},
 		fork:{
 			length: parseFloat(document.getElementById('bFL').value),
@@ -229,122 +233,57 @@ function getInput(){
 function makeDataA(a){
 	if (!a){ a = getInput().a; }
 	a.fork.legBottom = {}; a.fork.legTop = {}; a.neck.bottom = {};
-	a.fork.legBottom.x = a.frontWheel.axle.x + a.fork.axleOffset * Math.cos(a.neck.rake);//
-	a.fork.legBottom.y = a.frontWheel.axle.x - a.fork.axleOffset * Math.sin(a.neck.rake);//
+	a.fork.legBottom.x = a.frontWheel.axle.x - a.fork.axleOffset * Math.cos(a.neck.rake);//
+	a.fork.legBottom.y = a.frontWheel.axle.y + a.fork.axleOffset * Math.sin(a.neck.rake);//
 	a.fork.legTop.x = a.fork.legBottom.x + a.fork.length * Math.sin(a.neck.rake + a.fork.treeRake);
 	a.fork.legTop.y = a.fork.legBottom.y + a.fork.length * Math.cos(a.neck.rake + a.fork.treeRake);
-	a.neck.bottom.x = a.fork.legTop.x + a.fork.treeOffset * Math.cos(a.neck.rake);
-	a.neck.bottom.y = a.fork.legTop.y - a.fork.treeOffset * Math.sin(a.neck.rake);
+	a.neck.bottom.x = a.fork.legTop.x - a.fork.treeOffset * Math.cos(a.neck.rake);
+	a.neck.bottom.y = a.fork.legTop.y + a.fork.treeOffset * Math.sin(a.neck.rake);
 	a.neck.toFrontAxleHorizontalDistance = a.neck.bottom.x - a.frontWheel.axle.x;
 	a.fork.axleCrown = getDistance(a.frontWheel.axle,a.neck.bottom);
 	a.neck.rakeRearAxle = -1 * getAngle(a.neck.bottom, a.rearWheel.axle);
 	a.frameAngle = a.neck.rake + Math.PI/2 - a.neck.rakeRearAxle
 	a.neck.toRearAxle = getDistance(a.rearWheel.axle,a.neck.bottom);
 	a.neck.rakeGround.x = a.neck.bottom.x - Math.tan(a.neck.rake) * a.neck.bottom.y;
-	a.frontWheel.trail = a.frontWheel.axle.x - a.neck.rakeGround.x;
-	console.log(a);
+	a.frontWheel.trail = a.frontWheel.axle.x - a.neck.rakeGround.x;	
 	return a;
 };
-function makeDataB(a){// use data from measured bike plus specified changes to find altered bike's geometry
+function makeDataB(a){
+	//debugger
 	var b = getInput().b;
-/* WHAT DO WE NEED FOR B???  HOW CAN WE GET IT???
-	a.fork.legBottom = {}; a.fork.legTop = {}; a.neck.bottom = {};
-	a.fork.legBottom.x = a.frontWheel.axle.x + a.fork.axleOffset * Math.cos(a.neck.rake);//
-	a.fork.legBottom.y = a.frontWheel.axle.x - a.fork.axleOffset * Math.sin(a.neck.rake);//
-	a.fork.legTop.x = a.fork.legBottom.x + a.fork.length * Math.sin(a.neck.rake + a.fork.treeRake);
-	a.fork.legTop.y = a.fork.legBottom.y + a.fork.length * Math.cos(a.neck.rake + a.fork.treeRake);
-	a.neck.bottom.x = a.fork.legTop.x + a.fork.treeOffset * Math.cos(a.neck.rake);
-	a.neck.bottom.y = a.fork.legTop.y - a.fork.treeOffset * Math.sin(a.neck.rake);
-	a.neck.toFrontAxleHorizontalDistance = a.neck.bottom.x - a.frontWheel.axle.x;
-	a.fork.axleCrown = getDistance(a.frontWheel.axle,a.neck.bottom);
-	a.neck.rakeRearAxle = -1 * getAngle(a.neck.bottom, a.rearWheel.axle);
-	a.frameLineRake = a.neck.rake + a.neck.rakeRearAxle
-	a.neck.toRearAxle = getDistance(a.rearWheel.axle,a.neck.bottom);
-	a.neck.rakeGround.x = a.neck.bottom.x - Math.tan(a.neck.rake) * a.neck.bottom.y;
-	a.frontWheel.trail = a.frontWheel.axle.x - a.neck.rakeGround.x;
-***/
-	//b.wheelbase ???
-	var chop = a.neck.rake + b.neck.chop || 0;// chop is rake if we do not change wheelsize
-	//fa is a hypothetical point the rear axle is at, with frame line oriented as mirror of "a" data
-	var origin = {x:0, y:0};
-	var fa = {x:0, y:0};
-	//move from origin to old neck 
-	fa.x += Math.cos(a.neck.rakeRearAxle) * a.neck.toRearAxle;
-	fa.y += Math.sin(a.neck.rakeRearAxle) * a.neck.toRearAxle;
-	//new neck location
-	fa.x += b.neck.out;
-	fa.y += b.neck.up;
-	//we have new frame length info !!!!!   >>>> b.neck.toRearAxle
-	b.neck.toRearAxle = getDistance(origin,fa);
-	//move from neck to new front axle location
-	//go out the tree offset
-	fa.x += Math.cos(chop) * b.fork.treeOffset;
-	fa.y += Math.sin(chop) * b.fork.treeOffset;
-	//go down the fork leg
-	fa.x += Math.sin(chop + b.fork.treeRake) * b.fork.length;
-	fa.y -= Math.cos(chop + b.fork.treeRake) * b.fork.length;
-	//go out the axle offset
-	fa.x += Math.cos(chop) * b.fork.axleOffset;
-	fa.y += Math.sin(chop) * b.fork.axleOffset;
-	//so what is the wheelbase?  Wheel size matters if they are not the same...
-	//cf and cr are the "contact patches" associated with this setup, locating them requires finding wheel tangents, ugh...
-	//so we aproximate- move at right angle to line between axles, distance equal to each wheel radius
-	var aproxConAngle = getAngle({x:0,y:0},{x:fa.x,y:fa.y}) - Math.PI/2;
-	cr = {x:Math.cos(aproxConAngle)*b.rearWheel.radius, y:Math.sin(aproxConAngle)*b.rearWheel.radius};
-	cf = {x:Math.cos(aproxConAngle)*b.frontWheel.radius + fa.x, y:Math.sin(aproxConAngle)*b.frontWheel.radius + fa.y};
-	//aproximate wheelbase & rear axle location - should be good to within 0.01
-	b.wheelBase = getDistance(cr,cf);
-	b.rearWheel.axle.x = b.frontWheel.axle.x + b.wheelBase;
-	//length from front axle to crown would at least give 3 triangle sides
-	cr={};
-	cr.x = b.fork.treeOffset + b.fork.axleOffset + Math.sin(b.fork.treeRake) * b.fork.length; 
-	cr.y = Math.cos(b.fork.treeRake) * b.fork.length;
-	b.fork.axleCrown = getDistance(origin,cr);
-	//find other angles to get neck postion using axle-crown
-	//angle of axle-axle relative to ground
-	//angle of neck-frontAxle-rearAxle
-	//with known neck and known axle, we can find position of frame and caclulate rake based on original frameAngle and neck.chop 
-	//(neck.up and neck.out affect wheelbase and rake, but not frameAngle)
-	b.AxleCrownWheelbaseAngle = lawCosineAngle(b.neck.toRearAxle, b.fork.axleCrown, b.wheelBase);
-	//use b.AxleCrownWheelbaseAngle and b.fork.axleCrown to get neck location 
-	b.neck.bottom.x = b.frontWheel.axle.x + Math.cos(b.AxleCrownWheelbaseAngle)*b.fork.axleCrown;//!!!
-	b.neck.bottom.y = b.frontWheel.axle.x + Math.sin(b.AxleCrownWheelbaseAngle)*b.fork.axleCrown;;//!!!
-	//gah, so what is the actual rake???  
-	b.neck.rakeRearAxle = -1 * getAngle(a.neck.bottom, a.rearWheel.axle);
-	//a.frameAngle = a.neck.rake + Math.PI/2 - a.neck.rakeRearAxle
-	//b.frameAngle = b.neck.rake + Math.PI/2 - b.neck.rakeRearAxle
-	//b.neck.rake = -1* (Math.PI/2 - a.neck.rakeRearAxle - b.frameAngle);//???
-	b.frameAngle = a.frameAngle + b.neck.chop;//??? - what about neck up / out???
-	b.neck.rake = -1* (Math.PI/2 - b.neck.rakeRearAxle - b.frameAngle);//???
-	b = makeDataA(b);
-	
-//	a.fork.legBottom = {}; a.fork.legTop = {}; a.neck.bottom = {};
-//	a.fork.legBottom.x = a.frontWheel.axle.x + a.fork.axleOffset * Math.cos(a.neck.rake);//
-//	a.fork.legBottom.y = a.frontWheel.axle.x - a.fork.axleOffset * Math.sin(a.neck.rake);//
-//	a.fork.legTop.x = a.fork.legBottom.x + a.fork.length * Math.sin(a.neck.rake + a.fork.treeRake);
-//	a.fork.legTop.y = a.fork.legBottom.y + a.fork.length * Math.cos(a.neck.rake + a.fork.treeRake);
-//	a.neck.bottom.x = a.fork.legTop.x + a.fork.treeOffset * Math.cos(a.neck.rake);
-//	a.neck.bottom.y = a.fork.legTop.y - a.fork.treeOffset * Math.sin(a.neck.rake);
-//	a.neck.toFrontAxleHorizontalDistance = a.neck.bottom.x - a.frontWheel.axle.x;
-//	a.fork.axleCrown = getDistance(a.frontWheel.axle,a.neck.bottom);
-//	a.neck.rakeRearAxle = -1 * getAngle(a.neck.bottom, a.rearWheel.axle);
-//	a.frameLineRake = a.neck.rake + a.neck.rakeRearAxle
-//	a.neck.toRearAxle = getDistance(a.rearWheel.axle,a.neck.bottom);
-//	a.neck.rakeGround.x = a.neck.bottom.x - Math.tan(a.neck.rake) * a.neck.bottom.y;
-//	a.frontWheel.trail = a.frontWheel.axle.x - a.neck.rakeGround.x;
-	
-	
+	b.rearWheel.axle = a.rearWheel.axle;
+	b.neck.bottom.x = a.neck.bottom.x;
+	b.neck.bottom.y = a.neck.bottom.y;
+	b.neck.bottom.x += b.neck.out;
+	b.neck.bottom.y += b.neck.up;
+	b.neck.rake = a.neck.rake - b.neck.chop;
+	b.fork.legBottom = {}; b.fork.legTop = {}; 
+	b.fork.legTop.x = b.neck.bottom.x + b.fork.treeOffset * Math.cos(b.neck.rake);
+	b.fork.legTop.y = b.neck.bottom.y - b.fork.treeOffset * Math.sin(b.neck.rake);
+	b.fork.legBottom.x = b.fork.legTop.x - b.fork.length * Math.sin(b.neck.rake + b.fork.treeRake);
+	b.fork.legBottom.y = b.fork.legTop.y - b.fork.length * Math.cos(b.neck.rake + b.fork.treeRake);
+	b.frontWheel.axle.x = b.fork.legBottom.x + b.fork.axleOffset * Math.cos(b.neck.rake);
+	b.frontWheel.axle.y = b.fork.legBottom.y - b.fork.axleOffset * Math.sin(b.neck.rake);
+	b.fork.axleCrown = getDistance(b.frontWheel.axle, b.neck.bottom);
+	// basics for drawing done, but we don't know rake or trail or wheelbase because contact patches are probably not on ground level.  We need to rotate and move up.
+	// /*
+	var rake = b.neck.rake;
+	var rearPatch = {x: b.rearWheel.axle.x, y: b.rearWheel.axle.y - b.rearWheel.axle.radius};
+	var frontPatch = {x: b.frontWheel.axle.x, y: b.frontWheel.axle.y - b.frontWheel.axle.radius};
+	var rotate = getAngle (frontPatch, rearPatch);
+	b.rotation = rotate;
+	// */
+	console.log(a);
 	console.log(b);
 	return b;
-}	
+}
 
-//drawing functions
+//draw functions;
 function drawWheel(ctx,wheel,scale,bike){
 	//x and y optional, overide tire defaults
 	color = "hsla(" + bike.hue + ", 20%, 50%, .5)";
 	ctx.lineWidth = 3; ctx.strokeStyle = color; ctx.fillStyle = color; 
-	ctx.beginPath(); ctx.arc(wheel.axle.x*scale, wheel.axle.y*scale, wheel.radius*scale, 0 , Math.PI*2);
-	ctx.moveTo(wheel.axle.x*scale,wheel.axle.y*scale); ctx.lineTo(wheel.axle.x*scale,0*scale); ctx.stroke();
+	ctx.beginPath(); ctx.arc(wheel.axle.x*scale, wheel.axle.y*scale, wheel.radius*scale, 0 , Math.PI*2); ctx.stroke();
 	ctx.fillRect(wheel.axle.x*scale-2, wheel.axle.y*scale-2, 5, 5);
 };
 function drawBike(ctx,bike){
@@ -353,15 +292,11 @@ function drawBike(ctx,bike){
 		document.getElementById(bike.bike+'GNB').value = precisionRound(bike.neck.bottom.y, 1).toFixed(1);
 		document.getElementById(bike.bike+'FANB').value = precisionRound(bike.neck.toFrontAxleHorizontalDistance , 1).toFixed(1);	
 		document.getElementById(bike.bike+'AC').value = precisionRound(bike.fork.axleCrown,1).toFixed(1);
-		document.getElementById(bike.bike+'TR').value = precisionRound(bike.frontWheel.trail,1).toFixed(1);
+		document.getElementById(bike.bike+'TR').value = precisionRound(-1*bike.frontWheel.trail,1).toFixed(1);
 	}
 	if (bike.bike === "b"){
-		document.getElementById(bike.bike+'FNR').value = (precisionRound(bike.neck.rake, 1)*180/Math.PI).toFixed(1);
-		document.getElementById(bike.bike+'WB').value = precisionRound(bike.wheelBase, 1).toFixed(1);
-		document.getElementById(bike.bike+'GNB').value = precisionRound(bike.neck.bottom.y, 1).toFixed(1);
-		document.getElementById(bike.bike+'FANB').value = precisionRound(bike.neck.toFrontAxleHorizontalDistance , 1).toFixed(1);
 		document.getElementById(bike.bike+'AC').value = precisionRound(bike.fork.axleCrown,1).toFixed(1);
-		document.getElementById(bike.bike+'TR').value = precisionRound(bike.frontWheel.trail,1).toFixed(1);
+		ctx.rotate(bike.rotation);
 	}
 	//wheels
 	drawWheel(ctx,bike.frontWheel,bike.scale,bike);
@@ -388,11 +323,23 @@ function drawBike(ctx,bike){
 var diagram = document.getElementById('bikeCanvas');
 var dc = diagram.getContext('2d');
 dc.lineCap="round";
-dc.clearRect(0, 0, diagram.width, diagram.height);
-var bikeA = makeDataA();
-drawBike(dc,bikeA);
-var bikeB = makeDataB(bikeA);
-drawBike(dc,bikeB);
+dc.translate(50,0);
+
+function redrawAll(ctx){
+
+	ctx.clearRect(-50, -50, diagram.width+100, diagram.height+100);
+	var bikeA = makeDataA();
+	drawBike(ctx,bikeA);
+	var bikeB = makeDataB(bikeA);
+	drawBike(ctx,bikeB);
+
+};
+
+function drawAllButton(){
+	redrawAll(dc);
+}
+
+drawAllButton();
 
 //button actions
 
