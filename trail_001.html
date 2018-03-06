@@ -184,7 +184,7 @@ function getInput(){
 			length: parseFloat(document.getElementById('aFL').value),
 			axleOffset: parseFloat(document.getElementById('aFAO').value),
 			treeOffset: parseFloat(document.getElementById('aFTO').value),
-			treeRake: parseFloat(document.getElementById('aRT').value) * Math.PI/180
+			treeRake: parseFloat(-1*document.getElementById('aRT').value) * Math.PI/180
 		}	
 	};
 	// b is "custom setup" - modified version of a
@@ -214,7 +214,7 @@ function getInput(){
 			length: parseFloat(document.getElementById('bFL').value),
 			axleOffset: parseFloat(document.getElementById('bFAO').value),
 			treeOffset: parseFloat(document.getElementById('bFTO').value),
-			treeRake: parseFloat(document.getElementById('bRT').value) * Math.PI/180
+			treeRake: parseFloat(-1*document.getElementById('bRT').value) * Math.PI/180
 		}
 	}
 	// maxlength = longest fork + wheelbase + neck out + front radius + rear radius
