@@ -70,7 +70,7 @@ td {
 <table id="tableB" style='float: right'>
 <tr><th id="bSetup" colspan="2">Custom Setup</th></tr>
 <tr><th><label for="bSHOW">show</label><input id="bSHOW" value="bSHOW" type="checkbox" checked onchange="drawAll()">
-<th><label for="bROTATE">Move to ground level</label><input id="bROTATE" value="bROTATE"type="checkbox" checked onchange="drawAll()"><th></tr>
+<th><label for="bROTATE">Hold on Engine</label><input id="bROTATE" value="bROTATE"type="checkbox" checked onchange="drawAll()"><th></tr>
 <tr><td>Front Tire Outside Diameter</td><td> <input id='bFWD' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr><td>Rear Tire Outside Diameter</td><td> <input id='bRWD' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr title="you probably don't know what this will be if you change stuff..."><td>Neck Rake</td><td> <input id='bFNR' type='number' style='width:99%' value='' disabled></td></tr>
@@ -262,7 +262,7 @@ function getInput(){
 		hue: 240,
 		wheelbase: NaN,
 		show: document.getElementById('bSHOW').checked,
-		rotate: document.getElementById('bROTATE').checked,
+		rotate: !document.getElementById('bROTATE').checked,
 		rotation: 0,
 		frontWheel:{
 			radius: parseFloat(document.getElementById('bFWD').value)/2,
@@ -361,7 +361,7 @@ function makeDataB(a){
 	b.neck.rakeGroundDeep.y = b.neck.bottom.y - Math.cos(b.neck.rake )*10;
 	b.neck.rakeGround = getIntersection({p1:b.neck.bottom,p2:b.neck.rakeGroundDeep},{p1:b.rearWheel.contactPatch, p2:b.frontWheel.contactPatch});
 	b.frontWheel.trail = getDistance(b.neck.rakeGround,b.frontWheel.contactPatch);	
-	b.groundOffset = b.rearWheel.radius - a.rearWheel.radius - b.rearWheel.axleUp;
+	b.groundOffset = a.rearWheel.contactPatch.y - b.rearWheel.contactPatch.y
 	b.engineSize = a.neck.toRearAxle/2;
 	console.log(a);
 	console.log(b);
@@ -390,8 +390,8 @@ function drawBike(ctx,bike){
 		document.getElementById(bike.bike+'WB').value = precisionRound(bike.wheelbase,1).toFixed(1);
 	}
 	if (bike.rotate){ 
-		ctx.rotate(-1*bike.rotation); 
 		dc.translate(0,bike.groundOffset*bike.scale);
+		ctx.rotate(-1*bike.rotation); 	
 	}
 	//wheels
 	drawWheel(ctx,bike.frontWheel,bike.scale,bike);
