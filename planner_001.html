@@ -40,7 +40,7 @@ td {
 
 <body>
 
-<div id='bikeCanvasDiv'><canvas id='bikeCanvas' width="1000" height="500";></canvas></div>
+<div id='bikeCanvasDiv'><canvas id='bikeCanvas' width="1000" height="400";></canvas></div>
 
 <select id="bikes" onChange="setBike()"></select><button onclick="reset()">reset</button>
 
@@ -57,6 +57,8 @@ td {
 <tr title="leg ahead of steerer, perpendicular to neck rake"><td>Tree Offset</td><td> <input id='aFTO' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr title="axle ahead fork legs, perpendicular to neck rake"><td>Axle Offset</td><td> <input id='aFAO' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr title="degrees forward from neck"><td>Raked Tree</td><td> <input id='aRT' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td>&nbsp;</td></tr>
 <tr><td>&nbsp;</td></tr>
 <tr><td>&nbsp;</td></tr>
 <tr><td>Ground to Neck Bottom</td><td> <input type="number" id='aGNB' style='width:99%' value='' disabled> </td></tr>
@@ -80,6 +82,8 @@ td {
 <tr title="degrees forward from neck"><td>Raked Tree</td><td> <input id='bRT' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr><td>Neck Out</td><td> <input id='bNO' type='number' onchange="drawAll()" style='width:99%' value=''></td></tr>
 <tr><td>Neck Up</td><td> <input id='bNU' type='number' onchange="drawAll()" style='width:99%' value=''></td></tr>
+<tr title="stretch / swap / shock change"><td>Rear Stretch</td><td> <input id='bRO' type='number' onchange="drawAll()" style='width:99%' value='0'></td></tr>
+<tr itle="drop / swap / shock change"><td>Rear Up</td><td> <input id='bRU' type='number' onchange="drawAll()" style='width:99%' value='0'></td></tr>
 <tr><td>Ground to Neck Bottom</td><td> <input type="number" onchange="drawAll()" id='bGNB' style='width:99%' value='' disabled> </td></tr>
 <tr><td>Axle to Crown</td><td> <input type="number" id='bAC' style='width:99%' value='' disabled> </td></tr>
 <tr title="measured parallel to ground / wheelbase"><td>Front Axle to Neck Bottom</td><td> <input type="number" id='bFANB' style='width:99%' value='' disabled> </td></tr>
@@ -112,27 +116,27 @@ td {
 var setups = [
 {	
 	text:"sample setup - small front wheel, big back", 
-	value:'{ "bSetup": "Measured Setup 1", "aSetup":"Custom Setup 1", "bFWD":18, "bRWD":28, "bFNR":30, "bFL":15, "bWB":55, "bFTR":0, "bFTO":1, "bFAO":1, "bRT":0, "aFWD":22, "aRWD":22, "aFNR":30, "aWB":55, "aCHOP":0, "aFL":15, "aFTO":1, "aFAO":1, "aRT":0, "aNO":0, "aNU":0, "bNO":0, "bNU":0, "bCHOP":0}'
+	value:'{ "bSetup": "Measured Setup 1", "aSetup":"Custom Setup 1", "bFWD":18, "bRWD":28, "bFNR":30, "bFL":15, "bWB":55, "bFTR":0, "bFTO":1, "bFAO":1, "bRT":0, "aFWD":22, "aRWD":22, "aFNR":30, "aWB":55, "aCHOP":0, "aFL":15, "aFTO":1, "aFAO":1, "aRT":0, "aNO":0, "aNU":0, "bNO":0, "bNU":0, "bCHOP":0, "bRO":0, "bRU":0}'
 }
 ,
 {
-	text:"sample setup - neck out 10", 
-	value:'{ "aSetup": "Measured Setup 2", "bSetup":"Custom Setup 2", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":15, "bFTO":1, "bFAO":1, "bRT":0, "bNO":10, "bNU":0}'
+	text:"sample setup - neck out 10, rear stretch 10", 
+	value:'{ "aSetup": "Measured Setup 2", "bSetup":"Custom Setup 2", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":15, "bFTO":1, "bFAO":1, "bRT":0, "bNO":10, "bNU":0, "bRO":10, "bRU":0}'
 }
 ,
 {
 	text:"sample setup - 2 over fork", 
-	value: '{ "aSetup": "Measured Setup 3", "bSetup":"Custom Setup 3", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":17, "bFTO":1, "bFAO":1, "bRT":0, "bNO":0, "bNU":0}'
+	value: '{ "aSetup": "Measured Setup 3", "bSetup":"Custom Setup 3", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":17, "bFTO":1, "bFAO":1, "bRT":0, "bNO":0, "bNU":0, "bRO":0, "bRU":0}'
 }
 ,
 {
 	text:"sample setup - rake +6, fork +4, neck 2 up and 4 out", 
-	value:'{ "aSetup": "Measured Setup 4", "bSetup":"Custom Setup 4", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":6, "bFL":19, "bFTO":1, "bFAO":1, "bRT":0, "bNO":4, "bNU":2}'
+	value:'{ "aSetup": "Measured Setup 4", "bSetup":"Custom Setup 4", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":6, "bFL":19, "bFTO":1, "bFAO":1, "bRT":0, "bNO":4, "bNU":2, "bRO":0, "bRU":0}'
 }
 ,
 {
 	text:"SECApocalypse - vertical fork leg simulates Hossack wheel path", 
-	value:'{"aSetup":"1981 Yamaha XJ750rh", "bSetup":"SECApocalypse", "aFWD":670, "aRWD":670, "aFNR":30, "aFL":500, "aWB":1500, "aFTR":80, "aFAO":0, "aFTO":80, "aRT":0, "bFWD":670, "bRWD":670, "bCHOP":-10, "bFL":400, "bFTO":90, "bFAO":90, "bRT":-20, "bNO":150, "bNU":-100}'
+	value:'{"aSetup":"1981 Yamaha XJ750rh", "bSetup":"SECApocalypse", "aFWD":670, "aRWD":670, "aFNR":30, "aFL":500, "aWB":1500, "aFTR":80, "aFAO":0, "aFTO":80, "aRT":0, "bFWD":670, "bRWD":670, "bCHOP":-10, "bFL":400, "bFTO":90, "bFAO":90, "bRT":-20, "bNO":150, "bNU":-100, "bRO":0, "bRU":0}'
 }
 ,
 {text:"to come: stock bike setups and option to save your custom setups into this list!", value:'{ "aSetup": "Measured Setup", "bSetup":"Custom Setup"}'}
@@ -262,11 +266,13 @@ function getInput(){
 		rotation: 0,
 		frontWheel:{
 			radius: parseFloat(document.getElementById('bFWD').value)/2,
-			axle: {x:NaN, y:NaN}
+			axle: {x:NaN, y:NaN},
 		},
 		rearWheel:{
 			radius: parseFloat(document.getElementById('bRWD').value)/2,
-			axle: {x:NaN, y:NaN}
+			axle: {x:NaN, y:NaN},
+			axleBack: parseFloat(document.getElementById('bRO').value),
+			axleUp: parseFloat(document.getElementById('bRU').value)
 		},	
 		neck: { 
 			bottom: {x:NaN, y:NaN},
@@ -324,7 +330,10 @@ function makeDataA(a){
 function makeDataB(a){
 	//debugger
 	var b = getInput().b;
-	b.rearWheel.axle = a.rearWheel.axle;
+	b.rearWheel.axleOld = {x:a.rearWheel.axle.x, y:a.rearWheel.axle.y};
+	b.rearWheel.axle = {x:a.rearWheel.axle.x, y:a.rearWheel.axle.y};
+	b.rearWheel.axle.x -= b.rearWheel.axleBack;
+	b.rearWheel.axle.y += b.rearWheel.axleUp;
 	b.neck.bottomOld.x = a.neck.bottom.x;
 	b.neck.bottomOld.y = a.neck.bottom.y;
 	b.neck.bottom.x = a.neck.bottom.x;
@@ -352,7 +361,7 @@ function makeDataB(a){
 	b.neck.rakeGroundDeep.y = b.neck.bottom.y - Math.cos(b.neck.rake )*10;
 	b.neck.rakeGround = getIntersection({p1:b.neck.bottom,p2:b.neck.rakeGroundDeep},{p1:b.rearWheel.contactPatch, p2:b.frontWheel.contactPatch});
 	b.frontWheel.trail = getDistance(b.neck.rakeGround,b.frontWheel.contactPatch);	
-	b.groundOffset = b.rearWheel.radius - a.rearWheel.radius;
+	b.groundOffset = b.rearWheel.radius - a.rearWheel.radius - b.rearWheel.axleUp;
 	b.engineSize = a.neck.toRearAxle/2;
 	console.log(a);
 	console.log(b);
@@ -400,7 +409,11 @@ function drawBike(ctx,bike){
 	ctx.moveTo(bike.fork.legTop.x * bike.scale, bike.fork.legTop.y * bike.scale); ctx.lineTo(bike.fork.legBottom.x * bike.scale, bike.fork.legBottom.y * bike.scale); ctx.stroke();
 	//draw "frame"
 	ctx.beginPath(); ctx.lineWidth = 50;  ctx.strokeStyle = "hsla(" +hue+ ", 100%, 50%, .1)"
-	ctx.moveTo(bike.rearWheel.axle.x * bike.scale, bike.rearWheel.axle.y * bike.scale); 
+	ctx.moveTo(bike.rearWheel.axle.x * bike.scale, bike.rearWheel.axle.y * bike.scale);
+	if (bike.rearWheel.axleOld){
+		ctx.moveTo(bike.rearWheel.axle.x * bike.scale, bike.rearWheel.axle.y * bike.scale); 
+		ctx.lineTo(bike.rearWheel.axleOld.x * bike.scale, bike.rearWheel.axleOld.y * bike.scale); 			
+	}
 	if (!bike.neck.bottomOld){ ctx.lineTo(bike.neck.bottom.x * bike.scale, bike.neck.bottom.y * bike.scale); }
 	if (bike.neck.bottomOld){ 
 		ctx.lineTo(bike.neck.bottomOld.x * bike.scale, bike.neck.bottomOld.y * bike.scale); 
