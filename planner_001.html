@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+<meta name="author" content="Sebastian Wiers">
 <title>MFE Planner</title>
 <style type='text/css'>
 body {	
@@ -88,9 +89,32 @@ td {
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type='text/javascript'>
+/**
+ *
+ * @licstart  The following is the entire license notice for the 
+ *  JavaScript code in this script tag.
+ *
+ * Copyright (C) 2018  Sebastian Wiers
+ *
+ * The JavaScript code in this page is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU
+ * General Public License (GNU GPL) as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option)
+ * any later version.  The code is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+ *
+ * @licend  The above is the entire license notice
+ * for the JavaScript code in this page.
+ *
+ */
 var setups = [
-{text:"sample setup - neck out 10", value:'{ "aSetup": "Measured Setup 1", "bSetup":"Custom Setup 1", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":0, "aFAO":0, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":15, "bFTO":0, "bFAO":0, "bRT":0, "bNO":10, "bNU":0}'},
-{text:"SECApocalypse - vertical fork leg simulates Hossack wheel path", value:'{"aSetup":"1981 Yamaha XJ750rh", "bSetup":"SECApocalypse", "aFWD":670, "aRWD":670, "aFNR":30, "aFL":500, "aWB":1500, "aFTR":80, "aFAO":0, "aRT":0, "bFWD":670, "bRWD":670, "bCHOP":-10, "bFL":400, "bFTO":90, "bFAO":90, "bRT":-20, "bNO":80, "bNU":-100}'}
+{text:"sample setup - neck out 10", value:'{ "aSetup": "Measured Setup 1", "bSetup":"Custom Setup 1", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":15, "bFTO":1, "bFAO":1, "bRT":0, "bNO":10, "bNU":0}'}
+,{text:"sample setup - 2 over fork", value: '{ "aSetup": "Measured Setup 1", "bSetup":"Custom Setup 1", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":17, "bFTO":1, "bFAO":1, "bRT":0, "bNO":0, "bNU":0}'}
+,{text:"sample setup - rake +6, fork +4, neck 2 up and 4 out", value:'{ "aSetup": "Measured Setup 3", "bSetup":"Custom Setup 3", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":6, "bFL":19, "bFTO":1, "bFAO":1, "bRT":0, "bNO":4, "bNU":2}'}
+,{text:"sample setup - small front wheel, big back", value:'{ "aSetup": "Measured Setup 4", "bSetup":"Custom Setup 4", "aFWD":18, "aRWD":28, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":15, "bFTO":1, "bFAO":1, "bRT":0, "bNO":0, "bNU":0}'}
+,{text:"SECApocalypse - vertical fork leg simulates Hossack wheel path", value:'{"aSetup":"1981 Yamaha XJ750rh", "bSetup":"SECApocalypse", "aFWD":670, "aRWD":670, "aFNR":30, "aFL":500, "aWB":1500, "aFTR":80, "aFAO":0, "aRT":0, "bFWD":670, "bRWD":670, "bCHOP":-10, "bFL":400, "bFTO":90, "bFAO":90, "bRT":-20, "bNO":80, "bNU":-100}'}
+,{text:"to come: stock bike setups and option to save your custom setups into this list!", value:'{ "aSetup": "Measured Setup", "bSetup":"Custom Setup"}'}
 ];
 
 //helper functions
@@ -149,6 +173,26 @@ function lawCosineAngle(a,b,c){//returns angle between sides b and c
 	var cosA = (Math.pow(b,2)+Math.pow(c,2)-Math.pow(a,2))/(2*b*c);
 	return Math.acos(cosA);
 };
+function getIntersection(lineA, lineB)
+{
+    var x1, y1, x2, y2, x3, y3, x4, y4;
+	x1 = lineA.p1.x; y1 = lineA.p1.y;
+	x2 = lineA.p2.x; y2 = lineA.p2.y;
+	x3 = lineB.p1.x; y3 = lineB.p1.y;
+	x4 = lineB.p2.x; y4 = lineB.p2.y;
+	var ua, ub, denom = (y4 - y3)*(x2 - x1) - (x4 - x3)*(y2 - y1);
+    if (denom == 0) {
+        return null;
+    }
+    ua = ((x4 - x3)*(y1 - y3) - (y4 - y3)*(x1 - x3))/denom;
+    ub = ((x2 - x1)*(y1 - y3) - (y2 - y1)*(x1 - x3))/denom;
+    return {
+        x: x1 + ua*(x2 - x1),
+        y: y1 + ua*(y2 - y1),
+        seg1: ua >= 0 && ua <= 1,
+        seg2: ub >= 0 && ub <= 1
+    };
+}
 
 // diagram dimensions
 function getInput(){	
@@ -248,8 +292,10 @@ function makeDataA(a){
 	a.neck.rakeRearAxle = -1 * getAngle(a.neck.bottom, a.rearWheel.axle);
 	a.frameAngle = a.neck.rake + Math.PI/2 - a.neck.rakeRearAxle
 	a.neck.toRearAxle = getDistance(a.rearWheel.axle,a.neck.bottom);
-	a.neck.rakeGround.y = 0-a.rearWheel.radius;
-	a.neck.rakeGround.x = a.neck.bottom.x - Math.tan(a.neck.rake) * (a.neck.bottom.y + a.frontWheel.radius);
+	a.neck.rakeGroundDeep={};
+	a.neck.rakeGroundDeep.y = a.neck.bottom.y - Math.cos(a.neck.rake)*50;
+	a.neck.rakeGroundDeep.x = a.neck.bottom.x - Math.sin(a.neck.rake)*50;
+	a.neck.rakeGround = getIntersection({p1:a.neck.bottom,p2:a.neck.rakeGroundDeep},{p1:a.rearWheel.contactPatch, p2:a.frontWheel.contactPatch});
 	a.frontWheel.trail = getDistance(a.neck.rakeGround,a.frontWheel.contactPatch);	
 	a.engineSize = a.neck.toRearAxle/2;
 	return a;
@@ -280,13 +326,24 @@ function makeDataB(a){
 	b.frontWheel.contactPatch = {x: b.frontWheel.axle.x, y: b.frontWheel.axle.y - b.frontWheel.radius};
 	b.rotation = getAngle (b.frontWheel.contactPatch, b.rearWheel.contactPatch);
 	b.wheelbase = getDistance(b.rearWheel.contactPatch,b.frontWheel.contactPatch)
-	b.engineSize = a.neck.toRearAxle/2;
-	//method used for rake a - can we tweak it, knowing rotation??
-	//a.neck.rakeGround.x = a.neck.bottom.x - Math.tan(a.neck.rake) * (a.neck.bottom.y + a.frontWheel.radius);
-	//a.neck.rakeGround.y = 0-a.rearWheel.radius;
+	
 
+
+	/*method used for rake a - can we tweak it, knowing rotation??
+	a.neck.rakeGroundDeep={};
+	a.neck.rakeGroundDeep.y = a.neck.bottom.y - Math.cos(a.neck.rake)*50;
+	a.neck.rakeGroundDeep.x = a.neck.bottom.x - Math.sin(a.neck.rake)*50;
+	a.neck.rakeGround = getIntersection({p1:a.neck.bottom,p2:a.neck.rakeGroundDeep},{p1:a.rearWheel.contactPatch, p2:a.frontWheel.contactPatch});
+	a.frontWheel.trail = getDistance(a.neck.rakeGround,a.frontWheel.contactPatch);	
+	//*/
+	b.neck.rakeGroundDeep={};
+	b.neck.rakeGroundDeep.y = b.neck.bottom.y - Math.cos(b.neck.rake - b.rotation)*50;
+	b.neck.rakeGroundDeep.x = b.neck.bottom.x - Math.sin(b.neck.rake - b.rotation)*50;
+	b.neck.rakeGround = getIntersection({p1:b.neck.bottom,p2:b.neck.rakeGroundDeep},{p1:b.rearWheel.contactPatch, p2:b.frontWheel.contactPatch});
+	b.frontWheel.trail = getDistance(b.neck.rakeGround,b.frontWheel.contactPatch);	
 	console.log(a);
 	console.log(b);
+	b.engineSize = a.neck.toRearAxle/2;
 	return b;
 }
 
@@ -351,7 +408,7 @@ function drawBike(ctx,bike){
 	ctx.moveTo(groundlineStart.x*bike.scale,groundlineStart.y*bike.scale),ctx.lineTo(groundlineEnd.x*bike.scale,groundlineEnd.y*bike.scale);ctx.stroke();
 	//*/
 	//draw engine
-	ctx.fillRect(bike.engineSize*.75 * bike.scale, bike.engineSize*bike.scale*-.25, bike.engineSize*.75*bike.scale, bike.engineSize*.5*bike.scale);
+	ctx.fillRect(bike.engineSize*.75 * bike.scale, bike.engineSize*bike.scale*-.25, bike.engineSize*.85*bike.scale, bike.engineSize*.5*bike.scale);
 	if (bike.rotate){ ctx.rotate(bike.rotation); }
 };
 
@@ -388,9 +445,7 @@ $.each(setups, function (i, item) {
 function setBike(){
 	var bikes = $('#bikes');
 	var inputs = $.parseJSON(bikes.val());
-	//console.log(inputs);
 	$.each(inputs, function(i,value){
-		console.log(i,value);
 		var input = $('input#'+i);
 		input.val(value);
 		if (!input.length) { $('#'+i).text(value); }
@@ -399,9 +454,9 @@ function setBike(){
 };
 
 function reset(){
-	$('#bikes option:eq(0)').prop('selected', 'selected').change();
+	$('#bikes option:selected').prop('selected','selected').change();
 }
-reset()
+$('#bikes option:eq(0)').prop('selected', 'selected').change();
 
 </script>
 
