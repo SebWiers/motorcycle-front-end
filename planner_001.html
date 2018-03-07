@@ -68,7 +68,7 @@ td {
 <table id="tableB" style='float: right'>
 <tr><th id="bSetup" colspan="2">Custom Setup</th></tr>
 <tr><th><label for="bSHOW">show</label><input id="bSHOW" value="bSHOW" type="checkbox" checked onchange="drawAll()">
-<th><label for="bROTATE">rotate level</label><input id="bROTATE" value="bROTATE"type="checkbox" checked onchange="drawAll()"><th></tr>
+<th><label for="bROTATE">Move to ground level</label><input id="bROTATE" value="bROTATE"type="checkbox" checked onchange="drawAll()"><th></tr>
 <tr><td>Front Tire Outside Diameter</td><td> <input id='bFWD' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr><td>Rear Tire Outside Diameter</td><td> <input id='bRWD' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr title="you probably don't know what this will be if you change stuff..."><td>Neck Rake</td><td> <input id='bFNR' type='number' style='width:99%' value='' disabled></td></tr>
@@ -343,8 +343,8 @@ function makeDataB(a){
 	b.neck.toRearAxle = getDistance(b.rearWheel.axle,b.neck.bottom);
 	// basics for drawing done, but we don't know rake or trail or wheelbase because contact patches are probably not on ground level.
 	var rake = b.neck.rake;
-	b.rearWheel.contactPatch = {x: b.rearWheel.axle.x, y: b.rearWheel.axle.y - b.rearWheel.radius};
-	b.frontWheel.contactPatch = {x: b.frontWheel.axle.x, y: b.frontWheel.axle.y - b.frontWheel.radius};
+	b.rearWheel.contactPatch = {x: b.rearWheel.axle.x, y: b.rearWheel.axle.y - b.rearWheel.radius};//!!! - not alway true, but acceptably close for small rotations, and needed to calculate rotation!
+	b.frontWheel.contactPatch = {x: b.frontWheel.axle.x, y: b.frontWheel.axle.y - b.frontWheel.radius};//!!! - not alway true, but acceptably close for small rotations, and needed to calculate rotation!
 	b.rotation = getAngle (b.frontWheel.contactPatch, b.rearWheel.contactPatch);
 	b.wheelbase = getDistance(b.rearWheel.contactPatch,b.frontWheel.contactPatch)
 	b.neck.rakeGroundDeep={};
@@ -352,7 +352,7 @@ function makeDataB(a){
 	b.neck.rakeGroundDeep.y = b.neck.bottom.y - Math.cos(b.neck.rake )*10;
 	b.neck.rakeGround = getIntersection({p1:b.neck.bottom,p2:b.neck.rakeGroundDeep},{p1:b.rearWheel.contactPatch, p2:b.frontWheel.contactPatch});
 	b.frontWheel.trail = getDistance(b.neck.rakeGround,b.frontWheel.contactPatch);	
-
+	b.groundOffset = b.rearWheel.radius - a.rearWheel.radius;
 	b.engineSize = a.neck.toRearAxle/2;
 	console.log(a);
 	console.log(b);
@@ -380,7 +380,10 @@ function drawBike(ctx,bike){
 		document.getElementById(bike.bike+'FNR').value = precisionRound((bike.neck.rake + bike.rotation)*-180/Math.PI,1).toFixed(1);
 		document.getElementById(bike.bike+'WB').value = precisionRound(bike.wheelbase,1).toFixed(1);
 	}
-	if (bike.rotate){ ctx.rotate(-1*bike.rotation); }
+	if (bike.rotate){ 
+		ctx.rotate(-1*bike.rotation); 
+		dc.translate(0,bike.groundOffset*bike.scale);
+	}
 	//wheels
 	drawWheel(ctx,bike.frontWheel,bike.scale,bike);
 	drawWheel(ctx,bike.rearWheel,bike.scale,bike);
@@ -421,7 +424,10 @@ function drawBike(ctx,bike){
 	ctx.fillStyle = "hsla(" +hue+ ", 100%, 50%, .1)"
 	ctx.fillRect(bike.engineSize*.75 * bike.scale, bike.engineSize*bike.scale*-.25, bike.engineSize*.85*bike.scale, bike.engineSize*.5*bike.scale);
 	
-	if (bike.rotate){ ctx.rotate(bike.rotation); }
+	if (bike.rotate){ 
+		ctx.rotate(bike.rotation);
+		dc.translate(0,0-bike.groundOffset*bike.scale);		
+	}
 };
 
 
