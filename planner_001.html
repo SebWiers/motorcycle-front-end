@@ -67,7 +67,8 @@ td {
 </table>
 <table id="tableB" style='float: right'>
 <tr><th id="bSetup" colspan="2">Custom Setup</th></tr>
-<tr><th><label for="bSHOW">show</label><input id="bSHOW" value="bSHOW" type="checkbox" checked onchange="drawAll()"><th><label for="bROTATE">rotate level</label><input id="bROTATE" value="bROTATE"type="checkbox" onchange="drawAll()"><th></tr>
+<tr><th><label for="bSHOW">show</label><input id="bSHOW" value="bSHOW" type="checkbox" checked onchange="drawAll()">
+<th><label for="bROTATE">rotate level</label><input id="bROTATE" value="bROTATE"type="checkbox" checked onchange="drawAll()"><th></tr>
 <tr><td>Front Tire Outside Diameter</td><td> <input id='bFWD' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr><td>Rear Tire Outside Diameter</td><td> <input id='bRWD' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr title="you probably don't know what this will be if you change stuff..."><td>Neck Rake</td><td> <input id='bFNR' type='number' style='width:99%' value='' disabled></td></tr>
@@ -109,12 +110,32 @@ td {
  *
  */
 var setups = [
-{text:"sample setup - neck out 10", value:'{ "aSetup": "Measured Setup 1", "bSetup":"Custom Setup 1", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":15, "bFTO":1, "bFAO":1, "bRT":0, "bNO":10, "bNU":0}'}
-,{text:"sample setup - 2 over fork", value: '{ "aSetup": "Measured Setup 1", "bSetup":"Custom Setup 1", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":17, "bFTO":1, "bFAO":1, "bRT":0, "bNO":0, "bNU":0}'}
-,{text:"sample setup - rake +6, fork +4, neck 2 up and 4 out", value:'{ "aSetup": "Measured Setup 3", "bSetup":"Custom Setup 3", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":6, "bFL":19, "bFTO":1, "bFAO":1, "bRT":0, "bNO":4, "bNU":2}'}
-,{text:"sample setup - small front wheel, big back", value:'{ "aSetup": "Measured Setup 4", "bSetup":"Custom Setup 4", "aFWD":18, "aRWD":28, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":15, "bFTO":1, "bFAO":1, "bRT":0, "bNO":0, "bNU":0}'}
-,{text:"SECApocalypse - vertical fork leg simulates Hossack wheel path", value:'{"aSetup":"1981 Yamaha XJ750rh", "bSetup":"SECApocalypse", "aFWD":670, "aRWD":670, "aFNR":30, "aFL":500, "aWB":1500, "aFTR":80, "aFAO":0, "aRT":0, "bFWD":670, "bRWD":670, "bCHOP":-10, "bFL":400, "bFTO":90, "bFAO":90, "bRT":-20, "bNO":80, "bNU":-100}'}
-,{text:"to come: stock bike setups and option to save your custom setups into this list!", value:'{ "aSetup": "Measured Setup", "bSetup":"Custom Setup"}'}
+{	
+	text:"sample setup - small front wheel, big back", 
+	value:'{ "bSetup": "Measured Setup 1", "aSetup":"Custom Setup 1", "bFWD":18, "bRWD":28, "bFNR":30, "bFL":15, "bWB":55, "bFTR":0, "bFTO":1, "bFAO":1, "bRT":0, "aFWD":22, "aRWD":22, "aFNR":30, "aWB":55, "aCHOP":0, "aFL":15, "aFTO":1, "aFAO":1, "aRT":0, "aNO":0, "aNU":0, "bNO":0, "bNU":0, "bCHOP":0}'
+}
+,
+{
+	text:"sample setup - neck out 10", 
+	value:'{ "aSetup": "Measured Setup 2", "bSetup":"Custom Setup 2", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":15, "bFTO":1, "bFAO":1, "bRT":0, "bNO":10, "bNU":0}'
+}
+,
+{
+	text:"sample setup - 2 over fork", 
+	value: '{ "aSetup": "Measured Setup 3", "bSetup":"Custom Setup 3", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":17, "bFTO":1, "bFAO":1, "bRT":0, "bNO":0, "bNU":0}'
+}
+,
+{
+	text:"sample setup - rake +6, fork +4, neck 2 up and 4 out", 
+	value:'{ "aSetup": "Measured Setup 4", "bSetup":"Custom Setup 4", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":6, "bFL":19, "bFTO":1, "bFAO":1, "bRT":0, "bNO":4, "bNU":2}'
+}
+,
+{
+	text:"SECApocalypse - vertical fork leg simulates Hossack wheel path", 
+	value:'{"aSetup":"1981 Yamaha XJ750rh", "bSetup":"SECApocalypse", "aFWD":670, "aRWD":670, "aFNR":30, "aFL":500, "aWB":1500, "aFTR":80, "aFAO":0, "aFTO":80, "aRT":0, "bFWD":670, "bRWD":670, "bCHOP":-10, "bFL":400, "bFTO":90, "bFAO":90, "bRT":-20, "bNO":150, "bNU":-100}'
+}
+,
+{text:"to come: stock bike setups and option to save your custom setups into this list!", value:'{ "aSetup": "Measured Setup", "bSetup":"Custom Setup"}'}
 ];
 
 //helper functions
@@ -293,8 +314,8 @@ function makeDataA(a){
 	a.frameAngle = a.neck.rake + Math.PI/2 - a.neck.rakeRearAxle
 	a.neck.toRearAxle = getDistance(a.rearWheel.axle,a.neck.bottom);
 	a.neck.rakeGroundDeep={};
-	a.neck.rakeGroundDeep.y = a.neck.bottom.y - Math.cos(a.neck.rake)*50;
-	a.neck.rakeGroundDeep.x = a.neck.bottom.x - Math.sin(a.neck.rake)*50;
+	a.neck.rakeGroundDeep.y = a.neck.bottom.y - Math.cos(a.neck.rake)*10;
+	a.neck.rakeGroundDeep.x = a.neck.bottom.x - Math.sin(a.neck.rake)*10;
 	a.neck.rakeGround = getIntersection({p1:a.neck.bottom,p2:a.neck.rakeGroundDeep},{p1:a.rearWheel.contactPatch, p2:a.frontWheel.contactPatch});
 	a.frontWheel.trail = getDistance(a.neck.rakeGround,a.frontWheel.contactPatch);	
 	a.engineSize = a.neck.toRearAxle/2;
@@ -326,24 +347,15 @@ function makeDataB(a){
 	b.frontWheel.contactPatch = {x: b.frontWheel.axle.x, y: b.frontWheel.axle.y - b.frontWheel.radius};
 	b.rotation = getAngle (b.frontWheel.contactPatch, b.rearWheel.contactPatch);
 	b.wheelbase = getDistance(b.rearWheel.contactPatch,b.frontWheel.contactPatch)
-	
-
-
-	/*method used for rake a - can we tweak it, knowing rotation??
-	a.neck.rakeGroundDeep={};
-	a.neck.rakeGroundDeep.y = a.neck.bottom.y - Math.cos(a.neck.rake)*50;
-	a.neck.rakeGroundDeep.x = a.neck.bottom.x - Math.sin(a.neck.rake)*50;
-	a.neck.rakeGround = getIntersection({p1:a.neck.bottom,p2:a.neck.rakeGroundDeep},{p1:a.rearWheel.contactPatch, p2:a.frontWheel.contactPatch});
-	a.frontWheel.trail = getDistance(a.neck.rakeGround,a.frontWheel.contactPatch);	
-	//*/
 	b.neck.rakeGroundDeep={};
-	b.neck.rakeGroundDeep.y = b.neck.bottom.y - Math.cos(b.neck.rake - b.rotation)*50;
-	b.neck.rakeGroundDeep.x = b.neck.bottom.x - Math.sin(b.neck.rake - b.rotation)*50;
+	b.neck.rakeGroundDeep.x = b.neck.bottom.x - Math.sin(b.neck.rake )*10;
+	b.neck.rakeGroundDeep.y = b.neck.bottom.y - Math.cos(b.neck.rake )*10;
 	b.neck.rakeGround = getIntersection({p1:b.neck.bottom,p2:b.neck.rakeGroundDeep},{p1:b.rearWheel.contactPatch, p2:b.frontWheel.contactPatch});
 	b.frontWheel.trail = getDistance(b.neck.rakeGround,b.frontWheel.contactPatch);	
+
+	b.engineSize = a.neck.toRearAxle/2;
 	console.log(a);
 	console.log(b);
-	b.engineSize = a.neck.toRearAxle/2;
 	return b;
 }
 
@@ -359,16 +371,14 @@ function drawBike(ctx,bike){
 	if(!bike.show){ return; }
 	var hue = bike.hue;	
 	document.getElementById(bike.bike+'AC').value = precisionRound(bike.fork.axleCrown,1).toFixed(1);
+	document.getElementById(bike.bike+'TR').value = precisionRound(bike.frontWheel.trail,1).toFixed(1);
 	if (bike.bike === "a"){
 		document.getElementById(bike.bike+'GNB').value = precisionRound(bike.neck.bottom.y, 1).toFixed(1);
-		document.getElementById(bike.bike+'FANB').value = precisionRound(bike.neck.toFrontAxleHorizontalDistance , 1).toFixed(1);	
-		
-		document.getElementById(bike.bike+'TR').value = precisionRound(bike.frontWheel.trail,1).toFixed(1);
+		document.getElementById(bike.bike+'FANB').value = precisionRound(bike.neck.toFrontAxleHorizontalDistance , 1).toFixed(1);		
 	}
 	if (bike.bike === "b"){
 		document.getElementById(bike.bike+'FNR').value = precisionRound((bike.neck.rake + bike.rotation)*-180/Math.PI,1).toFixed(1);
 		document.getElementById(bike.bike+'WB').value = precisionRound(bike.wheelbase,1).toFixed(1);
-		
 	}
 	if (bike.rotate){ ctx.rotate(-1*bike.rotation); }
 	//wheels
@@ -404,11 +414,13 @@ function drawBike(ctx,bike){
 	groundlineStart.y = bike.rearWheel.contactPatch.y + deltaY;
 	groundlineEnd.x =  bike.frontWheel.contactPatch.x - deltaX;
 	groundlineEnd.y = bike.frontWheel.contactPatch.y - deltaY;
-	ctx.beginPath(); ctx.lineWidth = 3;  ctx.fillStyle = "hsla(" +hue+ ", 100%, 50%, .1)"
+	ctx.beginPath(); ctx.lineWidth = 3;  
 	ctx.moveTo(groundlineStart.x*bike.scale,groundlineStart.y*bike.scale),ctx.lineTo(groundlineEnd.x*bike.scale,groundlineEnd.y*bike.scale);ctx.stroke();
 	//*/
 	//draw engine
+	ctx.fillStyle = "hsla(" +hue+ ", 100%, 50%, .1)"
 	ctx.fillRect(bike.engineSize*.75 * bike.scale, bike.engineSize*bike.scale*-.25, bike.engineSize*.85*bike.scale, bike.engineSize*.5*bike.scale);
+	
 	if (bike.rotate){ ctx.rotate(bike.rotation); }
 };
 
@@ -422,13 +434,11 @@ dc.lineCap="round";
 dc.translate(150,150);
 
 function redrawAll(ctx){
-
 	ctx.clearRect(-500, -500, diagram.width+1000, diagram.height+1000);
 	var bikeA = makeDataA();
 	drawBike(ctx,bikeA);
 	var bikeB = makeDataB(bikeA);
 	drawBike(ctx,bikeB);
-
 };
 
 function drawAll(){
