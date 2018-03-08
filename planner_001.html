@@ -44,7 +44,7 @@ td {
 <div id='bikeCanvasDiv'><canvas id='bikeCanvas' width="1000" height="400";></canvas></div>
 
 <span style=""><select id="bikes" onChange="setBike()"></select><button onclick="reset()">reset</button></span>
-<span style="margin-left:100px">Shift Custom Image (x:<input type="number" id="bXSHIFT" value="0" onchange="drawAll()">y:<input type="number" id="bYSHIFT" value="0" onchange="drawAll()">)</span>
+<span style="margin-left:100px">shift custom image (x:<input type="number" id="bXSHIFT" value="0" onchange="drawAll()"> y:<input type="number" id="bYSHIFT" value="0" onchange="drawAll()">)</span>
 
 
 <div id='data' style='width: 1000px;' title="input units are arbitrary; results can be read in same units">
@@ -355,20 +355,23 @@ function makeDataB(a){
 	b.fork.axleCrown = getDistance(b.frontWheel.axle, b.neck.bottom);
 	b.neck.toRearAxle = getDistance(b.rearWheel.axle,b.neck.bottom);
 	// basics for drawing done, but we don't know rake or trail or wheelbase because contact patches are probably not on ground level.
-	var rake = b.neck.rake;
 	b.rearWheel.contactPatch = {x: b.rearWheel.axle.x, y: b.rearWheel.axle.y - b.rearWheel.radius};//!!! - not alway true, but acceptably close for small rotations, and needed to calculate rotation!
 	b.frontWheel.contactPatch = {x: b.frontWheel.axle.x, y: b.frontWheel.axle.y - b.frontWheel.radius};//!!! - not alway true, but acceptably close for small rotations, and needed to calculate rotation!
-	b.rotation = getAngle (b.frontWheel.contactPatch, b.rearWheel.contactPatch);
 	b.wheelbase = getDistance(b.rearWheel.contactPatch,b.frontWheel.contactPatch)
 	b.neck.rakeGroundDeep={};
 	b.neck.rakeGroundDeep.x = b.neck.bottom.x - Math.sin(b.neck.rake )*10;
 	b.neck.rakeGroundDeep.y = b.neck.bottom.y - Math.cos(b.neck.rake )*10;
 	b.neck.rakeGround = getIntersection({p1:b.neck.bottom,p2:b.neck.rakeGroundDeep},{p1:b.rearWheel.contactPatch, p2:b.frontWheel.contactPatch});
 	b.frontWheel.trail = getDistance(b.neck.rakeGround,b.frontWheel.contactPatch);	
-	b.groundOffset = a.rearWheel.contactPatch.y - b.rearWheel.contactPatch.y;// not quite...
+	b.rotation = getAngle (b.frontWheel.contactPatch, b.rearWheel.contactPatch);//!!!!!!!!!
+	b.neck.rake =  b.neck.rake + b.rotation
+	b.neck.toGroundDeep = {};// down from neck, can calculate based on groundline rotation
+	b.neck.toGroundDeep.x = b.neck.bottom.x + Math.sin(b.rotation)*10;
+	b.neck.toGroundDeep.y = b.neck.bottom.y - Math.cos(b.rotation)*10;
+	b.neck.toGround = getIntersection( {p1:b.neck.toGroundDeep, p2:b.neck.bottom} , {p1:b.frontWheel.contactPatch, p2:b.rearWheel.contactPatch} );//should be point on ground line below / closest to neck...
 	
 	
-	
+	b.groundOffset = a.rearWheel.contactPatch.y - b.rearWheel.contactPatch.y;// not quite... may need fixing with user offset input
 	b.engineSize = a.neck.toRearAxle/2;
 	console.log(a);
 	console.log(b);
@@ -393,13 +396,15 @@ function drawBike(ctx,bike){
 		document.getElementById(bike.bike+'FANB').value = precisionRound(bike.neck.toFrontAxleHorizontalDistance , 1).toFixed(1);		
 	}
 	if (bike.bike === "b"){
-		document.getElementById(bike.bike+'FNR').value = precisionRound((bike.neck.rake + bike.rotation)*-180/Math.PI,1).toFixed(1);
+		document.getElementById(bike.bike+'FNR').value = precisionRound((bike.neck.rake)*-180/Math.PI,1).toFixed(1);
 		document.getElementById(bike.bike+'WB').value = precisionRound(bike.wheelbase,1).toFixed(1);
+		//document.getElementById(bike.bike+'GNB').value = precisionRound(getDistance(bike.neck.toGround,bike.neck.bottom), 1).toFixed(1);//????
 	}
 	if (bike.rotate){ 
 		dc.translate(0 + bike.offset.x*bike.scale, bike.groundOffset*bike.scale + bike.offset.y*bike.scale);
 		ctx.rotate(-1*bike.rotation); 	
 		
+		ctx.moveTo(bike.neck.toGround.x * bike.scale , bike.neck.toGround.y);  ctx.lineTo(bike.neck.bottom.x,bike.neck.bottom.y);
 	}
 	//wheels
 	drawWheel(ctx,bike.frontWheel,bike.scale,bike);
@@ -424,9 +429,11 @@ function drawBike(ctx,bike){
 	}
 	if (!bike.neck.bottomOld){ ctx.lineTo(bike.neck.bottom.x * bike.scale, bike.neck.bottom.y * bike.scale); }
 	if (bike.neck.bottomOld){ 
+	
 		ctx.lineTo(bike.neck.bottomOld.x * bike.scale, bike.neck.bottomOld.y * bike.scale); 
 		ctx.lineTo( (bike.neck.bottomOld.x + bike.neck.out) * bike.scale, bike.neck.bottomOld.y * bike.scale); 
 		ctx.lineTo(bike.neck.bottom.x * bike.scale, bike.neck.bottom.y * bike.scale); 
+		
 	}
 	ctx.stroke();
 	//draw groundline
@@ -446,6 +453,7 @@ function drawBike(ctx,bike){
 	ctx.fillRect(bike.engineSize*.75 * bike.scale, bike.engineSize*bike.scale*-.25, bike.engineSize*.85*bike.scale, bike.engineSize*.5*bike.scale);
 	
 	if (bike.rotate){ 
+	
 		ctx.rotate(bike.rotation);
 		dc.translate(0-bike.offset.x*bike.scale,0-bike.groundOffset*bike.scale-bike.offset.y*bike.scale);		
 	}
