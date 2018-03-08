@@ -14,6 +14,7 @@ body {
 input[type="number"] { 
 	text-align: right; 
 	margin: 0;
+	width: 60px;
 }
 canvas#bikeCanvas {
 	background-color: #fff;
@@ -42,7 +43,9 @@ td {
 
 <div id='bikeCanvasDiv'><canvas id='bikeCanvas' width="1000" height="400";></canvas></div>
 
-<select id="bikes" onChange="setBike()"></select><button onclick="reset()">reset</button>
+<span style=""><select id="bikes" onChange="setBike()"></select><button onclick="reset()">reset</button></span>
+<span style="margin-left:100px">Shift Custom Image (x:<input type="number" id="bXSHIFT" value="0" onchange="drawAll()">y:<input type="number" id="bYSHIFT" value="0" onchange="drawAll()">)</span>
+
 
 <div id='data' style='width: 1000px;' title="input units are arbitrary; results can be read in same units">
 <table id="tableA" style='float: left'>
@@ -136,7 +139,7 @@ var setups = [
 ,
 {
 	text:"SECApocalypse - vertical fork leg simulates Hossack wheel path", 
-	value:'{"aSetup":"1981 Yamaha XJ750rh", "bSetup":"SECApocalypse", "aFWD":67, "aRWD":67, "aFNR":30, "aFL":50, "aWB":150, "aFAO":0, "aFTO":8, "aRT":0, "bFWD":67, "bRWD":67, "bCHOP":-10, "bFL":40, "bFTO":9, "bFAO":9, "bRT":-20, "bNO":15, "bNU":-10, "bRO":0, "bRU":-3}'
+	value:'{"aSetup":"1981 Yamaha XJ750rh", "bSetup":"SECApocalypse", "aFWD":67, "aRWD":67, "aFNR":30, "aFL":50, "aWB":150, "aFAO":0, "aFTO":8, "aRT":0, "bFWD":67, "bRWD":67, "bCHOP":-10, "bFL":40, "bFTO":9, "bFAO":9, "bRT":-20, "bNO":15, "bNU":-9, "bRO":0, "bRU":-3}'
 }
 ,
 {text:"to come: stock bike setups and option to save your custom setups into this list!", value:'{ "aSetup": "Measured Setup", "bSetup":"Custom Setup"}'}
@@ -264,6 +267,7 @@ function getInput(){
 		show: document.getElementById('bSHOW').checked,
 		rotate: !document.getElementById('bROTATE').checked,
 		rotation: 0,
+		offset: {x:parseFloat(document.getElementById('bXSHIFT').value), y:parseFloat(document.getElementById('bYSHIFT').value)},
 		frontWheel:{
 			radius: parseFloat(document.getElementById('bFWD').value)/2,
 			axle: {x:NaN, y:NaN},
@@ -361,7 +365,10 @@ function makeDataB(a){
 	b.neck.rakeGroundDeep.y = b.neck.bottom.y - Math.cos(b.neck.rake )*10;
 	b.neck.rakeGround = getIntersection({p1:b.neck.bottom,p2:b.neck.rakeGroundDeep},{p1:b.rearWheel.contactPatch, p2:b.frontWheel.contactPatch});
 	b.frontWheel.trail = getDistance(b.neck.rakeGround,b.frontWheel.contactPatch);	
-	b.groundOffset = a.rearWheel.contactPatch.y - b.rearWheel.contactPatch.y
+	b.groundOffset = a.rearWheel.contactPatch.y - b.rearWheel.contactPatch.y;// not quite...
+	
+	
+	
 	b.engineSize = a.neck.toRearAxle/2;
 	console.log(a);
 	console.log(b);
@@ -390,8 +397,9 @@ function drawBike(ctx,bike){
 		document.getElementById(bike.bike+'WB').value = precisionRound(bike.wheelbase,1).toFixed(1);
 	}
 	if (bike.rotate){ 
-		dc.translate(0,bike.groundOffset*bike.scale);
+		dc.translate(0 + bike.offset.x*bike.scale, bike.groundOffset*bike.scale + bike.offset.y*bike.scale);
 		ctx.rotate(-1*bike.rotation); 	
+		
 	}
 	//wheels
 	drawWheel(ctx,bike.frontWheel,bike.scale,bike);
@@ -439,7 +447,7 @@ function drawBike(ctx,bike){
 	
 	if (bike.rotate){ 
 		ctx.rotate(bike.rotation);
-		dc.translate(0,0-bike.groundOffset*bike.scale);		
+		dc.translate(0-bike.offset.x*bike.scale,0-bike.groundOffset*bike.scale-bike.offset.y*bike.scale);		
 	}
 };
 
