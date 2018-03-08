@@ -327,6 +327,10 @@ function makeDataA(a){
 	a.neck.rakeGroundDeep.y = a.neck.bottom.y - Math.cos(a.neck.rake)*10;
 	a.neck.rakeGroundDeep.x = a.neck.bottom.x - Math.sin(a.neck.rake)*10;
 	a.neck.rakeGround = getIntersection({p1:a.neck.bottom,p2:a.neck.rakeGroundDeep},{p1:a.rearWheel.contactPatch, p2:a.frontWheel.contactPatch});
+	a.neck.toGroundDeep = {};// down from neck, can calculate based on groundline rotation
+	a.neck.toGroundDeep.x = a.neck.bottom.x ;
+	a.neck.toGroundDeep.y = 0;
+	a.neck.toGround = getIntersection( {p1:a.neck.toGroundDeep, p2:a.neck.bottom} , {p1:a.frontWheel.contactPatch, p2:a.rearWheel.contactPatch} );//should be point on ground line below / closest to neck...
 	a.frontWheel.trail = getDistance(a.neck.rakeGround,a.frontWheel.contactPatch);	
 	a.engineSize = a.neck.toRearAxle/2;
 	return a;
@@ -392,13 +396,13 @@ function drawBike(ctx,bike){
 	document.getElementById(bike.bike+'AC').value = precisionRound(bike.fork.axleCrown,1).toFixed(1);
 	document.getElementById(bike.bike+'TR').value = precisionRound(bike.frontWheel.trail,1).toFixed(1);
 	if (bike.bike === "a"){
-		document.getElementById(bike.bike+'GNB').value = precisionRound(bike.neck.bottom.y, 1).toFixed(1);
+		document.getElementById(bike.bike+'GNB').value = precisionRound(getDistance( bike.neck.toGround,bike.neck.bottom), 1).toFixed(1);//????
 		document.getElementById(bike.bike+'FANB').value = precisionRound(bike.neck.toFrontAxleHorizontalDistance , 1).toFixed(1);		
 	}
 	if (bike.bike === "b"){
 		document.getElementById(bike.bike+'FNR').value = precisionRound((bike.neck.rake)*-180/Math.PI,1).toFixed(1);
 		document.getElementById(bike.bike+'WB').value = precisionRound(bike.wheelbase,1).toFixed(1);
-		//document.getElementById(bike.bike+'GNB').value = precisionRound(getDistance(bike.neck.toGround,bike.neck.bottom), 1).toFixed(1);//????
+		document.getElementById(bike.bike+'GNB').value = precisionRound(getDistance( bike.neck.toGround,bike.neck.bottom), 1).toFixed(1);//????
 	}
 	if (bike.rotate){ 
 		dc.translate(0 + bike.offset.x*bike.scale, bike.groundOffset*bike.scale + bike.offset.y*bike.scale);
