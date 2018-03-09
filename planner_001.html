@@ -422,10 +422,9 @@ function makeDataB(a){
 	
 	//front axle to neck botom along ground line
 	b.neck.toFrontAxleHorizontalDistance = getDistance(b.neck.bottom,b.neck.toGround) * Math.cos(b.neck.rake);
-	
-	b.rearWheel.rotatedAxleOffset = {};///ESTIMATED
-	b.rearWheel.rotatedAxleOffset.x = (bike.rearWheel.old.axle.x - bike.rearWheel.axle.x)*bike.scale + $('#bXSHIFT').val()*bike.scale, 
-	b.rearWheel.rotatedAxleOffset.y = (bike.rearWheel.old.axle.y -bike.rearWheel.axle.y)*bike.scale + (bike.rearWheel.radius - bike.rearWheel.old.radius)*bike.scale  + $('#bYSHIFT').val()*bike.scale
+	b.rearWheel.offset = {};
+	b.rearWheel.offset.x = b.rearWheel.axle.x - b.rearWheel.old.axle.x + parseFloat($('#bXSHIFT').val()); // adjust for rotation???
+	b.rearWheel.offset.y = b.rearWheel.axle.x - b.rearWheel.old.axle.x + parseFloat($('#bYSHIFT').val());// adjust for rotation???
 	
 	console.log(a);
 	console.log(b);
@@ -458,7 +457,7 @@ function drawBike(ctx,bike){
 	}
 	if (bike.rotate && !error){ 
 		document.getElementById(bike.bike+'ROT').value = precisionRound((bike.rotation)*-180/Math.PI,1).toFixed(1);
-		dc.translate(-1* bike.rearWheel.rotatedAxleOffset.x *bike.scale, -1* bike.rearWheel.rotatedAxleOffset.y* bike.scale);
+		dc.translate(-1* bike.rearWheel.offset.x *bike.scale, -1* bike.rearWheel.offset.y* bike.scale);
 		ctx.rotate(-1*bike.rotation); 	
 		ctx.moveTo(bike.neck.toGround.x * bike.scale , bike.neck.toGround.y);  ctx.lineTo(bike.neck.bottom.x,bike.neck.bottom.y);
 	}
@@ -524,7 +523,7 @@ function drawBike(ctx,bike){
 	if (bike.rotate){ 
 		$('span#shiftXY').removeClass('hidden');
 		ctx.rotate(bike.rotation);
-		dc.translate(-1* bike.rearWheel.rotatedAxleOffset.x *bike.scale, -1* bike.rearWheel.rotatedAxleOffset.y* bike.scale);	
+		dc.translate(bike.rearWheel.offset.x* bike.scale, bike.rearWheel.offset.y* bike.scale);	
 	} else {
 		$('span#shiftXY').addClass('hidden');
 	}
