@@ -423,6 +423,10 @@ function makeDataB(a){
 	//front axle to neck botom along ground line
 	b.neck.toFrontAxleHorizontalDistance = getDistance(b.neck.bottom,b.neck.toGround) * Math.cos(b.neck.rake);
 	
+	b.rearWheel.rotatedAxleOffset = {};///ESTIMATED
+	b.rearWheel.rotatedAxleOffset.x = (bike.rearWheel.old.axle.x - bike.rearWheel.axle.x)*bike.scale + $('#bXSHIFT').val()*bike.scale, 
+	b.rearWheel.rotatedAxleOffset.y = (bike.rearWheel.old.axle.y -bike.rearWheel.axle.y)*bike.scale + (bike.rearWheel.radius - bike.rearWheel.old.radius)*bike.scale  + $('#bYSHIFT').val()*bike.scale
+	
 	console.log(a);
 	console.log(b);
 	return b;
@@ -454,10 +458,7 @@ function drawBike(ctx,bike){
 	}
 	if (bike.rotate && !error){ 
 		document.getElementById(bike.bike+'ROT').value = precisionRound((bike.rotation)*-180/Math.PI,1).toFixed(1);
-		dc.translate(
-			(bike.rearWheel.old.axle.x - bike.rearWheel.axle.x)*bike.scale + $('#bXSHIFT').val()*bike.scale, 
-			(bike.rearWheel.old.axle.y -bike.rearWheel.axle.y)*bike.scale + (bike.rearWheel.radius - bike.rearWheel.old.radius)*bike.scale  + $('#bYSHIFT').val()*bike.scale
-		);
+		dc.translate(-1* bike.rearWheel.rotatedAxleOffset.x *bike.scale, -1* bike.rearWheel.rotatedAxleOffset.y* bike.scale);
 		ctx.rotate(-1*bike.rotation); 	
 		ctx.moveTo(bike.neck.toGround.x * bike.scale , bike.neck.toGround.y);  ctx.lineTo(bike.neck.bottom.x,bike.neck.bottom.y);
 	}
@@ -523,11 +524,7 @@ function drawBike(ctx,bike){
 	if (bike.rotate){ 
 		$('span#shiftXY').removeClass('hidden');
 		ctx.rotate(bike.rotation);
-		dc.translate(
-			0-((bike.rearWheel.old.axle.x - bike.rearWheel.axle.x)*bike.scale) - $('#bXSHIFT').val()*bike.scale , 
-			0-( (bike.rearWheel.old.axle.y -bike.rearWheel.axle.y)*bike.scale + (bike.rearWheel.radius - bike.rearWheel.old.radius)*bike.scale ) - $('#bYSHIFT').val()*bike.scale
-		);
-		//dc.translate(0-bike.offset.x*bike.scale,0-bike.groundOffset*bike.scale-bike.offset.y*bike.scale);		
+		dc.translate(-1* bike.rearWheel.rotatedAxleOffset.x *bike.scale, -1* bike.rearWheel.rotatedAxleOffset.y* bike.scale);	
 	} else {
 		$('span#shiftXY').addClass('hidden');
 	}
