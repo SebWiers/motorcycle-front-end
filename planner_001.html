@@ -221,6 +221,20 @@ function getIntersection(lineA, lineB)
         seg2: ub >= 0 && ub <= 1
     };
 }
+function getCircleTangentPoints(c1,c2){ // {canter:{x:#,y:#}, radius:#}
+	var point1 = c1.center, point2 =  c2.center, radius1 = c1.radius, radius2 = c2.radius;
+	/*
+	//derived from https://stackoverflow.com/questions/12034019/as3-draw-a-line-along-the-common-tangents-of-two-circles
+	*/							 
+	// angle between center circles
+	var ang = Math.atan( (point1.y - point2.y) / (point1.x - point2.x) );	
+	//circle one line ends by perpendicualr to line
+	var c1a = {x: point1.x + Math.cos(ang + Math.PI / 2) * radius1, y: point1.y + Math.sin(ang + Math.PI/2)* radius1};
+	var c1b = {x: point1.x + Math.cos(ang - Math.PI / 2) * radius1, y: point1.y + Math.sin(ang - Math.PI/2)* radius1};
+	var c2a = {x: point2.x + Math.cos(ang + Math.PI / 2) * radius2, y: point2.y + Math.sin(ang + Math.PI/2)* radius2};
+	var c2b = {x: point2.x + Math.cos(ang - Math.PI / 2) * radius2, y: point2.y + Math.sin(ang - Math.PI/2)* radius2};
+	return {c1:[c1a,c1b],c2:[c2a,c2b]};
+}
 
 // diagram dimensions
 function getInput(){	
