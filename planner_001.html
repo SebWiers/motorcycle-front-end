@@ -263,11 +263,8 @@ function copyToCustom() {
 // ddata inputs
 function setFormFromHash(){
 	var hash = window.location.hash.substr(1);
-	console.log(hash.split(/(\d+)/));
 	var inputs = hash.split(/([1234567890\-\.]+)/);
-	console.log(inputs);
 	for (var i=0; i<inputs.length && inputs[i]!=""; i+=2){
-		console.log(inputs[i],inputs[i+1])
 		$('#'+inputs[i]).val(inputs[i+1]);
 	}
 };
@@ -462,8 +459,6 @@ function makeDataB(a,fromHash){
 	b.offset.y += b.rearWheel.radius - b.rearWheel.old.radius - (Math.cos(b.rotation) * b.rearWheel.axleUp) - (Math.sin(b.rotation) * b.rearWheel.axleBack) ;
 	
 	//output
-	console.log(a);
-	console.log(b);
 	return b;
 }
 
