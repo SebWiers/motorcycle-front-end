@@ -476,12 +476,12 @@ function drawBike(ctx,bike){
 	if (error) { 
 		document.getElementById(bike.bike+'AC').value = NaN;
 		document.getElementById(bike.bike+'TR').value = NaN;
-		document.getElementById(bike.bike+'FANB').value = NAN;
+		//document.getElementById(bike.bike+'FANB').value = NAN;
 		document.getElementById(bike.bike+'GNB').value = NaN;
 	} else {
 		document.getElementById(bike.bike+'AC').value = precisionRound(bike.fork.axleCrown,1).toFixed(1);
 		document.getElementById(bike.bike+'TR').value = precisionRound(bike.frontWheel.trail,1).toFixed(1);
-		document.getElementById(bike.bike+'FANB').value = precisionRound(bike.neck.toFrontAxleHorizontalDistance , 1).toFixed(1);
+		//document.getElementById(bike.bike+'FANB').value = precisionRound(bike.neck.toFrontAxleHorizontalDistance , 1).toFixed(1);
 		document.getElementById(bike.bike+'GNB').value = precisionRound(getDistance( bike.neck.toGround,bike.neck.bottom), 1).toFixed(1);
 	}
 	if (error) {return;} 
