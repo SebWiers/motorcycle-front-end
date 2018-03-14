@@ -38,6 +38,10 @@ td {
 span#shiftXY{
 	margin-left:100px;
 }
+div {
+	padding: 0;
+	margin: 0;
+}
 </style>
 </head>
 
@@ -46,8 +50,13 @@ span#shiftXY{
 
 <div id='bikeCanvasDiv'><canvas id='bikeCanvas' width="1000" height="400";></canvas></div>
 
-<span style=""><select id="bikes" onChange="setBike()"></select><button onclick="reset()">reset</button></span>
+<div>
+<span style="width:600px"><select id="bikes" onChange="setBike()"></select><button onclick="reset()">reset</button></span>
 <span id="shiftXY">shift custom image (x:<input type="number" id="bXSHIFT" value="0" onchange="drawAll()"> y:<input type="number" id="bYSHIFT" value="0" onchange="drawAll()">)</span>
+</div>
+<div>
+<span style="width:600px"><button>Save Surrent Setups to List</button><button style="margin-left:100px">Delete Currently Selected Setup From List</button></span>
+</div>
 
 
 <div id='data' style='width: 1000px;' title="input units are arbitrary; results can be read in same units">
@@ -68,7 +77,7 @@ span#shiftXY{
 <tr><td>&nbsp;</td></tr>
 <tr><td>&nbsp;</td></tr>
 <tr><td>Ground to Neck Bottom</td><td> <input type="number" id='aGNB' style='width:99%' value='' disabled> </td></tr>
-<tr><td>Axle to Crown</td><td> <input type="number" id='aAC' style='width:99%' value='' disabled> </td></tr>
+<tr><td>Axle to Neck Bottom</td><td> <input type="number" id='aAC' style='width:99%' value='' disabled> </td></tr>
 <tr title="measured parallel to ground / wheelbase"><td>Front Axle to Neck Bottom</td><td> <input type="number" id='aFANB' style='width:99%' value='' disabled> </td></tr>
 <tr><td>Trail</td><td> <input type="number" id='aTR' style='width:99%' value='' disabled> </td></tr>
 </tbody>
@@ -91,7 +100,7 @@ span#shiftXY{
 <tr title="stretch / swap / shock change"><td>Rear Stretch</td><td> <input id='bRO' type='number' onchange="drawAll()" style='width:99%' value='0'></td></tr>
 <tr itle="drop / swap / shock change"><td>Rear Up</td><td> <input id='bRU' type='number' onchange="drawAll()" style='width:99%' value='0'></td></tr>
 <tr><td>Ground to Neck Bottom</td><td> <input type="number" onchange="drawAll()" id='bGNB' style='width:99%' value='' disabled> </td></tr>
-<tr><td>Axle to Crown</td><td> <input type="number" id='bAC' style='width:99%' value='' disabled> </td></tr>
+<tr><td>Axle to Neck Bottom</td><td> <input type="number" id='bAC' style='width:99%' value='' disabled> </td></tr>
 <tr title="measured parallel to ground / wheelbase"><td>Front Axle to Neck Bottom</td><td> <input type="number" id='bFANB' style='width:99%' value='' disabled> </td></tr>
 <tr><td>Trail</td><td> <input type="number" id='bTR' style='width:99%' value='' disabled> </td></tr>
 <tr title="large frame rotation may result in engine oil starvation / level reading errors and poor seat position"><td>Frame Rotation</td><td> <input type="number" id='bROT' style='width:99%' value='' disabled> </td></tr>
@@ -422,10 +431,10 @@ function makeDataB(a){
 	
 	//front axle to neck botom along ground line
 	b.neck.toFrontAxleHorizontalDistance = getDistance(b.neck.bottom,b.neck.toGround) * Math.cos(b.neck.rake);
-	b.rearWheel.offset = {};
-	b.rearWheel.offset.x = b.rearWheel.axle.x - b.rearWheel.old.axle.x + parseFloat($('#bXSHIFT').val()); // adjust for rotation???
-	b.rearWheel.offset.y = b.rearWheel.axle.x - b.rearWheel.old.axle.x + parseFloat($('#bYSHIFT').val());// adjust for rotation???
-	
+	b.offset = {x:0,y:0};
+	//b.rearWheel.offset.x = b.rearWheel.axle.x - b.rearWheel.old.axle.x + parseFloat($('#bXSHIFT').val()); // adjust for rotation???
+	//b.rearWheel.offset.y = b.rearWheel.old.axle.x -b.rearWheel.axle.x + parseFloat($('#bYSHIFT').val());// adjust for rotation???
+	b.offset.y += b.rearWheel.radius - b.rearWheel.old.radius - (Math.cos(b.rotation) * b.rearWheel.axleUp) - (Math.sin(b.rotation) * b.rearWheel.axleBack) ;
 	console.log(a);
 	console.log(b);
 	return b;
@@ -457,7 +466,7 @@ function drawBike(ctx,bike){
 	}
 	if (bike.rotate && !error){ 
 		document.getElementById(bike.bike+'ROT').value = precisionRound((bike.rotation)*-180/Math.PI,1).toFixed(1);
-		dc.translate(-1* bike.rearWheel.offset.x *bike.scale, -1* bike.rearWheel.offset.y* bike.scale);
+		dc.translate(bike.offset.x *bike.scale, bike.offset.y* bike.scale);
 		ctx.rotate(-1*bike.rotation); 	
 		ctx.moveTo(bike.neck.toGround.x * bike.scale , bike.neck.toGround.y);  ctx.lineTo(bike.neck.bottom.x,bike.neck.bottom.y);
 	}
@@ -523,7 +532,7 @@ function drawBike(ctx,bike){
 	if (bike.rotate){ 
 		$('span#shiftXY').removeClass('hidden');
 		ctx.rotate(bike.rotation);
-		dc.translate(bike.rearWheel.offset.x* bike.scale, bike.rearWheel.offset.y* bike.scale);	
+		dc.translate( -1* bike.offset.x* bike.scale, -1* bike.offset.y* bike.scale );	
 	} else {
 		$('span#shiftXY').addClass('hidden');
 	}
