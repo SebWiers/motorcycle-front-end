@@ -260,8 +260,29 @@ function copyToCustom() {
 	drawAll();
 }
 
-// diagram dimensions
-function getInput(){	
+// ddata inputs
+function setFormFromHash(){
+	var hash = window.location.hash.substr(1);
+	console.log(hash.split(/(\d+)/));
+	var inputs = hash.split(/([1234567890\-\.]+)/);
+	console.log(inputs);
+	for (var i=0; i<inputs.length && inputs[i]!=""; i+=2){
+		console.log(inputs[i],inputs[i+1])
+		$('#'+inputs[i]).val(inputs[i+1]);
+	}
+};
+function setHashFromForm(){
+	var hashArray = [],input;
+	$('input[type=number]:not([disabled])').each(
+		function (i,input){
+			$input = $(input);
+			hashArray.push ($input[0].id + $input.val()||0)
+		}
+	)
+	window.location.hash = hashArray.join('');
+};
+function getInput(fromHash){	
+	if (window.location.hash && fromHash){setFormFromHash()}
 	// a is "measured setup" 
 	var aInput = 
 	{	
@@ -351,12 +372,13 @@ function getInput(){
 	aInput.scale = scale; bInput.scale = scale; 
 	document.getElementById("tableA").style.color = "hsla(" + aInput.hue + ", 90%, 30%, .9)";
 	document.getElementById("tableB").style.color = "hsla(" + bInput.hue + ", 90%, 30%, .9)";
+	setHashFromForm();
 	return {a: aInput , b: bInput};
 };
 
 //data functions
-function makeDataA(a){
-	if (!a){ a = getInput().a; }
+function makeDataA(a,fromHash){
+	if (!a){ a = getInput(fromHash).a; }
 	a.fork.legBottom = {}; a.fork.legTop = {}; a.neck.bottom = {};
 	a.fork.legBottom.x = a.frontWheel.axle.x - a.fork.axleOffset * Math.cos(a.neck.rake);//
 	a.fork.legBottom.y = a.frontWheel.axle.y + a.fork.axleOffset * Math.sin(a.neck.rake);//
@@ -381,9 +403,8 @@ function makeDataA(a){
 	a.engineSize = a.neck.toRearAxle/2;
 	return a;
 };
-function makeDataB(a){
-	//debugger
-	var b = getInput().b;
+function makeDataB(a,fromHash){
+	var b = getInput(fromHash).b;
 	b.rearWheel.axle = {x:a.rearWheel.axle.x, y:a.rearWheel.axle.y};
 	b.neck.toRearAxleOld = a.neck.toRearAxle;
 	b.rearWheel.old = a.rearWheel;
@@ -431,12 +452,16 @@ function makeDataB(a){
 	b.neck.toGroundDeep.y = b.neck.bottom.y - Math.cos(b.rotation)*10;
 	b.neck.toGround = getIntersection( {p1:b.neck.toGroundDeep, p2:b.neck.bottom} , {p1:b.frontWheel.contactPatch, p2:b.rearWheel.contactPatch} );//should be point on ground line below / closest to neck...
 	
-	//front axle to neck botom along ground line
-	b.neck.toFrontAxleHorizontalDistance = getDistance(b.neck.bottom,b.neck.toGround) * Math.cos(b.neck.rake);
+	//front axle to neck bottom along ground line
+	b.neck.toFrontAxleHorizontalDistance = NaN;//???
+	
+	//align groundlines & original rear axle, allow user offset 
 	b.offset = {x:0,y:0};
-	//b.rearWheel.offset.x = b.rearWheel.axle.x - b.rearWheel.old.axle.x + parseFloat($('#bXSHIFT').val()); // adjust for rotation???
-	//b.rearWheel.offset.y = b.rearWheel.old.axle.x -b.rearWheel.axle.x + parseFloat($('#bYSHIFT').val());// adjust for rotation???
+	b.offset.x += parseFloat($('#bXSHIFT').val()); 
+	b.offset.y += parseFloat($('#bYSHIFT').val());
 	b.offset.y += b.rearWheel.radius - b.rearWheel.old.radius - (Math.cos(b.rotation) * b.rearWheel.axleUp) - (Math.sin(b.rotation) * b.rearWheel.axleBack) ;
+	
+	//output
 	console.log(a);
 	console.log(b);
 	return b;
@@ -540,24 +565,16 @@ function drawBike(ctx,bike){
 	}
 };
 
-// pageload actions
-var diagram = document.getElementById('bikeCanvas');
-var dc = diagram.getContext('2d');
-dc.lineCap="round";
-dc.translate(150,150);
-
-function redrawAll(ctx){
+function redrawAll(ctx,fromHash){
 	ctx.clearRect(-500, -500, diagram.width+1000, diagram.height+1000);
-	var bikeA = makeDataA();
+	var bikeA = makeDataA(null,fromHash);
 	drawBike(ctx,bikeA);
-	var bikeB = makeDataB(bikeA);
+	var bikeB = makeDataB(bikeA,fromHash);
 	drawBike(ctx,bikeB);
 };
-
-function drawAll(){
-	redrawAll(dc);
+function drawAll(fromHash){
+	redrawAll(dc,fromHash);
 }
-
 // bikes selector setup & functions
 $.each(setups, function (i, item) {
     $('#bikes').append($('<option>', { 
@@ -575,12 +592,21 @@ function setBike(){
 	} )	
 	drawAll();
 };
-
 function reset(){
 	$('#bikes option:selected').prop('selected','selected').change();
 }
-$('#bikes option:eq(0)').prop('selected', 'selected').change();
-
+// pageload actions
+var diagram = document.getElementById('bikeCanvas');
+var dc = diagram.getContext('2d');
+dc.lineCap="round";
+dc.translate(150,150);
+if (window.location.hash){
+	drawAll(fromHash = true)
+	$('#bikes option').last().prop('selected', 'selected');
+}
+else {
+	$('#bikes option:eq(0)').prop('selected', 'selected').change();
+}
 </script>
 
 
