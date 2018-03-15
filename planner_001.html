@@ -474,8 +474,7 @@ function drawWheel(ctx,wheel,scale,bike){
 	ctx.beginPath(); ctx.arc(wheel.axle.x*scale, wheel.axle.y*scale, wheel.radius*scale, 0 , Math.PI*2); ctx.stroke();
 	ctx.fillRect(wheel.axle.x*scale-2, wheel.axle.y*scale-2, 5, 5);
 };
-function drawBike(ctx,bike){
-	if(!bike.show){ return; }
+function drawBike(ctx,bike){	
 	var error = false;//(bike.frontWheel.radius > bike.wheelbase || bike.rearWheel.radius > bike.wheelbase);
 	if (bike.frontWheel.radius > bike.rearWheel.radius + bike.wheelbase){error = true;}
 	if (bike.rearWheel.radius > bike.frontWheel.radius + bike.wheelbase){error = true;}
@@ -511,6 +510,7 @@ function drawBike(ctx,bike){
 		document.getElementById(bike.bike+'GNB').value = precisionRound(getDistance( bike.neck.toGround,bike.neck.bottom), 1).toFixed(1);
 	}
 	if (error) {return;} 
+	if(!bike.show){ return; }
 	var hue = bike.hue;	
 	//wheels
 	drawWheel(ctx,bike.frontWheel,bike.scale,bike);
