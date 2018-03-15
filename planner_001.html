@@ -290,12 +290,12 @@ function getInput(fromHash){
 		rotation: 0,
 		wheelbase: parseFloat(document.getElementById('aWB').value),
 		rearWheel:{
-			radius: parseFloat(document.getElementById('aRWD').value)/2,
+			radius:  Math.abs(parseFloat(document.getElementById('aRWD').value)/2) || .00000000001,
 			axle: {x:0, y:0},
 			contactPatch: {x:0, y:0 - parseFloat(document.getElementById('aRWD').value)/2},
 		},
 		frontWheel:{
-			radius: parseFloat(document.getElementById('aFWD').value)/2,
+			radius:  Math.abs(parseFloat(document.getElementById('aFWD').value)/2) || .00000000001,
 			axle: {x:parseFloat(document.getElementById('aWB').value), y:parseFloat(document.getElementById('aFWD').value)/2 - parseFloat(document.getElementById('aRWD').value)/2},
 			contactPatch: {x:parseFloat(document.getElementById('aWB').value), y:0 - parseFloat(document.getElementById('aRWD').value)/2}
 		},
@@ -308,7 +308,7 @@ function getInput(fromHash){
 			rakeGround: {x:NaN, y:0}
 		},
 		fork:{
-			length: parseFloat(document.getElementById('aFL').value),
+			length: parseFloat(document.getElementById('aFL').value) || .00000000001,
 			axleOffset: parseFloat(document.getElementById('aFAO').value),
 			treeOffset: parseFloat(document.getElementById('aFTO').value),
 			treeRake: parseFloat(-1*document.getElementById('aRT').value) * Math.PI/180
@@ -325,11 +325,11 @@ function getInput(fromHash){
 		rotation: 0,
 		offset: {x:parseFloat(document.getElementById('bXSHIFT').value), y:parseFloat(document.getElementById('bYSHIFT').value)},
 		frontWheel:{
-			radius: parseFloat(document.getElementById('bFWD').value)/2,
+			radius: Math.abs(parseFloat(document.getElementById('bFWD').value)/2) || .00000000001,
 			axle: {x:NaN, y:NaN},
 		},
 		rearWheel:{
-			radius: parseFloat(document.getElementById('bRWD').value)/2,
+			radius:  Math.abs(parseFloat(document.getElementById('bRWD').value)/2) || .00000000001,
 			axle: {x:NaN, y:NaN},
 			axleBack: parseFloat(document.getElementById('bRO').value),
 			axleUp: parseFloat(document.getElementById('bRU').value)
@@ -344,7 +344,7 @@ function getInput(fromHash){
 			rakeGround: {x:NaN, y:NaN}
 		},
 		fork:{
-			length: parseFloat(document.getElementById('bFL').value),
+			length:  parseFloat(document.getElementById('bFL').value) || .00000000001,
 			axleOffset: parseFloat(document.getElementById('bFAO').value),
 			treeOffset: parseFloat(document.getElementById('bFTO').value),
 			treeRake: parseFloat(-1*document.getElementById('bRT').value) * Math.PI/180
@@ -429,6 +429,8 @@ function makeDataB(a,fromHash){
 	var c1 = {center: b.rearWheel.axle, radius: b.rearWheel.radius};
 	var c2 = {center: b.frontWheel.axle, radius: b.frontWheel.radius};
 	var cpc = getCircleTangentPoints(c1,c2);// {center:{x:#,y:#}, radius:#} // "cpc" - contact patch cantidates 
+	b.rearWheel.cpc = cpc.c1;
+	b.frontWheel.cpc = cpc.c2;
 	cpc.c1[0].fix = getDistance(b.rearWheel.contactPatchClose, cpc.c1[0]);
 	cpc.c1[1].fix = getDistance(b.rearWheel.contactPatchClose, cpc.c1[1]);
 	cpc.c2[0].fix = getDistance(b.frontWheel.contactPatchClose, cpc.c2[0]);
@@ -459,6 +461,8 @@ function makeDataB(a,fromHash){
 	b.offset.y += b.rearWheel.radius - b.rearWheel.old.radius - (Math.cos(b.rotation) * b.rearWheel.axleUp) - (Math.sin(b.rotation) * b.rearWheel.axleBack) ;
 	
 	//output
+	console.log(a);
+	console.log(b);
 	return b;
 }
 
@@ -472,7 +476,9 @@ function drawWheel(ctx,wheel,scale,bike){
 };
 function drawBike(ctx,bike){
 	if(!bike.show){ return; }
-	var error = (bike.frontWheel.radius > bike.wheelbase || bike.rearWheel.radius > bike.wheelbase);
+	var error = false;//(bike.frontWheel.radius > bike.wheelbase || bike.rearWheel.radius > bike.wheelbase);
+	if (bike.frontWheel.radius > bike.rearWheel.radius + bike.wheelbase){error = true;}
+	if (bike.rearWheel.radius > bike.frontWheel.radius + bike.wheelbase){error = true;}
 	if (bike.bike === "b" && error){
 		document.getElementById(bike.bike+'FNR').value = NaN;
 		document.getElementById(bike.bike+'WB').value = NaN;
@@ -550,6 +556,9 @@ function drawBike(ctx,bike){
 	ctx.fillStyle = "hsla(" +hue+ ", 100%, 50%, .1)"
 	var engineSize = bike.neck.toRearAxleOld *.5 || bike.neck.toRearAxle *.5 ;
 	ctx.fillRect(engineSize*.75 * bike.scale, engineSize*bike.scale*-.25, engineSize*.85*bike.scale, engineSize*.5*bike.scale);
+	
+	//debug - draw contact points for b
+	
 	
 	if (bike.rotate){ 
 		$('span#shiftXY').removeClass('hidden');
