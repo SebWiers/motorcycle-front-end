@@ -161,10 +161,6 @@ var setups = [
 ];
 
 //helper functions
-function precisionRound(number, precision) {
-  var factor = Math.pow(10, precision);
-  return Math.round(number * factor) / factor;
-};
 function pAdd(p1,p2) {
 	var bad = {x:NaN, y:NaN};
 	if (! p1 instanceof Object){return bad;}
@@ -484,15 +480,15 @@ function drawBike(ctx,bike){
 		document.getElementById(bike.bike+'ROT').value = "0.0"
 	}
 	if (bike.bike === "b" && !error){
-		document.getElementById(bike.bike+'FNR').value = precisionRound((bike.neck.rake)*-180/Math.PI,1).toFixed(1);
-		document.getElementById(bike.bike+'WB').value = precisionRound(bike.wheelbase,1).toFixed(1);
+		document.getElementById(bike.bike+'FNR').value = ((bike.neck.rake)*-180/Math.PI).toFixed(1);
+		document.getElementById(bike.bike+'WB').value = bike.wheelbase.toFixed(1);
 		document.getElementById(bike.bike+'ROT').value = "0.0"
 	}
 	if (bike.rotate && error){ 
 		document.getElementById(bike.bike+'ROT').value = NaN;
 	}
 	if (bike.rotate && !error){ 
-		document.getElementById(bike.bike+'ROT').value = precisionRound((bike.rotation)*-180/Math.PI,1).toFixed(1);
+		document.getElementById(bike.bike+'ROT').value = ((bike.rotation)*180/Math.PI).toFixed(1);
 		dc.translate(bike.offset.x *bike.scale, bike.offset.y* bike.scale);
 		ctx.rotate(-1*bike.rotation); 	
 		ctx.moveTo(bike.neck.toGround.x * bike.scale , bike.neck.toGround.y);  ctx.lineTo(bike.neck.bottom.x,bike.neck.bottom.y);
@@ -504,10 +500,10 @@ function drawBike(ctx,bike){
 		document.getElementById(bike.bike+'FANB').value = NAN;
 		document.getElementById(bike.bike+'GNB').value = NaN;
 	} else {
-		document.getElementById(bike.bike+'AC').value = precisionRound(bike.fork.axleCrown,1).toFixed(1);
-		document.getElementById(bike.bike+'TR').value = precisionRound(bike.frontWheel.trail,1).toFixed(1);
-		document.getElementById(bike.bike+'FANB').value = precisionRound(bike.neck.toFrontAxleHorizontalDistance , 1).toFixed(1);
-		document.getElementById(bike.bike+'GNB').value = precisionRound(getDistance( bike.neck.toGround,bike.neck.bottom), 1).toFixed(1);
+		document.getElementById(bike.bike+'AC').value = bike.fork.axleCrown.toFixed(1);
+		document.getElementById(bike.bike+'TR').value = bike.frontWheel.trail.toFixed(1);
+		document.getElementById(bike.bike+'FANB').value = bike.neck.toFrontAxleHorizontalDistance.toFixed(1);
+		document.getElementById(bike.bike+'GNB').value = getDistance(bike.neck.toGround, bike.neck.bottom).toFixed(1);
 	}
 	if (error) {return;} 
 	if(!bike.show){ return; }
