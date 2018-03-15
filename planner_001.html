@@ -216,8 +216,7 @@ function lawCosineAngle(a,b,c){//returns angle between sides b and c
 	var cosA = (Math.pow(b,2)+Math.pow(c,2)-Math.pow(a,2))/(2*b*c);
 	return Math.acos(cosA);
 };
-function getIntersection(lineA, lineB)
-{
+function getIntersection(lineA, lineB){
     var x1, y1, x2, y2, x3, y3, x4, y4;
 	x1 = lineA.p1.x; y1 = lineA.p1.y;
 	x2 = lineA.p2.x; y2 = lineA.p2.y;
@@ -237,17 +236,16 @@ function getIntersection(lineA, lineB)
     };
 }
 function getCircleTangentPoints(c1,c2){ // {center:{x:#,y:#}, radius:#}
-	var point1 = c1.center, point2 =  c2.center, radius1 = c1.radius, radius2 = c2.radius;
+	var p1 = c1.center, p2 =  c2.center, r1 = c1.radius, r2 = c2.radius;
 	/*
 	//derived from https://stackoverflow.com/questions/12034019/as3-draw-a-line-along-the-common-tangents-of-two-circles
 	*/							 
-	// angle between center circles
-	var ang = Math.atan( (point1.y - point2.y) / (point1.x - point2.x) );	
-	//circle one line ends by perpendicualr to line
-	var c1a = {x: point1.x + Math.cos(ang + Math.PI / 2) * radius1, y: point1.y + Math.sin(ang + Math.PI/2)* radius1};
-	var c1b = {x: point1.x + Math.cos(ang - Math.PI / 2) * radius1, y: point1.y + Math.sin(ang - Math.PI/2)* radius1};
-	var c2a = {x: point2.x + Math.cos(ang + Math.PI / 2) * radius2, y: point2.y + Math.sin(ang + Math.PI/2)* radius2};
-	var c2b = {x: point2.x + Math.cos(ang - Math.PI / 2) * radius2, y: point2.y + Math.sin(ang - Math.PI/2)* radius2};
+	var angR = Math.atan( (p1.y - p2.y) / (p1.x - p2.x) );//angle rotation between circle  centers
+	var angN = Math.acos((r1 - r2)/ getDistance(p1,p2));//normal angle	
+	var c1a = {x: p1.x + r1 * Math.cos(angR + angN), y: p1.y + r1 * Math.sin(angR + angN)};
+    var c2a = {x: p2.x + r2 * Math.cos(angR + angN), y: p2.y + r2 * Math.sin(angR + angN)};
+    var c1b = {x: p1.x + r1 * Math.cos(angR - angN), y: p1.y + r1 * Math.sin(angR - angN)};
+    var c2b = {x: p2.x + r2 * Math.cos(angR - angN), y: p2.y + r2 * Math.sin(angR - angN)};	
 	return {c1:[c1a,c1b],c2:[c2a,c2b]};
 }
 
@@ -383,7 +381,7 @@ function makeDataA(a,fromHash){
 	a.fork.legTop.y = a.fork.legBottom.y + a.fork.length * Math.cos(a.neck.rake + a.fork.treeRake);
 	a.neck.bottom.x = a.fork.legTop.x - a.fork.treeOffset * Math.cos(a.neck.rake);
 	a.neck.bottom.y = a.fork.legTop.y + a.fork.treeOffset * Math.sin(a.neck.rake);
-	a.neck.toFrontAxleHorizontalDistance = a.neck.bottom.x - a.frontWheel.axle.x;
+	a.neck.toFrontAxleHorizontalDistance = Math.abs(a.neck.bottom.x - a.frontWheel.axle.x);
 	a.fork.axleCrown = getDistance(a.frontWheel.axle,a.neck.bottom);
 	a.neck.rakeRearAxle = -1 * getAngle(a.neck.bottom, a.rearWheel.axle);
 	a.frameAngle = a.neck.rake + Math.PI/2 - a.neck.rakeRearAxle
@@ -424,8 +422,8 @@ function makeDataB(a,fromHash){
 	b.fork.axleCrown = getDistance(b.frontWheel.axle, b.neck.bottom);
 	b.neck.toRearAxle = getDistance(b.rearWheel.axle,b.neck.bottom);
 	// basics for drawing done, but we don't know rake or trail or wheelbase because contact patches are probably not on ground level.
-	b.rearWheel.contactPatchClose = {x: b.rearWheel.axle.x, y: b.rearWheel.axle.y - b.rearWheel.radius};//!!! - not alway true, but acceptably close for small rotations, and needed to calculate rotation!
-	b.frontWheel.contactPatchClose = {x: b.frontWheel.axle.x, y: b.frontWheel.axle.y - b.frontWheel.radius};//!!! - not alway true, but acceptably close for small rotations, and needed to calculate rotation!
+	b.rearWheel.contactPatchClose = {x: b.rearWheel.axle.x, y: b.rearWheel.axle.y - b.rearWheel.radius};// aproximation to find which cantidate tangent point is on ground
+	b.frontWheel.contactPatchClose = {x: b.frontWheel.axle.x, y: b.frontWheel.axle.y - b.frontWheel.radius};// aproximation to find which cantidate tangent point is on ground
 	var c1 = {center: b.rearWheel.axle, radius: b.rearWheel.radius};
 	var c2 = {center: b.frontWheel.axle, radius: b.frontWheel.radius};
 	var cpc = getCircleTangentPoints(c1,c2);// {center:{x:#,y:#}, radius:#} // "cpc" - contact patch cantidates 
@@ -452,7 +450,9 @@ function makeDataB(a,fromHash){
 	b.neck.toGround = getIntersection( {p1:b.neck.toGroundDeep, p2:b.neck.bottom} , {p1:b.frontWheel.contactPatch, p2:b.rearWheel.contactPatch} );//should be point on ground line below / closest to neck...
 	
 	//front axle to neck bottom along ground line
-	b.neck.toFrontAxleHorizontalDistance = NaN;//???
+	b.frontWheel.toNeckVerticalDropDeep = {x: b.frontWheel.axle.x - Math.cos(b.rotation)*10, y: b.frontWheel.axle.y - Math.sin(b.rotation)*10};  // arbitrary point horizontally back from axle parallel with ground line
+	b.frontWheel.toNeckVerticalDrop = getIntersection( {p1:b.neck.toGroundDeep, p2:b.neck.bottom}, {p1:b.frontWheel.axle, p2:b.frontWheel.toNeckVerticalDropDeep} );// intersection of axle back line and neck down line
+	b.neck.toFrontAxleHorizontalDistance = getDistance(b.frontWheel.axle, b.frontWheel.toNeckVerticalDrop);// distance from neck
 	
 	//align groundlines & original rear axle, allow user offset 
 	b.offset = {x:0,y:0};
@@ -502,12 +502,12 @@ function drawBike(ctx,bike){
 	if (error) { 
 		document.getElementById(bike.bike+'AC').value = NaN;
 		document.getElementById(bike.bike+'TR').value = NaN;
-		//document.getElementById(bike.bike+'FANB').value = NAN;
+		document.getElementById(bike.bike+'FANB').value = NAN;
 		document.getElementById(bike.bike+'GNB').value = NaN;
 	} else {
 		document.getElementById(bike.bike+'AC').value = precisionRound(bike.fork.axleCrown,1).toFixed(1);
 		document.getElementById(bike.bike+'TR').value = precisionRound(bike.frontWheel.trail,1).toFixed(1);
-		//document.getElementById(bike.bike+'FANB').value = precisionRound(bike.neck.toFrontAxleHorizontalDistance , 1).toFixed(1);
+		document.getElementById(bike.bike+'FANB').value = precisionRound(bike.neck.toFrontAxleHorizontalDistance , 1).toFixed(1);
 		document.getElementById(bike.bike+'GNB').value = precisionRound(getDistance( bike.neck.toGround,bike.neck.bottom), 1).toFixed(1);
 	}
 	if (error) {return;} 
@@ -557,9 +557,6 @@ function drawBike(ctx,bike){
 	var engineSize = bike.neck.toRearAxleOld *.5 || bike.neck.toRearAxle *.5 ;
 	ctx.fillRect(engineSize*.75 * bike.scale, engineSize*bike.scale*-.25, engineSize*.85*bike.scale, engineSize*.5*bike.scale);
 	
-	//debug - draw contact points for b
-	
-	
 	if (bike.rotate){ 
 		$('span#shiftXY').removeClass('hidden');
 		ctx.rotate(bike.rotation);
@@ -576,7 +573,7 @@ function redrawAll(ctx,fromHash){
 	var bikeB = makeDataB(bikeA,fromHash);
 	drawBike(ctx,bikeB);
 };
-function drawAll(fromHash){
+function drawAll(fromHash){//function with no required inputs for form onchange
 	redrawAll(dc,fromHash);
 }
 // bikes selector setup & functions
