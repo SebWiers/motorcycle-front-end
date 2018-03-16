@@ -62,7 +62,7 @@ div {
 
 
 <div id='data' style='width: 1000px;' title="input units are arbitrary; results can be read in same units">
-<table id="tableA" style='float: left'>
+<table id="aTable" style='float: left'>
 <tr><th id="aSetup" colspan="2">Measured Setup</th></tr>
 <tr><th><label for="aSHOW">show</label><input id="aSHOW" value="aSHOW" type="checkbox" checked onchange="drawAll()"><th><button onclick="copyToCustom()">Copy to Custom</label></button><th></tr>
 <tr><td>Front Tire Outside Diameter</td><td> <input id='aFWD' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
@@ -84,7 +84,7 @@ div {
 <tr><td>Trail</td><td> <input type="number" id='aTR' style='width:99%' value='' disabled> </td></tr>
 </tbody>
 </table>
-<table id="tableB" style='float: right'>
+<table id="bTable" style='float: right'>
 <tr><th id="bSetup" colspan="2">Custom Setup</th></tr>
 <tr><th><label for="bSHOW">show</label><input id="bSHOW" value="bSHOW" type="checkbox" checked onchange="drawAll()">
 <th><label for="bROTATE">Hold on Engine</label><input id="bROTATE" value="bROTATE"type="checkbox" onchange="drawAll()"><th></tr>
@@ -361,8 +361,8 @@ function getInput(fromHash){
 	var scale = hScale;
 	if (vScale < hScale){ var scale = vScale;}
 	aInput.scale = scale; bInput.scale = scale; 
-	document.getElementById("tableA").style.color = "hsla(" + aInput.hue + ", 90%, 30%, .9)";
-	document.getElementById("tableB").style.color = "hsla(" + bInput.hue + ", 90%, 30%, .9)";
+	document.getElementById("aTable").style.color = "hsla(" + aInput.hue + ", 90%, 30%, .9)";
+	document.getElementById("bTable").style.color = "hsla(" + bInput.hue + ", 90%, 30%, .9)";
 	setHashFromForm();
 	return {a: aInput , b: bInput};
 };
@@ -475,9 +475,9 @@ function drawBike(ctx,bike){
 	if (isNaN(bike.wheelbase)){error = true;}
 	if (isNaN(bike.neck.rake)){error = true;}
 	if (bike.bike === "b" && error){
-		document.getElementById(bike.bike+'FNR').value = NaN;
-		document.getElementById(bike.bike+'WB').value = NaN;
-		document.getElementById(bike.bike+'ROT').value = "0.0"
+		document.getElementById(bike.bike+'FNR').value = '';
+		document.getElementById(bike.bike+'WB').value = '';
+		document.getElementById(bike.bike+'ROT').value = '';
 	}
 	if (bike.bike === "b" && !error){
 		document.getElementById(bike.bike+'FNR').value = ((bike.neck.rake)*-180/Math.PI).toFixed(1);
@@ -485,7 +485,7 @@ function drawBike(ctx,bike){
 		document.getElementById(bike.bike+'ROT').value = "0.0"
 	}
 	if (bike.rotate && error){ 
-		document.getElementById(bike.bike+'ROT').value = NaN;
+		document.getElementById(bike.bike+'ROT').value = '';
 	}
 	if (bike.rotate && !error){ 
 		document.getElementById(bike.bike+'ROT').value = ((bike.rotation)*180/Math.PI).toFixed(1);
@@ -495,17 +495,21 @@ function drawBike(ctx,bike){
 	}
 	
 	if (error) { 
-		document.getElementById(bike.bike+'AC').value = NaN;
-		document.getElementById(bike.bike+'TR').value = NaN;
-		document.getElementById(bike.bike+'FANB').value = NAN;
-		document.getElementById(bike.bike+'GNB').value = NaN;
+		document.getElementById(bike.bike+'AC').value = '';
+		document.getElementById(bike.bike+'TR').value = '';
+		document.getElementById(bike.bike+'FANB').value = '';
+		document.getElementById(bike.bike+'GNB').value = '';
 	} else {
 		document.getElementById(bike.bike+'AC').value = bike.fork.axleCrown.toFixed(1);
 		document.getElementById(bike.bike+'TR').value = bike.frontWheel.trail.toFixed(1);
 		document.getElementById(bike.bike+'FANB').value = bike.neck.toFrontAxleHorizontalDistance.toFixed(1);
 		document.getElementById(bike.bike+'GNB').value = getDistance(bike.neck.toGround, bike.neck.bottom).toFixed(1);
 	}
-	if (error) {return;} 
+	if (error) {
+		$('#'+ bike.bike+ 'Table').find('input:not([disabled])').css("color","#f00")
+		return;
+	} 
+	$('#'+ bike.bike+ 'Table').find('input:not([disabled])').css("color","#000")
 	if(!bike.show){ return; }
 	var hue = bike.hue;	
 	//wheels
