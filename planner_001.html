@@ -478,33 +478,27 @@ function drawBike(ctx,bike){
 		document.getElementById(bike.bike+'FNR').value = '';
 		document.getElementById(bike.bike+'WB').value = '';
 		document.getElementById(bike.bike+'ROT').value = '';
+		document.getElementById(bike.bike+'ROT').value = '';
 	}
 	if (bike.bike === "b" && !error){
 		document.getElementById(bike.bike+'FNR').value = ((bike.neck.rake)*-180/Math.PI).toFixed(1);
 		document.getElementById(bike.bike+'WB').value = bike.wheelbase.toFixed(1);
 		document.getElementById(bike.bike+'ROT').value = "0.0"
 	}
-
-
 	if (error) { 
 		document.getElementById(bike.bike+'AC').value = '';
 		document.getElementById(bike.bike+'TR').value = '';
 		document.getElementById(bike.bike+'FANB').value = '';
 		document.getElementById(bike.bike+'GNB').value = '';
+		$('#'+ bike.bike+ 'Table').find('input:not([disabled])').css("color","#f00")
+		return;
 	} else {
 		document.getElementById(bike.bike+'AC').value = bike.fork.axleCrown.toFixed(1);
 		document.getElementById(bike.bike+'TR').value = bike.frontWheel.trail.toFixed(1);
 		document.getElementById(bike.bike+'FANB').value = bike.neck.toFrontAxleHorizontalDistance.toFixed(1);
 		document.getElementById(bike.bike+'GNB').value = getDistance(bike.neck.toGround, bike.neck.bottom).toFixed(1);
 	}
-	if (bike.rotate && error){ 
-		document.getElementById(bike.bike+'ROT').value = '';
-	}
-	if (error) {
-		$('#'+ bike.bike+ 'Table').find('input:not([disabled])').css("color","#f00")
-		return;
-	} 
-	if (bike.rotate && !error){ // needs to be after early return to avoid stacking in  multiple renders
+	if (bike.bike === "b" && !error){ // needs to be after early return to avoid stacking in  multiple renders
 		document.getElementById(bike.bike+'ROT').value = ((bike.rotation)*180/Math.PI).toFixed(1);
 		dc.translate(bike.offset.x *bike.scale, bike.offset.y* bike.scale);
 		ctx.rotate(-1*bike.rotation); 	
