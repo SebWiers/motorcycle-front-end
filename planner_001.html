@@ -472,8 +472,8 @@ function drawWheel(ctx,wheel,scale,bike){
 };
 function drawBike(ctx,bike){	
 	var error = false;//(bike.frontWheel.radius > bike.wheelbase || bike.rearWheel.radius > bike.wheelbase);
-	if (bike.frontWheel.radius > bike.rearWheel.radius + bike.wheelbase){error = true;}
-	if (bike.rearWheel.radius > bike.frontWheel.radius + bike.wheelbase){error = true;}
+	if (isNaN(bike.wheelbase)){error = true;}
+	if (isNaN(bike.neck.rake)){error = true;}
 	if (bike.bike === "b" && error){
 		document.getElementById(bike.bike+'FNR').value = NaN;
 		document.getElementById(bike.bike+'WB').value = NaN;
