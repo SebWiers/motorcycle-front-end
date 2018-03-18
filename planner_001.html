@@ -23,11 +23,18 @@ canvas#bikeCanvas {
 button {
 	margin:0px
 }
+div#data {
+    clear: both;
+    content: "";
+    display: table;
+	background-color: #ddd;
+	width: 1000px;
+	margin-top: 10px;
+}
 div#data table{
 	margin: 10px;
 	border-spacing: 0;
     border-collapse: collapse;
-	
 }
 div#data table td {
 	text-align: right;
@@ -49,8 +56,16 @@ div {
 
 
 <body>
+<div id="saveModal" class="modal hidden">
+<table>
+<tr><td>setup dropdown line entry text<td><input id="save-text">
+<tr><td>setup "measured" table title<td><input id="save-aSetup">
+<tr><td>setup "custom" table title<td><input id="save-bSetup">
+<tr><td colspan="2"><button style="align:center">save
+</table>
+</div>
 
-<div id='bikeCanvasDiv'><canvas id='bikeCanvas' width="1000" height="400";></canvas></div>
+<div id='bikeCanvasDiv'><canvas id="bikeCanvas" width="1000" height="400";></canvas></div>
 
 <div>
 <span style="width:600px"><select id="bikes" onChange="setBike()"></select><button onclick="reset()">reset</button></span>
@@ -61,7 +76,7 @@ div {
 </div>
 
 
-<div id='data' style='width: 1000px;' title="input units are arbitrary; results can be read in same units">
+<div id='data' title="input units are arbitrary; results can be read in same units">
 <table id="aTable" style='float: left'>
 <tr><th id="aSetup" colspan="2">Measured Setup</th></tr>
 <tr><th><label for="aSHOW">show</label><input id="aSHOW" value="aSHOW" type="checkbox" checked onchange="drawAll()"><th><button onclick="copyToCustom()">Copy to Custom</label></button><th></tr>
@@ -99,8 +114,8 @@ div {
 <tr title="degrees forward from neck"><td>Raked Tree</td><td> <input id='bRT' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr><td>Neck Out</td><td> <input id='bNO' type='number' onchange="drawAll()" style='width:99%' value=''></td></tr>
 <tr><td>Neck Up</td><td> <input id='bNU' type='number' onchange="drawAll()" style='width:99%' value=''></td></tr>
-<tr title="stretch / swap / shock change"><td>Rear Stretch</td><td> <input id='bRO' type='number' onchange="drawAll()" style='width:99%' value='0'></td></tr>
-<tr itle="drop / swap / shock change"><td>Rear Up</td><td> <input id='bRU' type='number' onchange="drawAll()" style='width:99%' value='0'></td></tr>
+<tr title="stretch / swap / shock change"><td>Rear Stretch</td><td> <input id='bRO' type='number' onchange="drawAll()" style='width:99%' value=''></td></tr>
+<tr itle="drop / swap / shock change"><td>Rear Up</td><td> <input id='bRU' type='number' onchange="drawAll()" style='width:99%' value=''></td></tr>
 <tr><td>Ground to Neck Bottom</td><td> <input type="number" onchange="drawAll()" id='bGNB' style='width:99%' value='' disabled> </td></tr>
 <tr><td>Front Axle to Neck Bottom (vertical)</td><td> <input type="number" id='bAC' style='width:99%' value='' disabled> </td></tr>
 <tr title="measured parallel to ground / wheelbase"><td>Front Axle to Neck Bottom (horizontal)</td><td> <input type="number" id='bFANB' style='width:99%' value='' disabled> </td></tr>
@@ -132,32 +147,17 @@ div {
  *
  */
 var setups = [
-{	
-	text:"sample setup - small front wheel, big back", 
-	value:'{ "aSetup": "Measured Setup 1", "bSetup":"Custom Setup 1", "bFWD":18, "bRWD":28, "bFNR":30, "bFL":15, "bWB":55, "bFTR":0, "bFTO":1, "bFAO":1, "bRT":0, "aFWD":22, "aRWD":22, "aFNR":30, "aWB":55, "aCHOP":0, "aFL":15, "aFTO":1, "aFAO":1, "aRT":0, "aNO":0, "aNU":0, "bNO":0, "bNU":0, "bCHOP":0, "bRO":0, "bRU":0}'
-}
-,
-{
-	text:"sample setup - neck out 10, rear stretch 10", 
-	value:'{ "aSetup": "Measured Setup 2", "bSetup":"Custom Setup 2", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":15, "bFTO":1, "bFAO":1, "bRT":0, "bNO":10, "bNU":0, "bRO":10, "bRU":0}'
-}
-,
-{
-	text:"sample setup - 2 over fork", 
-	value: '{ "aSetup": "Measured Setup 3", "bSetup":"Custom Setup 3", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":0, "bFL":17, "bFTO":1, "bFAO":1, "bRT":0, "bNO":0, "bNU":0, "bRO":0, "bRU":0}'
-}
-,
-{
-	text:"sample setup - rake +6, fork +4, neck 2 up and 4 out", 
-	value:'{ "aSetup": "Measured Setup 4", "bSetup":"Custom Setup 4", "aFWD":22, "aRWD":22, "aFNR":30, "aFL":15, "aWB":55, "aFTR":0, "aFTO":1, "aFAO":1, "aRT":0, "bFWD":22, "bRWD":22, "bCHOP":6, "bFL":19, "bFTO":1, "bFAO":1, "bRT":0, "bNO":4, "bNU":2, "bRO":0, "bRU":0}'
-}
-,
+{	text:"Empty Setup", 
+	aSetup: "Measured Setup",
+	bSetup: "Custom Setup",
+	hash: "bXSHIFT0bYSHIFT0aFWD.aRWD.aFNR.aFL.aWB.aFTO.aFAO.aRT.bFWD.bRWD.bCHOP.bFL.bFTO.bFAO.bRT.bNO.bNU.bRO.bRU."
+},
 {
 	text:"SECApocalypse - vertical fork leg simulates Hossack wheel path", 
-	value:'{"aSetup":"1981 Yamaha XJ750rh", "bSetup":"SECApocalypse", "aFWD":67, "aRWD":67, "aFNR":30, "aFL":50, "aWB":150, "aFAO":0, "aFTO":8, "aRT":0, "bFWD":67, "bRWD":67, "bCHOP":-10, "bFL":40, "bFTO":9, "bFAO":9, "bRT":-20, "bNO":15, "bNU":-9, "bRO":0, "bRU":-3}'
+	aSetup: "1981 Yamaha XJ750rh",
+	bSetup: "SECApocalypse",
+	hash: "XSHIFT0bYSHIFT0aFWD67aRWD67aFNR30aFL50aWB150aFTO8aFAO0aRT0bFWD67bRWD67bCHOP-10bFL40bFTO9bFAO9bRT-20bNO15bNU-9bRO0bRU-3"
 }
-,
-{text:"to come: stock bike setups and option to save your custom setups into this list!", value:'{ "aSetup": "Measured Setup", "bSetup":"Custom Setup"}'}
 ];
 
 //helper functions
@@ -259,7 +259,11 @@ function setFormFromHash(){
 	var hash = window.location.hash.substr(1);
 	var inputs = hash.split(/([1234567890\-\.]+)/);
 	for (var i=0; i<inputs.length && inputs[i]!=""; i+=2){
-		$('#'+inputs[i]).val(inputs[i+1]);
+		if (/-?(\d+|\d+\.\d+|\.\d+)([eE][-+]?\d+)?/.test(inputs[i+1])){
+			$('#'+inputs[i]).val(inputs[i+1]);
+		} else {
+			$('#'+inputs[i]).val('');
+		}
 	}
 };
 function setHashFromForm(){
@@ -501,8 +505,9 @@ function drawBike(ctx,bike){
 	if (bike.bike === "b" && !error){ // needs to be after early return to avoid stacking in  multiple renders
 		document.getElementById(bike.bike+'ROT').value = ((bike.rotation)*180/Math.PI).toFixed(1);
 		dc.translate(bike.offset.x *bike.scale, bike.offset.y* bike.scale);
-		ctx.rotate(-1*bike.rotation); 	
-		ctx.moveTo(bike.neck.toGround.x * bike.scale , bike.neck.toGround.y);  ctx.lineTo(bike.neck.bottom.x,bike.neck.bottom.y);
+		if (bike.rotate){ 
+			ctx.rotate(-1*bike.rotation); 	
+		}
 	}
 	$('#'+ bike.bike+ 'Table').find('input:not([disabled])').css("color","#000")
 	if(!bike.show){ return; }
@@ -552,12 +557,10 @@ function drawBike(ctx,bike){
 	var engineSize = bike.neck.toRearAxleOld *.5 || bike.neck.toRearAxle *.5 ;
 	ctx.fillRect(engineSize*.75 * bike.scale, engineSize*bike.scale*-.25, engineSize*.85*bike.scale, engineSize*.5*bike.scale);
 	
-	if (bike.rotate){ 
-		$('span#shiftXY').removeClass('hidden');
-		ctx.rotate(bike.rotation);
-		dc.translate( -1* bike.offset.x* bike.scale, -1* bike.offset.y* bike.scale );	
-	} else {
+	if (bike.bike === "b"){ 
 		$('span#shiftXY').addClass('hidden');
+		dc.translate( -1* bike.offset.x* bike.scale, -1* bike.offset.y* bike.scale );	
+		if (bike.rotate) { 	ctx.rotate(bike.rotation); $('span#shiftXY').removeClass('hidden');}
 	}
 };
 
@@ -573,20 +576,19 @@ function drawAll(fromHash){//function with no required inputs for form onchange
 }
 // bikes selector setup & functions
 $.each(setups, function (i, item) {
-    $('#bikes').append($('<option>', { 
-        value: item.value,
-        text : item.text 
+    $('#bikes').append($('<option>', {     
+        text : item.text,
+		'data-asetup': item.aSetup,
+		'data-bsetup': item.bSetup,
+		'data-hash': item.hash,
     }));
 });
 function setBike(){
-	var bikes = $('#bikes');
-	var inputs = $.parseJSON(bikes.val());
-	$.each(inputs, function(i,value){
-		var input = $('input#'+i);
-		input.val(value);
-		if (!input.length) { $('#'+i).text(value); }
-	} )	
-	drawAll();
+	var bike = $('#bikes option:selected')
+	window.location.hash = bike.attr('data-hash');
+	$('#aSetup').text(bike.attr('data-asetup'));
+	$('#bSetup').text(bike.attr('data-bsetup'));
+	drawAll(true);
 };
 function reset(){
 	$('#bikes option:selected').prop('selected','selected').change();
@@ -598,7 +600,7 @@ dc.lineCap="round";
 dc.translate(150,150);
 if (window.location.hash){
 	drawAll(fromHash = true)
-	$('#bikes option').last().prop('selected', 'selected');
+	$('#bikes option').first().prop('selected', 'selected');
 }
 else {
 	$('#bikes option:eq(0)').prop('selected', 'selected').change();
