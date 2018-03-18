@@ -395,6 +395,7 @@ function makeDataA(a,fromHash){
 	a.neck.toGroundDeep.y = 0;
 	a.neck.toGround = getIntersection( {p1:a.neck.toGroundDeep, p2:a.neck.bottom} , {p1:a.frontWheel.contactPatch, p2:a.rearWheel.contactPatch} );//should be point on ground line below / closest to neck...
 	a.frontWheel.trail = getDistance(a.neck.rakeGround,a.frontWheel.contactPatch);	
+	if (a.frontWheel.contactPatch.x > a.neck.rakeGround.x){ a.frontWheel.trail = a.frontWheel.trail * -1}; 
 	a.engineSize = a.neck.toRearAxle/2;
 	return a;
 };
@@ -442,6 +443,7 @@ function makeDataB(a,fromHash){
 	b.neck.rakeGroundDeep.y = b.neck.bottom.y - Math.cos(b.neck.rake )*10;
 	b.neck.rakeGround = getIntersection({p1:b.neck.bottom,p2:b.neck.rakeGroundDeep},{p1:b.rearWheel.contactPatch, p2:b.frontWheel.contactPatch});
 	b.frontWheel.trail = getDistance(b.neck.rakeGround,b.frontWheel.contactPatch);	
+	if (b.frontWheel.contactPatch.x > b.neck.rakeGround.x){ b.frontWheel.trail = b.frontWheel.trail * -1}; 
 	b.rotation = getAngle (b.frontWheel.contactPatch, b.rearWheel.contactPatch);//!!!!!!!!!
 	b.neck.rake =  b.neck.rake + b.rotation
 	b.neck.toGroundDeep = {};// down from neck, can calculate based on groundline rotation
@@ -516,11 +518,10 @@ function drawBike(ctx,bike){
 	drawWheel(ctx,bike.frontWheel,bike.scale,bike);
 	drawWheel(ctx,bike.rearWheel,bike.scale,bike);
 	//draw lower tree & axle offset
-	ctx.beginPath(); ctx.lineWidth = 7;  ctx.strokeStyle = "hsla(" +hue+ ", 100%, 50%, .5)"
+	ctx.beginPath(); ctx.lineWidth = 7;  ctx.strokeStyle = "hsla(" +hue+ ", 100%, 50%, 1)"
 	ctx.moveTo(bike.fork.legTop.x * bike.scale, bike.fork.legTop.y * bike.scale); ctx.lineTo(bike.neck.bottom.x * bike.scale, bike.neck.bottom.y * bike.scale); 
 	ctx.moveTo(bike.fork.legBottom.x * bike.scale, bike.fork.legBottom.y * bike.scale); ctx.lineTo(bike.frontWheel.axle.x * bike.scale, bike.frontWheel.axle.y * bike.scale); ctx.stroke();
 	// draw rake line
-	//debugger
 	ctx.beginPath(); ctx.lineWidth = 3;  ctx.strokeStyle = "hsla(" +hue+ ", 50%, 50%, .5)"
 	ctx.moveTo(bike.neck.rakeGround.x * bike.scale, bike.neck.rakeGround.y * bike.scale); ctx.lineTo(bike.neck.bottom.x * bike.scale, bike.neck.bottom.y * bike.scale); ctx.stroke();	
 	// draw fork leg
@@ -550,8 +551,15 @@ function drawBike(ctx,bike){
 	groundlineEnd.x =  bike.frontWheel.contactPatch.x - deltaX;
 	groundlineEnd.y = bike.frontWheel.contactPatch.y - deltaY;
 	ctx.beginPath(); ctx.lineWidth = 3;  
-	ctx.moveTo(groundlineStart.x*bike.scale,groundlineStart.y*bike.scale),ctx.lineTo(groundlineEnd.x*bike.scale,groundlineEnd.y*bike.scale);ctx.stroke();
-
+	ctx.moveTo(groundlineStart.x*bike.scale,groundlineStart.y*bike.scale);
+	ctx.lineTo(groundlineEnd.x*bike.scale,groundlineEnd.y*bike.scale);
+	ctx.stroke();
+	// draw trail
+	ctx.beginPath(); ctx.lineWidth = 5;  ctx.strokeStyle = "hsla(" +hue+ ", 100%, 50%, .5)"
+	ctx.moveTo(bike.frontWheel.contactPatch.x* bike.scale, bike.frontWheel.contactPatch.y* bike.scale);
+	ctx.lineTo(bike.neck.rakeGround.x*bike.scale, bike.neck.rakeGround.y*bike.scale);
+	ctx.stroke();
+	
 	//draw engine
 	ctx.fillStyle = "hsla(" +hue+ ", 100%, 50%, .1)"
 	var engineSize = bike.neck.toRearAxleOld *.5 || bike.neck.toRearAxle *.5 ;
@@ -562,6 +570,7 @@ function drawBike(ctx,bike){
 		dc.translate( -1* bike.offset.x* bike.scale, -1* bike.offset.y* bike.scale );	
 		if (bike.rotate) { 	ctx.rotate(bike.rotation); $('span#shiftXY').removeClass('hidden');}
 	}
+	console.log(bike)
 };
 
 function redrawAll(ctx,fromHash){
