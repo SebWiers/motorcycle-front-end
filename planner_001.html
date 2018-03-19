@@ -18,6 +18,7 @@ input[type="number"] {
 }
 canvas#bikeCanvas {
 	background-color: #fff;
+	border-radius: 10px;
 	transform: scale(1, -1); /* flip vertical for 0,0 in bottom left */
 }
 button {
@@ -50,20 +51,28 @@ span#shiftXY{
 div {
 	padding: 0;
 	margin: 0;
+	border-radius: 10px;
+}
+div.modal{
+	position: fixed; 
+	top: 50%;
+	left: 500px;
+	width: 500px;
+	padding: 25px;
+	margin-top: -150px;
+	margin-left: -250px;
+	border: 2px solid #666;
+	background-color: #ccc;
+}
+div.modal table{
+	margin: 0 auto;
 }
 </style>
 </head>
 
 
 <body>
-<div id="saveModal" class="modal hidden">
-<table>
-<tr><td>setup dropdown line entry text<td><input id="save-text">
-<tr><td>setup "measured" table title<td><input id="save-aSetup">
-<tr><td>setup "custom" table title<td><input id="save-bSetup">
-<tr><td colspan="2"><button style="align:center">save
-</table>
-</div>
+
 
 <div id='bikeCanvasDiv'><canvas id="bikeCanvas" width="1000" height="400";></canvas></div>
 
@@ -71,8 +80,8 @@ div {
 <span style="width:600px"><select id="bikes" onChange="setBike()"></select><button onclick="reset()">reset</button></span>
 <span id="shiftXY">shift custom image (x:<input type="number" id="bXSHIFT" value="0" onchange="drawAll()"> y:<input type="number" id="bYSHIFT" value="0" onchange="drawAll()">)</span>
 </div>
-<div class="hidden">
-<span style="width:600px"><button>Save Surrent Setups to List</button><button style="margin-left:100px">Delete Currently Selected Setup From List</button></span>
+<div>
+<span style="width:600px"><button onclick="startSaveBike()">Save Surrent Setups to List</button><button style="margin-left:100px" onclick="deleteBike()">Delete Currently Selected Setup From List</button></span>
 </div>
 
 
@@ -147,16 +156,10 @@ div {
  *
  */
 var setups = [
-{	text:"Empty Setup", 
+{	text: "Configurations can now be saved to this list using the buttons below!", 
 	aSetup: "Measured Setup",
 	bSetup: "Custom Setup",
 	hash: "bXSHIFT0bYSHIFT0aFWD.aRWD.aFNR.aFL.aWB.aFTO.aFAO.aRT.bFWD.bRWD.bCHOP.bFL.bFTO.bFAO.bRT.bNO.bNU.bRO.bRU."
-},
-{
-	text:"SECApocalypse - vertical fork leg simulates Hossack wheel path", 
-	aSetup: "1981 Yamaha XJ750rh",
-	bSetup: "SECApocalypse",
-	hash: "XSHIFT0bYSHIFT0aFWD67aRWD67aFNR30aFL50aWB150aFTO8aFAO0aRT0bFWD67bRWD67bCHOP-10bFL40bFTO9bFAO9bRT-20bNO15bNU-9bRO0bRU-3"
 }
 ];
 
@@ -247,9 +250,14 @@ function getCircleTangentPoints(c1,c2){ // {center:{x:#,y:#}, radius:#}
 
 //UI
 function copyToCustom() {
-	var inputs = ['FWD','RWD','FNR','FL','WB','FTO','FAO','RT']
-	for (i in inputs){
-		$('#b'+inputs[i]).val($('#a'+inputs[i]).val());
+	var i;
+	var inputsA = ['FWD','RWD','FNR','FL','WB','FTO','FAO','RT']
+	for (i in inputsA){
+		$('#b'+inputsA[i]).val($('#a'+inputsA[i]).val());
+	}
+	var changesB = ['NO', 'NU', 'RO', 'RU', 'CHOP'];
+	for (i in changesB){
+		$('#b'+changesB[i]).val('0');
 	}
 	drawAll();
 }
@@ -514,6 +522,8 @@ function drawBike(ctx,bike){
 	$('#'+ bike.bike+ 'Table').find('input:not([disabled])').css("color","#000")
 	if(!bike.show){ return; }
 	var hue = bike.hue;	
+	ctx.lineCap="round";
+	ctx.translate(150,150);
 	//wheels
 	drawWheel(ctx,bike.frontWheel,bike.scale,bike);
 	drawWheel(ctx,bike.rearWheel,bike.scale,bike);
@@ -538,8 +548,7 @@ function drawBike(ctx,bike){
 	if (bike.neck.bottomOld){ 
 		ctx.lineTo(bike.neck.bottomOld.x * bike.scale, bike.neck.bottomOld.y * bike.scale); 
 		ctx.lineTo( (bike.neck.bottomOld.x + bike.neck.out) * bike.scale, bike.neck.bottomOld.y * bike.scale); 
-		ctx.lineTo(bike.neck.bottom.x * bike.scale, bike.neck.bottom.y * bike.scale); 
-		
+		ctx.lineTo(bike.neck.bottom.x * bike.scale, bike.neck.bottom.y * bike.scale); 		
 	}
 	ctx.stroke();
 	//draw groundline
@@ -563,14 +572,12 @@ function drawBike(ctx,bike){
 	//draw engine
 	ctx.fillStyle = "hsla(" +hue+ ", 100%, 50%, .1)"
 	var engineSize = bike.neck.toRearAxleOld *.5 || bike.neck.toRearAxle *.5 ;
-	ctx.fillRect(engineSize*.75 * bike.scale, engineSize*bike.scale*-.25, engineSize*.85*bike.scale, engineSize*.5*bike.scale);
-	
+	ctx.fillRect(engineSize*.75 * bike.scale, engineSize*bike.scale*-.25, engineSize*.85*bike.scale, engineSize*.5*bike.scale);	
 	if (bike.bike === "b"){ 
 		$('span#shiftXY').addClass('hidden');
-		dc.translate( -1* bike.offset.x* bike.scale, -1* bike.offset.y* bike.scale );	
-		if (bike.rotate) { 	ctx.rotate(bike.rotation); $('span#shiftXY').removeClass('hidden');}
 	}
-	console.log(bike)
+	ctx.setTransform(1, 0, 0, 1, 0, 0);
+	//console.log(bike)
 };
 
 function redrawAll(ctx,fromHash){
@@ -584,6 +591,12 @@ function drawAll(fromHash){//function with no required inputs for form onchange
 	redrawAll(dc,fromHash);
 }
 // bikes selector setup & functions
+var savedBikes = localStorage.getItem('savedBikes');
+if (!savedBikes){
+	savedBikes = JSON.stringify(setups); localStorage.setItem('savedBikes',savedBikes); 
+} else {
+	setups = $.parseJSON(savedBikes);
+}
 $.each(setups, function (i, item) {
     $('#bikes').append($('<option>', {     
         text : item.text,
@@ -602,11 +615,44 @@ function setBike(){
 function reset(){
 	$('#bikes option:selected').prop('selected','selected').change();
 }
+function startSaveBike(){
+	$('#saveBikeModal').removeClass('hidden');
+};
+function saveBike(){
+	var bike = {
+		text: $('#save-text').val(),
+		aSetup: $('#save-aSetup').val(),
+		bSetup: $('#save-bSetup').val(),
+		hash: window.location.hash.substr(1)
+	};
+	setups.unshift(bike);
+	var savedBikes = JSON.stringify(setups); 
+	localStorage.setItem('savedBikes',savedBikes); 
+	$('#bikes').append($('<option>', {     
+        text : bike.text,
+		'data-asetup': bike.aSetup,
+		'data-bsetup': bike.bSetup,
+		'data-hash': bike.hash,
+    }));
+	$('#bikes option:eq(0)').prop('selected', 'selected').change();
+	saveCancel();
+}
+function saveCancel(){
+	$('#save-text').val('');
+	$('#save-aSetup').val('');
+	$('#save-bSetup').val('');
+	$('#saveBikeModal').addClass('hidden');
+}
+function deleteBike(){
+	var index = $('#bikes option:selected').index();
+	setups.splice(index,1);
+	savedBikes = JSON.stringify(setups);
+	localStorage.setItem('savedBikes',savedBikes);
+	$('#bikes option:eq('+index+')').remove();
+};
 // pageload actions
 var diagram = document.getElementById('bikeCanvas');
 var dc = diagram.getContext('2d');
-dc.lineCap="round";
-dc.translate(150,150);
 if (window.location.hash){
 	drawAll(fromHash = true)
 	$('#bikes option').first().prop('selected', 'selected');
@@ -615,7 +661,13 @@ else {
 	$('#bikes option:eq(0)').prop('selected', 'selected').change();
 }
 </script>
-
-
+<div id="saveBikeModal" class="modal hidden">
+<table>
+<tr><td>setup dropdown line entry text<td><input id="save-text">
+<tr><td>setup "measured" table title<td><input id="save-aSetup">
+<tr><td>setup "custom" table title<td><input id="save-bSetup">
+<tr><td colspan="2"><button onclick="saveBike()">save</button><td><button onclick='saveCancel()'>cancel</button>
+</table>
+</div>
 </body>
 </html>
