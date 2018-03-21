@@ -81,7 +81,7 @@ div.modal table{
 <span id="shiftXY">shift custom image (x:<input type="number" id="bXSHIFT" value="0" onchange="drawAll()"> y:<input type="number" id="bYSHIFT" value="0" onchange="drawAll()">)</span>
 </div>
 <div>
-<span style="width:600px"><button onclick="startSaveBike()">Save Surrent Setups to List</button><button style="margin-left:100px" onclick="deleteBike()">Delete Currently Selected Setup From List</button></span>
+<span style="width:600px"><button onclick="startSaveBike()">Save</button><button style="margin-left:200px" onclick="deleteBike()">Delete</button></span>
 </div>
 
 
@@ -91,10 +91,10 @@ div.modal table{
 <tr><th><label for="aSHOW">show</label><input id="aSHOW" value="aSHOW" type="checkbox" checked onchange="drawAll()"><th><button onclick="copyToCustom()">Copy to Custom</label></button><th></tr>
 <tr><td>Front Tire Outside Diameter</td><td> <input id='aFWD' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr><td>Rear Tire Outside Diameter</td><td> <input id='aRWD' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
-<tr title="degrees from vertical"><td>Neck Rake</td><td> <input id='aFNR' onchange="drawAll()" type='number' style='width:99%' value=''></td></tr>
 <tr><td>&nbsp;</td></tr>
-<tr title="axle to neck bottom, parallel with neck or tree rake"><td>Fork Length</td><td> <input id='aFL' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
+<tr title="degrees from vertical"><td>Neck Rake</td><td> <input id='aFNR' onchange="drawAll()" type='number' style='width:99%' value=''></td></tr>
 <tr title="measure parallel to ground; include changes from any planned rear stretch"><td>Wheelbase</td><td> <input id='aWB' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
+<tr title="axle to neck bottom, parallel with neck or tree rake"><td>Fork Length</td><td> <input id='aFL' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr title="leg ahead of steerer, perpendicular to neck rake"><td>Tree Offset</td><td> <input id='aFTO' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr title="axle ahead fork legs, perpendicular to neck rake"><td>Axle Offset</td><td> <input id='aFAO' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr title="degrees forward from neck"><td>Raked Tree</td><td> <input id='aRT' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
@@ -102,8 +102,7 @@ div.modal table{
 <tr><td>&nbsp;</td></tr>
 <tr><td>&nbsp;</td></tr>
 <tr><td>&nbsp;</td></tr>
-<tr><td>Ground to Neck Bottom</td><td> <input type="number" id='aGNB' style='width:99%' value='' disabled> </td></tr>
-<tr><td>Front Axle to Neck Bottom (vertical)</td><td> <input type="number" id='aAC' style='width:99%' value='' disabled> </td></tr>
+<tr><td>Ground to Neck Bottom (vertical)</td><td> <input type="number" id='aGNB' style='width:99%' value='' disabled> </td></tr>
 <tr title="measured parallel to ground / wheelbase"><td>Front Axle to Neck Bottom (horizontal)</td><td> <input type="number" id='aFANB' style='width:99%' value='' disabled> </td></tr>
 <tr><td>Trail</td><td> <input type="number" id='aTR' style='width:99%' value='' disabled> </td></tr>
 </tbody>
@@ -114,10 +113,10 @@ div.modal table{
 <th><label for="bROTATE">Hold on Engine</label><input id="bROTATE" value="bROTATE"type="checkbox" onchange="drawAll()"><th></tr>
 <tr><td>Front Tire Outside Diameter</td><td> <input id='bFWD' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr><td>Rear Tire Outside Diameter</td><td> <input id='bRWD' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
-<tr title="you probably don't know what this will be if you change stuff..."><td>Neck Rake</td><td> <input id='bFNR' type='number' style='width:99%' value='' disabled></td></tr>
 <tr title="degrees added to measured setup"><td>Neck Rake Change</td><td> <input id='bCHOP' onchange="drawAll()" type='number' style='width:99%' value=''></td></tr>
-<tr title="axle to neck bottom, parallel with neck or tree rake"><td>Fork Length</td><td> <input id='bFL' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
+<tr title="you probably don't know what this will be if you change stuff..."><td>Neck Rake</td><td> <input id='bFNR' type='number' style='width:99%' value='' disabled></td></tr>
 <tr title="you probably don't know what this will be if you change stuff..."><td>Wheelbase</td><td> <input type="number" id='bWB' style='width:99%' value='' disabled> </td></tr>
+<tr title="axle to neck bottom, parallel with neck or tree rake"><td>Fork Length</td><td> <input id='bFL' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr title="leg ahead of steerer, perpendicular to neck rake"><td>Tree Offset</td><td> <input id='bFTO' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr title="axle ahead fork legs, perpendicular to neck rake"><td>Axle Offset</td><td> <input id='bFAO' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
 <tr title="degrees forward from neck"><td>Raked Tree</td><td> <input id='bRT' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
@@ -125,8 +124,7 @@ div.modal table{
 <tr><td>Neck Up</td><td> <input id='bNU' type='number' onchange="drawAll()" style='width:99%' value=''></td></tr>
 <tr title="stretch / swap / shock change"><td>Rear Stretch</td><td> <input id='bRO' type='number' onchange="drawAll()" style='width:99%' value=''></td></tr>
 <tr itle="drop / swap / shock change"><td>Rear Up</td><td> <input id='bRU' type='number' onchange="drawAll()" style='width:99%' value=''></td></tr>
-<tr><td>Ground to Neck Bottom</td><td> <input type="number" onchange="drawAll()" id='bGNB' style='width:99%' value='' disabled> </td></tr>
-<tr><td>Front Axle to Neck Bottom (vertical)</td><td> <input type="number" id='bAC' style='width:99%' value='' disabled> </td></tr>
+<tr><td>Ground to Neck Bottom (vertical)</td><td> <input type="number" onchange="drawAll()" id='bGNB' style='width:99%' value='' disabled> </td></tr>
 <tr title="measured parallel to ground / wheelbase"><td>Front Axle to Neck Bottom (horizontal)</td><td> <input type="number" id='bFANB' style='width:99%' value='' disabled> </td></tr>
 <tr><td>Trail</td><td> <input type="number" id='bTR' style='width:99%' value='' disabled> </td></tr>
 <tr title="large frame rotation may result in engine oil starvation / level reading errors and poor seat position"><td>Frame Rotation</td><td> <input type="number" id='bROT' style='width:99%' value='' disabled> </td></tr>
@@ -156,13 +154,14 @@ div.modal table{
  *
  */
 var setups = [
-{	text: "Configurations can now be saved to this list using the buttons below!", 
+{	text: "You can modify this list using buttons below", 
 	aSetup: "Measured Setup",
 	bSetup: "Custom Setup",
 	hash: "bXSHIFT0bYSHIFT0aFWD.aRWD.aFNR.aFL.aWB.aFTO.aFAO.aRT.bFWD.bRWD.bCHOP.bFL.bFTO.bFAO.bRT.bNO.bNU.bRO.bRU."
 }
 ];
-
+var PRECISION = 1;
+var MIN = .00000000001;
 //helper functions
 function pAdd(p1,p2) {
 	var bad = {x:NaN, y:NaN};
@@ -174,6 +173,7 @@ function pAdd(p1,p2) {
 };
 function getDistance(p1,p2){
 	var bad = NaN;
+	if (!p1 || !p2){ return bad;}
 	if (! p1 instanceof Object){return bad;}
 	if (! p1.hasOwnProperty('x') || ! p1.hasOwnProperty('y')){return bad;}
 	if (! p2 instanceof Object){return bad;}
@@ -279,8 +279,7 @@ function setHashFromForm(){
 	$('input[type=number]:not([disabled])').each(
 		function (i,input){
 			$input = $(input);
-			if ($input.val()){ hashArray.push ($input[0].id + $input.val()); }
-			else { hashArray.push ($input[0].id + "0"); }
+			hashArray.push ($input.val() ? $input[0].id + $input.val(): $input[0].id + '0');
 		}
 	)
 	window.location.hash = hashArray.join('');
@@ -295,30 +294,31 @@ function getInput(fromHash){
 		show: document.getElementById('aSHOW').checked,
 		rotate: false,
 		rotation: 0,
-		wheelbase: parseFloat(document.getElementById('aWB').value),
+		wheelbase: parseFloat(document.getElementById('aWB').value) || MIN,
 		rearWheel:{
-			radius:  Math.abs(parseFloat(document.getElementById('aRWD').value)/2) || .00000000001,
+			radius:  Math.abs(parseFloat(document.getElementById('aRWD').value)/2) || MIN,
 			axle: {x:0, y:0},
 			contactPatch: {x:0, y:0 - parseFloat(document.getElementById('aRWD').value)/2},
 		},
 		frontWheel:{
-			radius:  Math.abs(parseFloat(document.getElementById('aFWD').value)/2) || .00000000001,
+			radius:  Math.abs(parseFloat(document.getElementById('aFWD').value)/2) || MIN,
 			axle: {x:parseFloat(document.getElementById('aWB').value), y:parseFloat(document.getElementById('aFWD').value)/2 - parseFloat(document.getElementById('aRWD').value)/2},
 			contactPatch: {x:parseFloat(document.getElementById('aWB').value), y:0 - parseFloat(document.getElementById('aRWD').value)/2}
 		},
 		neck: {
 			bottom: {x:NaN, y:NaN},
-			rake: (parseFloat(document.getElementById('aFNR').value)) * Math.PI/-180,
+			toGround: {x:NaN, y:0},
+			rake: (parseFloat(document.getElementById('aFNR').value)) * Math.PI/-180 || MIN,
 			chop: NaN,
 			out: 0,
 			up: 0,
 			rakeGround: {x:NaN, y:0}
 		},
 		fork:{
-			length: parseFloat(document.getElementById('aFL').value) || .00000000001,
-			axleOffset: parseFloat(document.getElementById('aFAO').value),
-			treeOffset: parseFloat(document.getElementById('aFTO').value),
-			treeRake: parseFloat(-1*document.getElementById('aRT').value) * Math.PI/180
+			length: parseFloat(document.getElementById('aFL').value) || MIN,
+			axleOffset: parseFloat(document.getElementById('aFAO').value) || MIN,
+			treeOffset: parseFloat(document.getElementById('aFTO').value) || MIN,
+			treeRake: parseFloat(-1*document.getElementById('aRT').value || MIN) * Math.PI/180
 		}	
 	};
 	// b is "custom setup" - modified version of a
@@ -330,31 +330,33 @@ function getInput(fromHash){
 		show: document.getElementById('bSHOW').checked,
 		rotate: !document.getElementById('bROTATE').checked,
 		rotation: 0,
-		offset: {x:parseFloat(document.getElementById('bXSHIFT').value), y:parseFloat(document.getElementById('bYSHIFT').value)},
+		offset: {x:parseFloat(document.getElementById('bXSHIFT').value)|| MIN, y:parseFloat(document.getElementById('bYSHIFT').value)|| MIN},
 		frontWheel:{
-			radius: Math.abs(parseFloat(document.getElementById('bFWD').value)/2) || .00000000001,
+			radius: Math.abs(parseFloat(document.getElementById('bFWD').value)/2) || MIN,
 			axle: {x:NaN, y:NaN},
+			contactPatch: {x:NaN, y:NaN}
 		},
 		rearWheel:{
-			radius:  Math.abs(parseFloat(document.getElementById('bRWD').value)/2) || .00000000001,
+			radius:  Math.abs(parseFloat(document.getElementById('bRWD').value)/2) || MIN,
 			axle: {x:NaN, y:NaN},
-			axleBack: parseFloat(document.getElementById('bRO').value),
-			axleUp: parseFloat(document.getElementById('bRU').value)
+			axleBack: parseFloat(document.getElementById('bRO').value)|| MIN,
+			axleUp: parseFloat(document.getElementById('bRU').value)|| MIN,
+			contactPatch: {x:NaN, y:NaN}
 		},	
 		neck: { 
 			bottom: {x:NaN, y:NaN},
 			bottomOld: {x:NaN, y:NaN},
 			rake: NaN,
-			chop: parseFloat(document.getElementById('bCHOP').value) * Math.PI/180,
-			out: parseFloat(document.getElementById('bNO').value),
-			up: parseFloat(document.getElementById('bNU').value),
+			chop: parseFloat(document.getElementById('bCHOP').value || MIN) * Math.PI/180,
+			out: parseFloat(document.getElementById('bNO').value)|| MIN,
+			up: parseFloat(document.getElementById('bNU').value)|| MIN,
 			rakeGround: {x:NaN, y:NaN}
 		},
 		fork:{
-			length:  parseFloat(document.getElementById('bFL').value) || .00000000001,
-			axleOffset: parseFloat(document.getElementById('bFAO').value),
-			treeOffset: parseFloat(document.getElementById('bFTO').value),
-			treeRake: parseFloat(-1*document.getElementById('bRT').value) * Math.PI/180
+			length:  parseFloat(document.getElementById('bFL').value) || MIN,
+			axleOffset: parseFloat(document.getElementById('bFAO').value)|| MIN,
+			treeOffset: parseFloat(document.getElementById('bFTO').value)|| MIN,
+			treeRake: parseFloat(-1*document.getElementById('bRT').value || MIN ) * Math.PI/180
 		}
 	}
 	// maxlength = longest fork + wheelbase + neck out + front radius + rear radius
@@ -399,12 +401,10 @@ function makeDataA(a,fromHash){
 	a.neck.rakeGroundDeep.y = a.neck.bottom.y - Math.cos(a.neck.rake)*10;
 	a.neck.rakeGroundDeep.x = a.neck.bottom.x - Math.sin(a.neck.rake)*10;
 	a.neck.rakeGround = getIntersection({p1:a.neck.bottom,p2:a.neck.rakeGroundDeep},{p1:a.rearWheel.contactPatch, p2:a.frontWheel.contactPatch});
-	a.neck.toGroundDeep = {};// down from neck, can calculate based on groundline rotation
-	a.neck.toGroundDeep.x = a.neck.bottom.x ;
-	a.neck.toGroundDeep.y = 0;
-	a.neck.toGround = getIntersection( {p1:a.neck.toGroundDeep, p2:a.neck.bottom} , {p1:a.frontWheel.contactPatch, p2:a.rearWheel.contactPatch} );//should be point on ground line below / closest to neck...
+	a.neck.toGround.x = a.neck.bottom.x ;
+	a.neck.toGround.y = 0 - a.frontWheel.radius;	
 	a.frontWheel.trail = getDistance(a.neck.rakeGround,a.frontWheel.contactPatch);	
-	if (a.frontWheel.contactPatch.x > a.neck.rakeGround.x){ a.frontWheel.trail = a.frontWheel.trail * -1}; 
+	if (a.neck.rakeGround && a.frontWheel.contactPatch && a.frontWheel.contactPatch.x > a.neck.rakeGround.x){ a.frontWheel.trail = a.frontWheel.trail * -1}; 
 	a.engineSize = a.neck.toRearAxle/2;
 	return a;
 };
@@ -421,7 +421,8 @@ function makeDataB(a,fromHash){
 	b.neck.bottom.y = a.neck.bottom.y;
 	b.neck.bottom.x += b.neck.out;
 	b.neck.bottom.y += b.neck.up;
-	b.neck.rake = a.neck.rake - b.neck.chop||0;
+	b.neck.rake = a.neck.rake;
+	if (b.neck.chop){ b.neck.rake -= b.neck.chop; }
 	b.fork.legBottom = {}; b.fork.legTop = {}; 
 	b.fork.legTop.x = b.neck.bottom.x + b.fork.treeOffset * Math.cos(b.neck.rake);
 	b.fork.legTop.y = b.neck.bottom.y - b.fork.treeOffset * Math.sin(b.neck.rake);
@@ -472,8 +473,8 @@ function makeDataB(a,fromHash){
 	b.offset.y += b.rearWheel.radius - b.rearWheel.old.radius - (Math.cos(b.rotation) * b.rearWheel.axleUp) - (Math.sin(b.rotation) * b.rearWheel.axleBack) ;
 	
 	//output
-	console.log(a);
-	console.log(b);
+	//console.log(a);
+	//console.log(b);
 	return b;
 }
 
@@ -489,42 +490,39 @@ function drawBike(ctx,bike){
 	var error = false;//(bike.frontWheel.radius > bike.wheelbase || bike.rearWheel.radius > bike.wheelbase);
 	if (isNaN(bike.wheelbase)){error = true;}
 	if (isNaN(bike.neck.rake)){error = true;}
-	if (bike.bike === "b" && error){
-		document.getElementById(bike.bike+'FNR').value = '';
-		document.getElementById(bike.bike+'WB').value = '';
-		document.getElementById(bike.bike+'ROT').value = '';
-		document.getElementById(bike.bike+'ROT').value = '';
-	}
-	if (bike.bike === "b" && !error){
-		document.getElementById(bike.bike+'FNR').value = ((bike.neck.rake)*-180/Math.PI).toFixed(1);
-		document.getElementById(bike.bike+'WB').value = bike.wheelbase.toFixed(1);
-		document.getElementById(bike.bike+'ROT').value = "0.0"
-	}
+	if (isNaN(bike.frontWheel.trail)){error = true;}
+	if (bike.scale > 1000000){error = true;} 
+	if (bike.scale < .0000001) {error = true;}
 	if (error) { 
-		document.getElementById(bike.bike+'AC').value = '';
-		document.getElementById(bike.bike+'TR').value = '';
-		document.getElementById(bike.bike+'FANB').value = '';
-		document.getElementById(bike.bike+'GNB').value = '';
-		$('#'+ bike.bike+ 'Table').find('input:not([disabled])').css("color","#f00")
+		$('#'+ bike.bike+ 'Table').find('input:not([disabled])').css("color","#f00");// show text red, leave values unchange
 		return;
-	} else {
-		document.getElementById(bike.bike+'AC').value = bike.fork.axleCrown.toFixed(1);
-		document.getElementById(bike.bike+'TR').value = bike.frontWheel.trail.toFixed(1);
-		document.getElementById(bike.bike+'FANB').value = bike.neck.toFrontAxleHorizontalDistance.toFixed(1);
-		document.getElementById(bike.bike+'GNB').value = getDistance(bike.neck.toGround, bike.neck.bottom).toFixed(1);
+	} else { // normal text, format numbers / replace blanks with zeros
+		$('#'+ bike.bike+ 'Table').find('input:not([disabled])').css("color","#000")
+		//front diamter
+		// rear diameter
+		document.getElementById(bike.bike+'FNR').value = ((bike.neck.rake)*-180/Math.PI).toFixed(PRECISION);// neck rake
+		// blank
+		document.getElementById(bike.bike+'FL').value = bike.fork.length.toFixed(PRECISION);//fork length
+		document.getElementById(bike.bike+'WB').value = bike.wheelbase.toFixed(PRECISION);//wheelbase
+		document.getElementById(bike.bike+'FTO').value = bike.fork.treeOffset.toFixed(PRECISION);//tree offset
+		document.getElementById(bike.bike+'FAO').value = bike.fork.axleOffset.toFixed(PRECISION);//axle offset
+		document.getElementById(bike.bike+'RT').value = ((bike.fork.treeRake)*-180/Math.PI).toFixed(PRECISION);//raked tree
+		document.getElementById(bike.bike+'GNB').value = getDistance(bike.neck.toGround, bike.neck.bottom).toFixed(PRECISION);//ground neck bottom
+		document.getElementById(bike.bike+'FANB').value = bike.neck.toFrontAxleHorizontalDistance.toFixed(PRECISION);//axle neck horizontal
+		document.getElementById(bike.bike+'TR').value = bike.frontWheel.trail.toFixed(PRECISION);//trail		
 	}
 	if (bike.bike === "b" && !error){ // needs to be after early return to avoid stacking in  multiple renders
-		document.getElementById(bike.bike+'ROT').value = ((bike.rotation)*180/Math.PI).toFixed(1);
-		dc.translate(bike.offset.x *bike.scale, bike.offset.y* bike.scale);
-		if (bike.rotate){ 
-			ctx.rotate(-1*bike.rotation); 	
-		}
-	}
-	$('#'+ bike.bike+ 'Table').find('input:not([disabled])').css("color","#000")
+		document.getElementById(bike.bike+'CHOP').value = ((bike.neck.chop)*180/Math.PI).toFixed(PRECISION) ;//neck rake change
+		document.getElementById(bike.bike+'NO').value = bike.neck.out.toFixed(PRECISION);//neck out
+		document.getElementById(bike.bike+'NU').value = bike.neck.up.toFixed(PRECISION); //neck up
+		document.getElementById(bike.bike+'RO').value = bike.rearWheel.axleBack.toFixed(PRECISION);//rear stretch
+		document.getElementById(bike.bike+'RU').value = bike.rearWheel.axleUp.toFixed(PRECISION);//rear up
+		document.getElementById(bike.bike+'ROT').value = ((bike.rotation)*180/Math.PI).toFixed(PRECISION);//rotation	
+		dc.translate(bike.offset.x *bike.scale, bike.offset.y* bike.scale);// move rear axle to rear axle
+		if (bike.rotate){ ctx.rotate(-1*bike.rotation); }	// align groundlines
+	}	
 	if(!bike.show){ return; }
 	var hue = bike.hue;	
-	ctx.lineCap="round";
-	ctx.translate(150,150);
 	//wheels
 	drawWheel(ctx,bike.frontWheel,bike.scale,bike);
 	drawWheel(ctx,bike.rearWheel,bike.scale,bike);
@@ -549,7 +547,8 @@ function drawBike(ctx,bike){
 	if (bike.neck.bottomOld){ 
 		ctx.lineTo(bike.neck.bottomOld.x * bike.scale, bike.neck.bottomOld.y * bike.scale); 
 		ctx.lineTo( (bike.neck.bottomOld.x + bike.neck.out) * bike.scale, bike.neck.bottomOld.y * bike.scale); 
-		ctx.lineTo(bike.neck.bottom.x * bike.scale, bike.neck.bottom.y * bike.scale); 		
+		ctx.lineTo(bike.neck.bottom.x * bike.scale, bike.neck.bottom.y * bike.scale); 
+		
 	}
 	ctx.stroke();
 	//draw groundline
@@ -573,14 +572,15 @@ function drawBike(ctx,bike){
 	//draw engine
 	ctx.fillStyle = "hsla(" +hue+ ", 100%, 50%, .1)"
 	var engineSize = bike.neck.toRearAxleOld *.5 || bike.neck.toRearAxle *.5 ;
-	ctx.fillRect(engineSize*.75 * bike.scale, engineSize*bike.scale*-.25, engineSize*.85*bike.scale, engineSize*.5*bike.scale);	
+	ctx.fillRect(engineSize*.75 * bike.scale, engineSize*bike.scale*-.25, engineSize*.85*bike.scale, engineSize*.5*bike.scale);
+	
 	if (bike.bike === "b"){ 
 		$('span#shiftXY').addClass('hidden');
+		dc.translate( -1* bike.offset.x* bike.scale, -1* bike.offset.y* bike.scale );	
+		if (bike.rotate) { 	ctx.rotate(bike.rotation); $('span#shiftXY').removeClass('hidden');}
 	}
-	ctx.setTransform(1, 0, 0, 1, 0, 0);
-	//console.log(bike)
+	console.log(bike)
 };
-
 function redrawAll(ctx,fromHash){
 	ctx.clearRect(-500, -500, diagram.width+1000, diagram.height+1000);
 	var bikeA = makeDataA(null,fromHash);
@@ -616,16 +616,53 @@ function setBike(){
 function reset(){
 	$('#bikes option:selected').prop('selected','selected').change();
 }
-
+function startSaveBike(){
+	$('#saveBikeModal').removeClass('hidden');
+};
+function saveBike(){
+	var bike = {
+		text: $('#save-text').val(),
+		aSetup: $('#save-aSetup').val(),
+		bSetup: $('#save-bSetup').val(),
+		hash: window.location.hash.substr(1)
+	};
+	setups.unshift(bike);
+	var savedBikes = JSON.stringify(setups); 
+	localStorage.setItem('savedBikes',savedBikes); 
+	$('#bikes').append($('<option>', {     
+        text : bike.text,
+		'data-asetup': bike.aSetup,
+		'data-bsetup': bike.bSetup,
+		'data-hash': bike.hash,
+    }));
+	$('#bikes option:eq(0)').prop('selected', 'selected').change();
+	saveCancel();
+}
+function saveCancel(){
+	$('#save-text').val('');
+	$('#save-aSetup').val('');
+	$('#save-bSetup').val('');
+	$('#saveBikeModal').addClass('hidden');
+}
+function deleteBike(){
+	var index = $('#bikes option:selected').index();
+	setups.splice(index,1);
+	savedBikes = JSON.stringify(setups);
+	localStorage.setItem('savedBikes',savedBikes);
+	$('#bikes option:eq('+index+')').remove();
+};
 // pageload actions
 var diagram = document.getElementById('bikeCanvas');
 var dc = diagram.getContext('2d');
+dc.lineCap="round";
+dc.translate(150,150);
+
 if (window.location.hash){
 	drawAll(fromHash = true)
 	$('#bikes option').first().prop('selected', 'selected');
 }
 else {
-	$('#bikes option').first().prop('selected', 'selected').change();
+	$('#bikes option:eq(0)').prop('selected', 'selected').change();
 }
 </script>
 <div id="saveBikeModal" class="modal hidden">
