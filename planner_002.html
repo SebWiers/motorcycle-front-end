@@ -103,7 +103,6 @@ div.modal table{
 <tr><td>&nbsp;</td></tr>
 <tr><td>&nbsp;</td></tr>
 <tr><td>Ground to Neck Bottom (vertical)</td><td> <input type="number" id='aGNB' style='width:99%' value='' disabled> </td></tr>
-<tr><td>Front Axle to Neck Bottom</td><td> <input type="number" id='aAC' style='width:99%' value='' disabled> </td></tr>
 <tr title="measured parallel to ground / wheelbase"><td>Front Axle to Neck Bottom (horizontal)</td><td> <input type="number" id='aFANB' style='width:99%' value='' disabled> </td></tr>
 <tr><td>Trail</td><td> <input type="number" id='aTR' style='width:99%' value='' disabled> </td></tr>
 </tbody>
@@ -126,7 +125,6 @@ div.modal table{
 <tr title="stretch / swap / shock change"><td>Rear Stretch</td><td> <input id='bRO' type='number' onchange="drawAll()" style='width:99%' value=''></td></tr>
 <tr itle="drop / swap / shock change"><td>Rear Up</td><td> <input id='bRU' type='number' onchange="drawAll()" style='width:99%' value=''></td></tr>
 <tr><td>Ground to Neck Bottom (vertical)</td><td> <input type="number" onchange="drawAll()" id='bGNB' style='width:99%' value='' disabled> </td></tr>
-<tr><td>Front Axle to Neck Bottom</td><td> <input type="number" id='bAC' style='width:99%' value='' disabled> </td></tr>
 <tr title="measured parallel to ground / wheelbase"><td>Front Axle to Neck Bottom (horizontal)</td><td> <input type="number" id='bFANB' style='width:99%' value='' disabled> </td></tr>
 <tr><td>Trail</td><td> <input type="number" id='bTR' style='width:99%' value='' disabled> </td></tr>
 <tr title="large frame rotation may result in engine oil starvation / level reading errors and poor seat position"><td>Frame Rotation</td><td> <input type="number" id='bROT' style='width:99%' value='' disabled> </td></tr>
@@ -509,8 +507,7 @@ function drawBike(ctx,bike){
 		document.getElementById(bike.bike+'FTO').value = bike.fork.treeOffset.toFixed(PRECISION);//tree offset
 		document.getElementById(bike.bike+'FAO').value = bike.fork.axleOffset.toFixed(PRECISION);//axle offset
 		document.getElementById(bike.bike+'RT').value = ((bike.fork.treeRake)*-180/Math.PI).toFixed(PRECISION);//raked tree
-		document.getElementById(bike.bike+'AC').value = bike.fork.axleCrown.toFixed(PRECISION);//ground neck bottom
-		document.getElementById(bike.bike+'GNB').value = getDistance(bike.neck.toGround, bike.neck.bottom).toFixed(PRECISION);//axle neck vertical
+		document.getElementById(bike.bike+'GNB').value = getDistance(bike.neck.toGround, bike.neck.bottom).toFixed(PRECISION);//ground neck bottom
 		document.getElementById(bike.bike+'FANB').value = bike.neck.toFrontAxleHorizontalDistance.toFixed(PRECISION);//axle neck horizontal
 		document.getElementById(bike.bike+'TR').value = bike.frontWheel.trail.toFixed(PRECISION);//trail		
 	}
