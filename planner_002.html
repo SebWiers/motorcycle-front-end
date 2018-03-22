@@ -81,7 +81,7 @@ div.modal table{
 
 <div>
 <span style="width:600px"><select id="bikes" onChange="setBike()"></select><button onclick="reset()">reset</button></span>
-<span id="shiftXY">shift custom image (x:<input type="number" id="bXSHIFT" value="0" onchange="drawAll()"> y:<input type="number" id="bYSHIFT" value="0" onchange="drawAll()">)</span>
+<span id="shiftXY">shift image (x:<input type="number" id="bXSHIFT" value="0" onchange="drawAll()"> y:<input type="number" id="bYSHIFT" value="0" onchange="drawAll()">)</span>
 </div>
 <div>
 <span style="width:600px"><button onclick="startSaveBike()">Save</button><button style="margin-left:200px" onclick="deleteBike()">Delete</button></span>
@@ -388,6 +388,8 @@ function getInput(fromHash){
 	aInput.offset = (bInput.rearWheel.radius < aInput.rearWheel.radius) ? {x: aInput.rearWheel.radius, y: aInput.rearWheel.radius} : {x: bInput.rearWheel.radius, y: bInput.rearWheel.radius};
 	aInput.offset.x = aInput.offset.x + bInput.rearWheel.axleBack;
 	aInput.offset.y = aInput.offset.y + bInput.rearWheel.axleUp;
+	aInput.offset.x += parseFloat($('#bXSHIFT').val())||MIN; 
+	aInput.offset.y += parseFloat($('#bYSHIFT').val())||MIN;
 	return {a: aInput , b: bInput};
 };
 
@@ -478,8 +480,8 @@ function makeDataB(a,fromHash){
 	
 	//align groundlines & original rear axle, allow user offset 
 	b.offset = {x:0,y:0};
-	b.offset.x += parseFloat($('#bXSHIFT').val()) + a.offset.x; 
-	b.offset.y += parseFloat($('#bYSHIFT').val()) + a.offset.y;
+	b.offset.x += a.offset.x; 
+	b.offset.y += a.offset.y;
 	b.offset.y = b.offset.y - (Math.cos(b.rotation) * b.rearWheel.axleUp) - (Math.sin(b.rotation) * b.rearWheel.axleBack);
 	b.offset.y = b.offset.y + b.rearWheel.radius - a.rearWheel.radius;
 	b.offset.a = a.offset;//used when held on engine / not rotated
