@@ -602,7 +602,7 @@ function drawBike(ctx,bike){
 	ctx.beginPath(); ctx.lineWidth = 25; ctx.strokeStyle = "hsla(" +hue+ ", 100%, 50%, .25)"; dc.lineCap="butt";
 	var neckSize = engineSize*.2/bike.scale;
 	ctx.moveTo(bike.neck.bottom.x*bike.scale, bike.neck.bottom.y*bike.scale);
-	ctx.lineTo( (neckSize* Math.sin(bike.neck.rake) + bike.neck.bottom.x )*bike.scale, (bike.neck.bottom.y + neckSize* Math.cos(bike.neck.rake) )*bike.scale);
+	ctx.lineTo( (neckSize* Math.sin(bike.neck.rake-bike.rotation) + bike.neck.bottom.x )*bike.scale, (bike.neck.bottom.y + neckSize* Math.cos(bike.neck.rake-bike.rotation) )*bike.scale);
 	ctx.stroke();
 	//draw neck to ground
 	ctx.setLineDash([5,5]);
