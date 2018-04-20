@@ -556,10 +556,7 @@ function drawBike(ctx,bike){
 	// draw fork leg
 	ctx.beginPath(); ctx.lineWidth = 7;  ctx.strokeStyle = "hsla(" +hue+ ", 100%, 50%, 1)"
 	ctx.moveTo(bike.fork.legTop.x * bike.scale, bike.fork.legTop.y * bike.scale); ctx.lineTo(bike.fork.legBottom.x * bike.scale, bike.fork.legBottom.y * bike.scale); ctx.stroke();
-	// draw rake line
-	ctx.beginPath(); ctx.lineWidth = 1;  ctx.strokeStyle = "hsla(" +hue+ ", 50%, 50%, .5)"; ctx.setLineDash([7.5,10]);
-	ctx.moveTo(bike.neck.rakeGround.x * bike.scale, bike.neck.rakeGround.y * bike.scale); ctx.lineTo(bike.neck.bottom.x * bike.scale, bike.neck.bottom.y * bike.scale); ctx.stroke();
-	ctx.setLineDash([]);	
+	
 
 	//draw groundline
 	ctx.strokeStyle = "hsla(" +hue+ ", 100%, 50%, .1)"
@@ -615,6 +612,12 @@ function drawBike(ctx,bike){
 	ctx.moveTo(bike.frontWheel.axle.x*bike.scale, bike.frontWheel.axle.y*bike.scale);
 	ctx.lineTo(bike.frontWheel.toNeckVerticalDrop.x*bike.scale, bike.frontWheel.toNeckVerticalDrop.y*bike.scale);
 	ctx.stroke();
+	// draw rake line
+	ctx.beginPath(); ctx.lineWidth = 1;  ctx.strokeStyle = "hsla(" +hue+ ", 50%, 50%, .5)"; ctx.setLineDash([7.5,10]);
+	ctx.moveTo(bike.neck.rakeGround.x * bike.scale, bike.neck.rakeGround.y * bike.scale); ctx.lineTo(bike.neck.bottom.x * bike.scale, bike.neck.bottom.y * bike.scale); 
+	ctx.lineTo( (neckSize* Math.sin(bike.neck.rake-bike.rotation) + bike.neck.bottom.x )*bike.scale, (bike.neck.bottom.y + neckSize* Math.cos(bike.neck.rake-bike.rotation) )*bike.scale);
+	ctx.stroke();
+	ctx.setLineDash([]);
 	//return canvas to base state 
 	ctx.restore();
 	console.log(bike);
