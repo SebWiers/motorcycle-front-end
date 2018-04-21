@@ -1,0 +1,66 @@
+body {	
+	background-color: #eee;
+	color: #333;
+	padding: 20px;
+}
+.hidden {
+	display: none;
+}
+input[type="number"] { 
+	text-align: right; 
+	margin: 0;
+	width: 60px;
+}
+canvas#bikeCanvas {
+	background-color: #fff;
+	border-radius: 10px;
+	width:1000;
+	height:400;
+}
+button {
+	margin:0px
+}
+div#data {
+    clear: both;
+    content: "";
+    display: table;
+	background-color: #ddd;
+	width: 1000px;
+	margin-top: 10px;
+	padding: 5px;
+}
+div#data table{
+	margin: 10px;
+	border-spacing: 0;
+    border-collapse: collapse;
+}
+div#data table td {
+	text-align: right;
+	padding: 0px 10px 0px 0px;
+}
+#bikes{
+	min-width:500px;
+	margin-top: 10px;
+}
+span#shiftXY{
+	margin-left:100px;
+}
+div {
+	padding: 0;
+	margin: 0;
+	border-radius: 1em;
+}
+div.modal{
+	position: fixed; 
+	top: 50%;
+	left: 500px;
+	width: 500px;
+	padding: 25px;
+	margin-top: -150px;
+	margin-left: -250px;
+	border: 2px solid #666;
+	background-color: #ccc;
+}
+div.modal table{
+	margin: 0 auto;
+}

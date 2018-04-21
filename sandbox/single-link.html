@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+<meta name="author" content="Sebastian Wiers">
+<title>MFE Single Link Calculator</title>
+<link href="planner.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div id='bikeCanvasDiv'><canvas id="bikeCanvas" width="1000" height="500";></canvas></div>
+<div>
+<span style="width:600px"><select id="bikes" onChange="setBike()"></select><button onclick="reset()">reset</button></span>
+<span id="shiftXY">shift custom image (x:<input type="number" id="bXSHIFT" value="0" onchange="drawAll()"> y:<input type="number" id="bYSHIFT" value="0" onchange="drawAll()">)</span>
+</div>
+<div>
+<span style="width:600px"><button onclick="startSaveBike()">Save Surrent Setups to List</button><button style="margin-left:100px" onclick="deleteBike()">Delete Currently Selected Setup From List</button></span>
+</div>
+<div id='data' title="input units are arbitrary; results can be read in same units">
+<table id="aTable" style='float: left'>
+<tr><th id="aSetup" colspan="2">Measured Setup</th></tr>
+<tr id="row-FWD"><td>Front Tire Outside Diameter</td><td> <input id='FWD' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
+<tr id="row-RDW"><td>Rear Tire Outside Diameter</td><td> <input id='RWD' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
+<tr title="degrees from vertical" id="row-NR"><td>Neck Rake</td><td> <input id='NR' onchange="drawAll()" type='number' style='width:99%' value=''></td></tr>
+<tr id="row-WB"><td>Wheelbase</td><td> <input id='WB' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
+<tr id="row-rNA"><td>Neck Bottom to Axle (on rake)</td><td> <input id="rNA" onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
+<tr id="row-pNA"><td>Rake Line to Axle (perpendicular)</td><td> <input id='pNA' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
+<tr id="row-rNP"><td>Neck Bottom to Pivot (on rake)</td><td> <input id='rNP' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
+<tr id="row-pNP"><td>Rake Line to Pivot (perpendicular)</td><td> <input id='pNP' onchange="drawAll()" type='number' style='width:99%' value=''> </td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr id="row-GNB"><td>Ground to Neck Bottom</td><td> <input type="number" id='GNB' style='width:99%' value='' disabled> </td></tr>
+<tr id="row-hANB" title="measured parallel to ground / wheelbase"><td>Front Axle to Neck Bottom (horizontal)</td><td> <input type="number" id='hANB' style='width:99%' value='' disabled> </td></tr>
+<tr id="row-TR"><td>Trail</td><td> <input type="number" id='TR' style='width:99%' value='' disabled> </td></tr>
+</tbody>
+</table>
+</div>
+
+<div id="saveBikeModal" class="modal hidden">
+<table>
+<tr><td>setup dropdown line entry text<td><input id="save-text">
+<tr><td>setup "measured" table title<td><input id="save-aSetup">
+<tr><td>setup "custom" table title<td><input id="save-bSetup">
+<tr><td colspan="2"><button onclick="saveBike()">save</button><td><button onclick='saveCancel()'>cancel</button>
+</table>
+</div>
+
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="data.js"></script>
+<script src="math.js"></script>
+<script src="bike.js"></script>
+<script src="do.js"></script>
+</html>
