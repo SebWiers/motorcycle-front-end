@@ -20,12 +20,10 @@ canvas#bikeCanvas {
 button {
 	margin:0px
 }
-div#data {
-    clear: both;
-    content: "";
+div#data, div#charts{
     display: table;
 	background-color: #ddd;
-	width: 1000px;
+	width: 500px;
 	margin-top: 10px;
 	padding: 5px;
 }

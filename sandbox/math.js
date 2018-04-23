@@ -46,7 +46,7 @@ class Line {
             return this.angle
         }
         this.getIntersection = function(lineB){
-            if (!(lineA instanceof Line)){ throw "line.getIntersection() requires a second line" }
+            if (!(lineB instanceof Line)){ throw "line.getIntersection(line) requires a second line" }
             const x1 = this.p1.x
             const y1 = this.p1.y
             const x2 = this.p2.x
@@ -62,7 +62,7 @@ class Line {
             const ua = ((x4 - x3)*(y1 - y3) - (y4 - y3)*(x1 - x3))/denom;
             const ub = ((x2 - x1)*(y1 - y3) - (y2 - y1)*(x1 - x3))/denom;
             return {
-                p: new point( x1 + ua*(x2 - x1), y1 + ua*(y2 - y1) ),
+                p: new Point( x1 + ua*(x2 - x1), y1 + ua*(y2 - y1) ),
                 onSeg1: ua >= 0 && ua <= 1,
                 onSeg2: ub >= 0 && ub <= 1
             };

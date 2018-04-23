@@ -9,7 +9,7 @@ b.fork.travel.calculatePostions(b)
 
 
 
-console.log(b)
+console.log(b, b.fork.travel.positions)
 
 const ctx = document.getElementById('bikeCanvas').getContext('2d')
 

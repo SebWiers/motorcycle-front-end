@@ -180,7 +180,13 @@ class singlePivotFork{
                     axleFromNeck: m.axleFromNeck,
                     pivotarm: new Line(new Point(m.pivotFromNeck.dX, m.pivotFromNeck.dY), new Point(m.axleFromNeck.dX,m.axleFromNeck.dY)),
                     bump: bump,
-                    color: b.color
+                    color: b.color,
+                    rakeLine: b.neck.rakeLine,
+                    frontGroundLine: new Line(
+                        new Point(m.axleFromNeck.dX-b.wheelbase, m.axleFromNeck.dY+b.frontWheel.radius),
+                        new Point(m.axleFromNeck.dX+b.wheelbase, m.axleFromNeck.dY+b.frontWheel.radius)
+                    ),
+                    frontContactPatch: new Point(m.axleFromNeck.dX, m.axleFromNeck.dY+b.frontWheel.radius),
                 })
                 for (pc= t.pivotIncrement;   bump < m.maxBump && pc < Math.PI * 2;   pc+= t.pivotIncrement){
                     bump = Math.sin( m.pivotarm.angle + pc) * m.pivotarm.length - m.pivotarm.toAxle.dY
@@ -192,8 +198,24 @@ class singlePivotFork{
                         pivotarm: new Line(new Point(m.pivotFromNeck.dX, m.pivotFromNeck.dY), new Point(x,y)),
                         axleFromNeck: { dX: x, dY: y },
                         bump: bump,
-                        color: (b.color + this.positions.length * t.pivotIncrement * 360 / Math.PI )%360
+                        color: (b.color + this.positions.length * t.pivotIncrement * 360 / Math.PI )%360,
+                        rakeLine: b.neck.rakeLine,
+                        frontGroundLine: new Line(
+                            new Point(x-b.wheelbase, y+b.frontWheel.radius),
+                            new Point(x+b.wheelbase, y+b.frontWheel.radius),
+                        ),
+                        frontContactPatch: new Point(x, y+b.frontWheel.radius),
+                        wheelBase: new Point(x, y+b.frontWheel.radius).getDistance(
+                            new Point(b.rearWheel.circle.x, b.rearWheel.circle.x + b.rearWheel.radius)
+                        ),
                     })
+                }
+                for (let p in this.positions){
+                    //debugger
+                    this.positions[p].intersectRakeGround = this.positions[p].rakeLine.getIntersection(this.positions[p].frontGroundLine).p
+                    //debugger
+                    this.positions[p].trail = this.positions[p].frontContactPatch.getDistance(this.positions[p].intersectRakeGround)
+                    
                 }
             },
             drawPositions: function(b, ctx){
@@ -251,7 +273,7 @@ class Wheel{
             ctx.restore()    
         }
     }
-    get contactPatch(){
+    get underContactPatch(){
         if (this.centerFromNeck.dX === null) return null
         if (this.centerFromNeck.dY === null) return null
         if (this.radius === null) return null
@@ -259,7 +281,7 @@ class Wheel{
     }
     get lineToGround(){
         if (this.contactPatch === null) return null
-        return new Line(this.contactPatch, new Point(this.centerFromNeck.dX, this.centerFromNeck.dY))
+        return new Line(this.underContactPatch, new Point(this.centerFromNeck.dX, this.centerFromNeck.dY))
     }
     
 }
