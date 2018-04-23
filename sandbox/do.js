@@ -1,8 +1,9 @@
-b = new Bike()
+b = new BaseBike()
 
 b.fork.measure.pivotFromNeck.calculate(b)
 b.fork.measure.axleFromNeck.calculate(b)
 b.fork.measure.pivotarm.makeLine(b)
+b.neck.setRakeLine(b)
 b.fork.travel.calculatePostions(b)
 
 
@@ -25,4 +26,5 @@ b.fork.travel.drawPositions(b,ctx)
 b.fork.measure.drawLeg(b,ctx)
 b.fork.measure.pivotarm.draw(b,ctx)
 
-b.neck.drawRake(b,ctx)
+b.neck.drawRakeLine(b,ctx)
+b.frontWheel.drawLineToGround()

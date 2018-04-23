@@ -1,22 +1,28 @@
 'use strict'
 
-class Bike {
+class BaseBike {
     constructor() {
         this.drawScale = null
         this.fork = new singlePivotFork()
         this.neck = {
             bottom: new Point(0,0),
             rake: Math.atan(3/4),// test,
-            drawRake: function(b,ctx){
+            setRakeLine: function(b){
+                b.neck.rakeLine = new Line( 
+                    b.neck.bottom, 
+                    new Point(
+                        10 * b.wheelbase * Math.sin(b.neck.rake) + b.neck.bottom.x, 
+                        10 * b.wheelbase * Math.cos(b.neck.rake)+ b.neck.bottom.y
+                    )
+                )
+            },
+            drawRakeLine: function(b,ctx){
                 ctx.save()
                 ctx.lineWidth = 2/b.drawScale
                 const dash = 5*ctx.lineWidth 
-                ctx.strokeStyle = "hsla(" + 360%(b.color + 60) + ", 75%, 50%, .25)"
                 ctx.setLineDash([dash,dash])
-                ctx.beginPath()
-                ctx.moveTo(b.neck.bottom.x - b.wheelbase/10 * Math.sin(b.neck.rake) , b.neck.bottom.y - b.wheelbase/10 * Math.cos(b.neck.rake))
-                ctx.lineTo(100 * Math.sin(b.neck.rake), 100 * Math.cos(b.neck.rake))
-                ctx.stroke()
+                ctx.strokeStyle = "hsla(" + 360%(b.color + 60) + ", 75%, 50%, .25)"
+                b.neck.rakeLine.draw(ctx)
                 ctx.restore()
             },
             drawNeck: function(b,ctx){
@@ -235,5 +241,25 @@ class Wheel{
             this.circle.draw(ctx)
             ctx.restore()
         }
+        this.drawLineToGround = function(){
+            ctx.save()
+            ctx.lineWidth = 2/b.drawScale
+            const dash = 5*ctx.lineWidth
+            ctx.setLineDash([dash,dash])
+            ctx.strokeStyle = "hsla(" + 360%(b.color + 60) + ", 75%, 50%, .25)"
+            this.lineToGround.draw(ctx)
+            ctx.restore()    
+        }
     }
+    get contactPatch(){
+        if (this.centerFromNeck.dX === null) return null
+        if (this.centerFromNeck.dY === null) return null
+        if (this.radius === null) return null
+        return new Point(this.centerFromNeck.dX, this.centerFromNeck.dY + this.radius * 100)
+    }
+    get lineToGround(){
+        if (this.contactPatch === null) return null
+        return new Line(this.contactPatch, new Point(this.centerFromNeck.dX, this.centerFromNeck.dY))
+    }
+    
 }
