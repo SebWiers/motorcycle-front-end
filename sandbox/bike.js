@@ -1,6 +1,6 @@
 'use strict'
 
-class BaseBike {
+class Bike {
     constructor() {
         this.drawScale = null
         this.fork = new singlePivotFork()

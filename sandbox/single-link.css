@@ -9,16 +9,19 @@ body {
 input[type="number"] { 
 	text-align: right; 
 	margin: 0;
-	width: 60px;
 }
 canvas#bikeCanvas {
 	background-color: #fff;
 	border-radius: 10px;
-	width:1000;
-	height:400;
+	width: 1000;
+	height: 400;
 }
-button {
-	margin:0px
+canvas.stale{
+	opacity: .25;
+	filter: brightness(.25);
+}
+button#drawButton{
+	margin: 10px 0px;
 }
 div#data, div#charts{
     display: table;
@@ -35,6 +38,16 @@ div#data table{
 div#data table td {
 	text-align: right;
 	padding: 0px 10px 0px 0px;
+}
+div#data table td input[type="number"], 
+div#data table td input[type="range"] {
+	width: 100%;
+}	
+div#data table td input.readOnly {
+	background-color: hsla(0, 0, 0, .5);
+}	
+div#data table td#color-td{
+	background-color: hsla(0, 100%, 75%, 1);
 }
 #bikes{
 	min-width:500px;

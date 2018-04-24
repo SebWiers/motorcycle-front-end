@@ -1,4 +1,4 @@
-b = new BaseBike()
+b = new Bike()
 
 b.fork.measure.pivotFromNeck.calculate(b)
 b.fork.measure.axleFromNeck.calculate(b)
@@ -13,7 +13,7 @@ console.log(b, b.fork.travel.positions)
 
 const ctx = document.getElementById('bikeCanvas').getContext('2d')
 
-b.drawScale = 10
+b.drawScale = 12*.85
 ctx.scale(b.drawScale,b.drawScale)
 ctx.translate(60,20)
 
