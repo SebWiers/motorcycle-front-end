@@ -3,6 +3,9 @@
 class Bike {
     constructor() {
         this.drawScale = null
+        this.findScale = function(b){
+            return .85 * document.getElementById('bikeCanvas').width / (b.wheelbase +b.frontWheel.radius +b.rearWheel.radius)
+        }
         this.fork = new singlePivotFork()
         this.neck = {
             bottom: new Point(0,0),
@@ -263,7 +266,7 @@ class Wheel{
             this.circle.draw(ctx)
             ctx.restore()
         }
-        this.drawLineToGround = function(){
+        this.drawLineToGround = function(b,ctx){
             ctx.save()
             ctx.lineWidth = 2/b.drawScale
             const dash = 5*ctx.lineWidth

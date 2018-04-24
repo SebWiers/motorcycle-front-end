@@ -1,29 +1,37 @@
 input = {
-    makebike: function(){
-        let valid = true;
-        b = new.Bike()
-        b.wheelbase = Number( document.getElementById('WB').value )
-        valid = valid && !isNaN(b.wheelbase)
-        b.color = Number( document.getElementById('COLOR').value )
-        valid = valid && !isNaN(b.color)
-        b.frontWheel.radius = Number( document.getElementById('FWD').value ) / 2
-        valid = valid && !isNaN(b.frontWheel.radius)
-        b.rearWheel.radius = Number( document.getElementById('RWD').value ) / 2
-        valid = valid && !isNaN(b.rearWheel.radiu)
-        b.neck.rake = Number( document.getElementById('NR').value )
-        valid = valid && !isNaN(b.neck.rake)
-        b.fork.measure.onRakeNeckToPivot = Number( document.getElementById('rNP').value )
-        valid = valid && !isNaN( b.fork.measure.onRakeNeckToPivot)
-        b.fork.measure.fromRakeToPivot = Number( document.getElementById('pNP').value )
-        valid = valid && !isNaN(b.fork.measure.fromRakeToPivot)
-        b.fork.measure.onRakeNeckToAxle = Number( document.getElementById('rNA').value )
-        valid = valid && !isNaN(b.fork.measure.onRakeNeckToAxle)
-        b.fork.measure.fromRakeToAxle = Number( document.getElementById('pNA').value )
-        valid = valid && !isNaN(b.fork.measure.fromRakeToAxle)
-        b.fork.measure.maxBump = Number( document.getElementById('maxBUMP').value )
-        valid = valid && !isNaN(b.fork.measure.maxBump)
-        b.drawScale = .85 * document.getElementById('bikeCanvas').width / (b.wheelbase +b.frontWheel.radius +b.rearWheel.radius)
+    validated: false,
+    getNumber: function(id){
+        const input = document.getElementById(id)
+        if (!input){ return }
+        const value = input.value
+        if (value === '' || isNaN(value)){ 
+            input.style.color = '#fff'
+            input.style.backgroundColor = '#f00'
+            this.validated = false && validated
+            return null
+        } else {
+            input.style.color = '#000'
+            input.style.backgroundColor = '#fff'
+            this.validated = true && this.validated
+            return Number(value)
+        }
+    },
+    makeBike: function(){
+        this.validated = true
+        const b = new Bike()
+        b.wheelbase = this.getNumber('WB')
+        b.color = this.getNumber('COLOR')
+        b.frontWheel.radius = this.getNumber('FWD') / 2
+        b.rearWheel.radius = this.getNumber('RWD') / 2
+        b.neck.rake = this.getNumber('NR') * Math.PI/180
+        b.fork.measure.onRakeNeckToPivot = this.getNumber('rNP')
+        b.fork.measure.fromRakeToPivot = this.getNumber('pNP')
+        b.fork.measure.onRakeNeckToAxle = this.getNumber('rNA')
+        b.fork.measure.fromRakeToAxle = this.getNumber('pNA')
+        b.fork.measure.maxBump = this.getNumber('maxBUMP')
+        if (!this.validated){ return null }
 
+        b.drawScale = b.findScale(b);
         b.fork.measure.pivotFromNeck.calculate(b)
         b.fork.measure.axleFromNeck.calculate(b)
         b.fork.measure.pivotarm.makeLine(b)
@@ -31,9 +39,9 @@ input = {
         //b.fork.travel.calculatePostions(b)
 
         console.log(b, b.fork.travel.positions)
-
-        const ctx = document.getElementById('bikeCanvas').getContext('2d')
-
+        const bc = document.getElementById('bikeCanvas')
+        const ctx = bc.getContext('2d')
+        ctx.clearReact(0,0,bc.width,bc.height)
         
         ctx.scale(b.drawScale,b.drawScale)
         ctx.translate(60,20)
@@ -48,6 +56,10 @@ input = {
         b.fork.measure.pivotarm.draw(b,ctx)
 
         b.neck.drawRakeLine(b,ctx)
-        b.frontWheel.drawLineToGround()
+        b.frontWheel.drawLineToGround(b,ctx)
     }
 }
+
+$('div#data table td input[type="number"]').change( function(){input.getNumber(this.id)} )
+
+$('#drawButton').click( function(){input.makeBike()} )
