@@ -19,6 +19,7 @@ input = {
     makeBike: function(){
         this.validated = true
         const b = new Bike()
+
         b.wheelbase = this.getNumber('WB')
         b.color = this.getNumber('COLOR')
         b.frontWheel.radius = this.getNumber('FWD') / 2
@@ -41,7 +42,7 @@ input = {
         console.log(b, b.fork.travel.positions)
         const bc = document.getElementById('bikeCanvas')
         const ctx = bc.getContext('2d')
-        ctx.clearReact(0,0,bc.width,bc.height)
+        ctx.clearRect(0,0,bc.width,bc.height)
         
         ctx.scale(b.drawScale,b.drawScale)
         ctx.translate(60,20)
