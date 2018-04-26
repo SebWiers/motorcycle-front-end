@@ -1,4 +1,5 @@
 input = {
+    bike: null,
     validated: false,
     getNumber: function(id){
         const input = document.getElementById(id)
@@ -16,12 +17,18 @@ input = {
             return Number(value)
         }
     },
+    getRangeColor: function(){
+        const input = document.getElementById('COLOR')
+        const value = input.value
+        const cell = document.getElementById('color-td')
+        cell.style.backgroundColor = 'hsla(' + value + ', 100%, 75%, 1)'
+        return Number(value)
+    },
     makeBike: function(){
         this.validated = true
         const b = new Bike()
-
         b.wheelbase = this.getNumber('WB')
-        b.color = this.getNumber('COLOR')
+        b.color = this.getRangeColor('COLOR')
         b.frontWheel.radius = this.getNumber('FWD') / 2
         b.rearWheel.radius = this.getNumber('RWD') / 2
         b.neck.rake = this.getNumber('NR') * Math.PI/180
@@ -37,30 +44,50 @@ input = {
         b.fork.measure.axleFromNeck.calculate(b)
         b.fork.measure.pivotarm.makeLine(b)
         b.neck.setRakeLine(b)
-        //b.fork.travel.calculatePostions(b)
+        
 
-        console.log(b, b.fork.travel.positions)
         const bc = document.getElementById('bikeCanvas')
         const ctx = bc.getContext('2d')
+        b.canvas = ctx
         ctx.clearRect(0,0,bc.width,bc.height)
+        ctx.save()
         
         ctx.scale(b.drawScale,b.drawScale)
-        ctx.translate(60,20)
+        ctx.translate(650/b.drawScale,150/b.drawScale)
 
         b.frontWheel.draw(b,ctx)
         b.rearWheel.draw(b,ctx)
         b.drawFrame(b,ctx)
         b.neck.drawNeck(b,ctx)
 
+        b.fork.travel.calculatePositions(b,ctx)
         b.fork.travel.drawPositions(b,ctx)
         b.fork.measure.drawLeg(b,ctx)
         b.fork.measure.pivotarm.draw(b,ctx)
 
         b.neck.drawRakeLine(b,ctx)
         b.frontWheel.drawLineToGround(b,ctx)
+        ctx.restore()
+        return b
     }
 }
 
-$('div#data table td input[type="number"]').change( function(){input.getNumber(this.id)} )
-
-$('#drawButton').click( function(){input.makeBike()} )
+$('div#data table td input[type="number"]').change( function(){
+    input.getNumber(this.id)
+    $('canvas#bikeCanvas').addClass('stale')
+    $('div#charts').addClass('stale')
+})
+$('div#data table td input#COLOR').change( function(){
+    input.getRangeColor() 
+    $('canvas#bikeCanvas').addClass('stale')
+    $('div#charts').addClass('stale')
+})
+$('div#data table td input[type=radio][name=units]').change( function(){
+    $('canvas#bikeCanvas').addClass('stale')
+    if (this.value === 'mm'){ $('div#data table td input[type="number"]').not('#NR').each(function(){ this.value = (this.value * 25.4).toFixed(1) } ) }
+    if (this.value === 'in'){ $('div#data table td input[type="number"]').not('#NR').each(function(){ this.value = (this.value / 25.4).toFixed(1) } ) }
+})
+$('#drawButton').click( function(){
+    input.bike = input.makeBike()
+    $('canvas#bikeCanvas').removeClass('stale')
+})

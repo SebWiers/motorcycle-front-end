@@ -24,7 +24,7 @@ class Bike {
                 ctx.lineWidth = 2/b.drawScale
                 const dash = 5*ctx.lineWidth 
                 ctx.setLineDash([dash,dash])
-                ctx.strokeStyle = "hsla(" + 360%(b.color + 60) + ", 75%, 50%, .25)"
+                ctx.strokeStyle = "hsla(" + 360%(b.color + 60) + ", 75%, 50%, .5)"
                 b.neck.rakeLine.draw(ctx)
                 ctx.restore()
             },
@@ -118,6 +118,7 @@ class singlePivotFork{
                     const axle = new Point(m.axleFromNeck.dX, m.axleFromNeck.dY)
                     pivot.draw(w/2, ctx)
                     axle.draw(w/2, ctx)
+                    b.rearWheel.circle.center.draw(w/2, ctx)
                     ctx.restore()
                 },
             },
@@ -166,8 +167,8 @@ class singlePivotFork{
         this.travel = {
             pivotIncrement: .01,
             positions: [],
-            showArm: true,
-            calculatePostions: function(b){
+            showArm: false,
+            calculatePositions: function(b){
                 const m = b.fork.measure
                 const t = b.fork.travel
                 let bump = 0
@@ -217,8 +218,7 @@ class singlePivotFork{
                     //debugger
                     this.positions[p].intersectRakeGround = this.positions[p].rakeLine.getIntersection(this.positions[p].frontGroundLine).p
                     //debugger
-                    this.positions[p].trail = this.positions[p].frontContactPatch.getDistance(this.positions[p].intersectRakeGround)
-                    
+                    this.positions[p].trail = this.positions[p].frontContactPatch.getDistance(this.positions[p].intersectRakeGround)   
                 }
             },
             drawPositions: function(b, ctx){
@@ -244,7 +244,6 @@ class singlePivotFork{
                     ctx.lineTo(p[t].axleFromNeck.dX, p[t].axleFromNeck.dY)
                     ctx.stroke()
                 }
-                
                 ctx.restore()
             }
         }
@@ -271,7 +270,7 @@ class Wheel{
             ctx.lineWidth = 2/b.drawScale
             const dash = 5*ctx.lineWidth
             ctx.setLineDash([dash,dash])
-            ctx.strokeStyle = "hsla(" + 360%(b.color + 60) + ", 75%, 50%, .25)"
+            ctx.strokeStyle = "hsla(" + 360%(b.color + 60) + ", 75%, 50%, .5)"
             this.lineToGround.draw(ctx)
             ctx.restore()    
         }

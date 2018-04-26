@@ -9,8 +9,12 @@
 <div id='bikeCanvasDiv'><canvas id="bikeCanvas" width="1000" height="500";></canvas></div>
 
 <div id='data' title="input units are arbitrary; results can be read in same units">
-<table id="aTable" style='float: left'>
+<table id="aTable">
 <tr><th id="aSetup" colspan="2"></th></tr>
+<tr><td></td></td><td>
+        <input name="units" type="radio" id="unitMM" value="mm"><label for="unitMM">Millimeters</label>
+        <input name="units" type="radio" id="unitIN" value="in" checked><label for="unitIN">Inches</label>
+</td></tr>
 <tr><td>Front Tire Outside Diameter</td><td> <input id='FWD' type='number'  value='24'></td></tr>
 <tr><td>Rear Tire Outside Diameter</td><td> <input id='RWD'  type='number'  value='24'></td></tr>
 <tr title="degrees from vertical"><td>Neck Rake</td><td> <input id='NR' type='number'  value='36.87'></td></tr>
@@ -26,19 +30,22 @@
 <tr><td>Trail</td><td id='TR'></td></tr>
 <tr>
     <td>
-        <input name="units" type="radio" id="unitMM" value="mm"><label for="unitMM">Millimeters</label>
-        <input name="units" type="radio" id="unitIN" value="in" checked><label for="unitIN">Inches</label>
     </td>
     <td> 
         <button id="drawButton">DRAW</button> 
     </td>
 </tr>
+<tr>
+    <td>
+    </td>
+    <td> 
+        <button id="chartButton">CHART</button> 
+    </td>
+</tr>
 </tbody>
 </table>
 </div>
-<div id="charts">
-    <canvas id="chart" width="450" height="450"></canvas>
-</div>
+<div id="charts"></div>
 
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -46,4 +53,5 @@
 <script src="math.js"></script>
 <script src="bike.js"></script>
 <script src="input.js"></script>
+<script src="charts.js"></script>
 </html>

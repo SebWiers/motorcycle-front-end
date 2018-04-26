@@ -1,7 +1,16 @@
 body {	
 	background-color: #eee;
 	color: #333;
-	padding: 20px;
+	padding: 10px;
+	display: grid;
+	grid-template-columns: 520px 520px;
+	grid-column-gap: 0px;
+	grid-row-gap: 30px;
+}
+div {
+	padding: 0;
+	margin: 0;
+	border-radius: 1em;
 }
 .hidden {
 	display: none;
@@ -16,9 +25,14 @@ canvas#bikeCanvas {
 	width: 1000;
 	height: 400;
 }
-canvas.stale{
-	opacity: .25;
-	filter: brightness(.25);
+div#bikeCanvasDiv{
+	display: inline-grid;
+	grid-column-start: 1;
+	grid-column-end: 3;
+}
+.stale{
+	opacity: .75;
+	filter: brightness(.5);
 }
 button#drawButton{
 	margin: 10px 0px;
@@ -26,9 +40,10 @@ button#drawButton{
 div#data, div#charts{
     display: table;
 	background-color: #ddd;
-	width: 500px;
-	margin-top: 10px;
-	padding: 5px;
+	width: 465px; height: 490px;
+	margin: 0px;
+	padding: 10px;
+	display: inline-grid;
 }
 div#data table{
 	margin: 10px;
@@ -48,30 +63,4 @@ div#data table td input.readOnly {
 }	
 div#data table td#color-td{
 	background-color: hsla(0, 100%, 75%, 1);
-}
-#bikes{
-	min-width:500px;
-	margin-top: 10px;
-}
-span#shiftXY{
-	margin-left:100px;
-}
-div {
-	padding: 0;
-	margin: 0;
-	border-radius: 1em;
-}
-div.modal{
-	position: fixed; 
-	top: 50%;
-	left: 500px;
-	width: 500px;
-	padding: 25px;
-	margin-top: -150px;
-	margin-left: -250px;
-	border: 2px solid #666;
-	background-color: #ccc;
-}
-div.modal table{
-	margin: 0 auto;
 }
