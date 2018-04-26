@@ -42,9 +42,3 @@ charts = {
         })
     }
 }
-$('#chartButton').click( function(){
-    //input.bike.fork.travel.calculatePositions(input.bike)
-    //input.bike.fork.drawPositions(input.bike)
-    charts.draw(input.bike)
-    $('div#charts').removeClass('stale')
-})
