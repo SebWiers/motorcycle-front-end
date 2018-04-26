@@ -32,7 +32,9 @@ charts = {
                 maxPadding: 0.05
             },
             yAxis:{
-                title: {text: "Trail"}
+                title: {text: "Trail"},
+                minRange: bike.frontWheel.radius/2,
+                maxRange: bike.frontWheel.radius*2
             },
             series:[ 
                 {data: this.getTrailSeries(bike), name:"Trail"}
