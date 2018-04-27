@@ -62,5 +62,5 @@ div#data table td input.readOnly {
 	background-color: hsla(0, 0, 0, .5);
 }	
 div#data table td#color-td{
-	background-color: hsla(0, 100%, 75%, 1);
+	background-color: hsla(180, 100%, 75%, 1);
 }

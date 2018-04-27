@@ -165,60 +165,75 @@ class singlePivotFork{
             }
         }
         this.travel = {
-            pivotIncrement: .01,
+            pivotIncrement: -.01,
             positions: [],
-            showArm: false,
+            showArm: true,
+            leading: 1,
             calculatePositions: function(b){
-                const m = b.fork.measure
-                const t = b.fork.travel
-                let bump = 0
-                let pc = 0
-                let x, y
-                m.pivotarm.toAxle = {
-                    dX: Math.cos(m.pivotarm.angle) * m.pivotarm.length,
-                    dY: Math.sin(m.pivotarm.angle) * m.pivotarm.length,
-                } 
-                this.positions.push({
-                    pivotChange: pc,
-                    pivotAngle: m.pivotarm.angle, 
-                    axleFromNeck: m.axleFromNeck,
-                    pivotarm: new Line(new Point(m.pivotFromNeck.dX, m.pivotFromNeck.dY), new Point(m.axleFromNeck.dX,m.axleFromNeck.dY)),
-                    bump: bump,
-                    color: b.color,
-                    rakeLine: b.neck.rakeLine,
-                    frontGroundLine: new Line(
-                        new Point(m.axleFromNeck.dX-b.wheelbase, m.axleFromNeck.dY+b.frontWheel.radius),
-                        new Point(m.axleFromNeck.dX+b.wheelbase, m.axleFromNeck.dY+b.frontWheel.radius)
-                    ),
-                    frontContactPatch: new Point(m.axleFromNeck.dX, m.axleFromNeck.dY+b.frontWheel.radius),
-                })
-                for (pc= t.pivotIncrement;   bump < m.maxBump && pc < Math.PI * 2;   pc+= t.pivotIncrement){
-                    bump = Math.sin( m.pivotarm.angle + pc) * m.pivotarm.length - m.pivotarm.toAxle.dY
-                    x = m.axleFromNeck.dX + Math.cos( m.pivotarm.angle + pc) * m.pivotarm.length - m.pivotarm.toAxle.dX
-                    y = m.axleFromNeck.dY - bump
+                try {
+                    const m = b.fork.measure
+                    const t = b.fork.travel
+                    let bump = 0
+                    let pc = 0
+                    let x, y
+                    if (m.pivotFromNeck.dX > m.axleFromNeck.dX){ 
+                        t.leading = -1
+                        if (t.pivotIncrement < 0){ t.pivotIncrement*=t.leading }
+                    }
+                    m.pivotarm.toAxle = {
+                        dX: Math.cos(m.pivotarm.angle) * m.pivotarm.length,
+                        dY: Math.sin(m.pivotarm.angle) * m.pivotarm.length,
+                    } 
                     this.positions.push({
-                        pivotChange: pc, 
-                        pivotAngle: m.pivotarm.angle + pc,
-                        pivotarm: new Line(new Point(m.pivotFromNeck.dX, m.pivotFromNeck.dY), new Point(x,y)),
-                        axleFromNeck: { dX: x, dY: y },
+                        pivotChange: pc,
+                        pivotAngle: m.pivotarm.angle, 
+                        axleFromNeck: m.axleFromNeck,
+                        pivotarm: new Line(new Point(m.pivotFromNeck.dX, m.pivotFromNeck.dY), new Point(m.axleFromNeck.dX,m.axleFromNeck.dY)),
                         bump: bump,
-                        color: (b.color + this.positions.length * t.pivotIncrement * 360 / Math.PI )%360,
+                        color: b.color,
                         rakeLine: b.neck.rakeLine,
                         frontGroundLine: new Line(
-                            new Point(x-b.wheelbase, y+b.frontWheel.radius),
-                            new Point(x+b.wheelbase, y+b.frontWheel.radius),
+                            new Point(m.axleFromNeck.dX-b.wheelbase, m.axleFromNeck.dY + b.frontWheel.radius),
+                            new Point(m.axleFromNeck.dX+b.wheelbase, m.axleFromNeck.dY + b.frontWheel.radius)
                         ),
-                        frontContactPatch: new Point(x, y+b.frontWheel.radius),
-                        wheelBase: new Point(x, y+b.frontWheel.radius).getDistance(
-                            new Point(b.rearWheel.circle.x, b.rearWheel.circle.x + b.rearWheel.radius)
-                        ),
+                        frontContactPatch: new Point(m.axleFromNeck.dX, m.axleFromNeck.dY+b.frontWheel.radius),
                     })
-                }
-                for (let p in this.positions){
-                    //debugger
-                    this.positions[p].intersectRakeGround = this.positions[p].rakeLine.getIntersection(this.positions[p].frontGroundLine).p
-                    //debugger
-                    this.positions[p].trail = this.positions[p].frontContactPatch.getDistance(this.positions[p].intersectRakeGround)   
+                    for (pc= t.pivotIncrement; bump < m.maxBump && Math.PI * -2 < pc && pc < Math.PI * 2;   pc+= t.pivotIncrement){                 
+                        x = Math.cos( m.pivotarm.angle + pc) * m.pivotarm.length * t.leading + m.pivotFromNeck.dX 
+                        y = Math.sin( m.pivotarm.angle + pc) * m.pivotarm.length * t.leading + m.pivotFromNeck.dY
+                        bump = m.axleFromNeck.dY - y
+                        this.positions.push({
+                            pivotChange: pc, 
+                            pivotAngle: m.pivotarm.angle + pc,
+                            pivotarm: new Line(new Point(m.pivotFromNeck.dX, m.pivotFromNeck.dY), new Point(x,y)),
+                            axleFromNeck: { dX: x, dY: y },
+                            bump: bump,
+                            color: (b.color + this.positions.length * t.pivotIncrement * 360 / Math.PI )%360,
+                            rakeLine: b.neck.rakeLine,
+                            frontGroundLine: new Line(
+                                new Point(x-b.wheelbase, y+b.frontWheel.radius),
+                                new Point(x+b.wheelbase, y+b.frontWheel.radius),
+                            ),
+                            frontContactPatch: new Point(x, y+b.frontWheel.radius),
+                            wheelBase: new Point(x, y+b.frontWheel.radius).getDistance(
+                                new Point(b.rearWheel.circle.x, b.rearWheel.circle.x + b.rearWheel.radius)
+                            ),
+                        })
+                    }
+                    if (this.positions.length < 100){
+                        b.fork.travel.positions = []
+                        b.fork.travel.pivotIncrement *= .5
+                        b.fork.travel.calculatePositions(b)
+                        return
+                    }
+                    for (let p in this.positions){
+                        this.positions[p].intersectRakeGround = this.positions[p].rakeLine.getIntersection(this.positions[p].frontGroundLine).p
+                        this.positions[p].trail = this.positions[p].frontContactPatch.getDistance(this.positions[p].intersectRakeGround)   
+                        if (this.positions[p].frontContactPatch.x > this.positions[p].intersectRakeGround.x){ this.positions[p].trail *= -1 }
+                        this.positions[p].trailLine = new Line(this.positions[p].frontContactPatch, this.positions[p].intersectRakeGround)
+                    } 
+                } catch(e) {
+                    return
                 }
             },
             drawPositions: function(b, ctx){
@@ -226,26 +241,27 @@ class singlePivotFork{
                 const m = b.fork.measure
                 let t
                 ctx.save()
-                ctx.lineWidth = m.pivotarm.length * b.drawscale < 50 ? m.pivotarm.length * 1 / b.drawScale : 5 / b.drawScale
+                ctx.lineWidth = m.pivotarm.length * b.drawscale < 50 ? m.pivotarm.length * .5 / b.drawScale : 2.5 / b.drawScale
                 for (t in p){
                     if (b.fork.travel.showArm){
                         ctx.strokeStyle = "hsla(" + p[t].color + ", 50%, 50%, 1)"
                         p[t].pivotarm.draw(ctx)
+                        p[t].trailLine.draw(ctx)
                     }
                 }
                 ctx.restore()
-                ctx.save()
-                ctx.lineCap = "butt"
-                ctx.lineWidth = 4/b.drawScale                
-                for (t in p){
-                    ctx.beginPath()
-                    if (t > 0){ ctx.moveTo(p[t-1].axleFromNeck.dX, p[t-1].axleFromNeck.dY) }
-                    ctx.strokeStyle = "hsla(" + p[t].color + ", 50%, 50%, 1)"
-                    ctx.lineTo(p[t].axleFromNeck.dX, p[t].axleFromNeck.dY)
-                    ctx.stroke()
-                }
-                ctx.restore()
-            }
+                // ctx.save()
+                // ctx.lineCap = "butt"
+                // ctx.lineWidth = 4/b.drawScale                
+                // for (t in p){
+                //     ctx.beginPath()
+                //     if (t > 0){ ctx.moveTo(p[t-1].axleFromNeck.dX, p[t-1].axleFromNeck.dY) }
+                //     ctx.strokeStyle = "hsla(" + p[t].color + ", 50%, 50%, 1)"
+                //     ctx.lineTo(p[t].axleFromNeck.dX, p[t].axleFromNeck.dY)
+                //     ctx.stroke()
+                // }
+                // ctx.restore()
+            },
         }
 
     }  
