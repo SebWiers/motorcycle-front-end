@@ -19,3 +19,4 @@ $('#drawButton').click( function(){
     $('div#charts').removeClass('stale')
     $('canvas#bikeCanvas').removeClass('stale')
 })
+$('#drawButton').click()
