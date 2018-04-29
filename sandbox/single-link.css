@@ -48,7 +48,9 @@ div#data, div#charts{
 div#data table{
 	margin: 10px;
 	border-spacing: 0;
-    border-collapse: collapse;
+	border-collapse: collapse;
+	table-layout: fixed;
+	position: absolute;
 }
 div#data table td {
 	text-align: right;
