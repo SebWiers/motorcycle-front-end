@@ -10,10 +10,10 @@
 
 <div id='data' title="input units are arbitrary; results can be read in same units">
 <table id="aTable">
-<tr><th id="aSetup" colspan="2"></th></tr>
-<tr><td></td></td><td>
-        <input name="units" type="radio" id="unitMM" value="mm"><label for="unitMM">Millimeters</label>
-        <input name="units" type="radio" id="unitIN" value="in" checked><label for="unitIN">Inches</label>
+<tr><th id="aSetup" colspan="2">&nbsp;</th></tr>
+<tr></tr><td colspan="2">
+    <label for="unitMM">Millimeters</label><input name="units" type="radio" id="unitMM" value="mm"><br>
+    <label for="unitIN">Inches</label><input name="units" type="radio" id="unitIN" value="in" checked>
 </td></tr>
 <tr><td>Front Tire Outside Diameter</td><td> <input id='FWD' type='number'  value='22'></td></tr>
 <tr><td>Rear Tire Outside Diameter</td><td> <input id='RWD'  type='number'  value='22'></td></tr>
@@ -25,9 +25,9 @@
 <tr><td>Rake Line to Pivot (perpendicular)</td><td> <input id='pNP' type='number'  value='-12'></td></tr>
 <tr><td>Maximum vertical travel (bump)</td><td><input id='maxBUMP' type='number'  value='5'></td></tr>
 <tr><td>Color</td><td id="color-td"><input id="COLOR" type="range" min="0" max="360" step="1" value="180"></td></tr>
-<tr><td>Ground to Neck Bottom</td><td id='GNB'></td></tr>
-<tr title="measured parallel to ground / wheelbase"><td>Front Axle to Neck Bottom (horizontal)</td><td id='hANB'></td></tr>
-<tr><td>Trail</td><td id='TR'></td></tr>
+<tr><td>Ground to Neck Bottom</td><td id='GNB' class='number'></td></tr>
+<tr title="measured parallel to ground / wheelbase"><td>Front Axle to Neck Bottom (horizontal)</td><td id='hANB' class='number'></td></tr>
+<tr><td>Trail</td><td id='TR' class='number'></td></tr>
 <tr>
     <td>
     </td>
@@ -45,6 +45,7 @@
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="math.js"></script>
 <script src="bike.js"></script>
+<script src="fork_single_pivot.js"></script>
 <script src="input.js"></script>
 <script src="charts.js"></script>
 <script src="do.js"></script>

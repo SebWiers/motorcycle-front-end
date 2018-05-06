@@ -10,8 +10,8 @@ $('div#data table td input#COLOR').change( function(){
 })
 $('div#data table td input[type=radio][name=units]').change( function(){
     $('canvas#bikeCanvas').addClass('stale')
-    if (this.value === 'mm'){ $('div#data table td input[type="number"]').not('#NR').each(function(){ this.value = (this.value * 25.4).toFixed(1) } ) }
-    if (this.value === 'in'){ $('div#data table td input[type="number"]').not('#NR').each(function(){ this.value = (this.value / 25.4).toFixed(1) } ) }
+    $('div#charts').addClass('stale')
+    input.convert(this.value)
 })
 $('#drawButton').click( function(){
     input.bike = input.makeBike()

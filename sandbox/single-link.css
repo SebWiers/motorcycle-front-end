@@ -56,6 +56,11 @@ div#data table td {
 	text-align: right;
 	padding: 0px 10px 0px 0px;
 }
+div#data table td.number{
+	padding-right: 25px;
+	border: 1px solid black;
+	width: 75px; 
+}
 div#data table td input[type="number"], 
 div#data table td input[type="range"] {
 	width: 100%;
