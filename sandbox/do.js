@@ -1,12 +1,10 @@
 $('div#data table td input[type="number"]').change( function(){
     input.getNumber(this.id)
-    $('canvas#bikeCanvas').addClass('stale')
-    $('div#charts').addClass('stale')
+
 })
 $('div#data table td input#COLOR').change( function(){
     input.getRangeColor() 
-    $('canvas#bikeCanvas').addClass('stale')
-    $('div#charts').addClass('stale')
+
 })
 $('div#data table td input[type=radio][name=units]').change( function(){
     $('canvas#bikeCanvas').addClass('stale')

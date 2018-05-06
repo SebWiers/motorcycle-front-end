@@ -2,7 +2,18 @@ input = {
     precision: 2,
     bike: null,
     validated: false,
+    setOutputStale: function(){
+        $('canvas#bikeCanvas').addClass('stale')
+        $('div#charts').addClass('stale')
+        $('div#data table td.number').addClass('stale')
+    },
+    setOutputClear: function(){
+        $('canvas#bikeCanvas').removeClass('stale')
+        $('div#charts').removeClass('stale')
+        $('div#data table td.number').removeClass('stale')
+    },
     getNumber: function(id){
+        this.setOutputStale();
         const input = document.getElementById(id)
         if (!input){ return }
         let value = input.value
@@ -21,6 +32,7 @@ input = {
         }
     }, 
     convert: function(units){
+        this.setOutputStale();
         if (units === 'mm'){ 
             const precision = 1
             this.precision = precision
@@ -41,6 +53,7 @@ input = {
         }
     },
     getRangeColor: function(){
+        this.setOutputStale();
         const input = document.getElementById('COLOR')
         const value = input.value
         const cell = document.getElementById('color-td')
@@ -48,6 +61,7 @@ input = {
         return Number(value)
     },
     makeBike: function(){
+        this.setOutputStale();
         this.validated = true
         const b = new Bike()
         b.wheelbase = this.getNumber('WB')
@@ -60,9 +74,11 @@ input = {
         b.fork.measure.onRakeNeckToAxle = this.getNumber('rNA')
         b.fork.measure.fromRakeToAxle = this.getNumber('pNA')
         b.fork.measure.maxBump = this.getNumber('maxBUMP')
-        
+        document.getElementById('GNB').textContent = ''
+        document.getElementById('hANB').textContent = ''
+        document.getElementById('TR').textContent = ''
         if (!this.validated){ return null }
-        
+       
         b.fork.measure.pivotFromNeck.calculate(b)
         b.fork.measure.axleFromNeck.calculate(b)
         b.fork.measure.pivotarm.makeLine(b)
@@ -92,7 +108,7 @@ input = {
         b.neck.drawRakeLine(b,ctx)
         b.frontWheel.drawLineToGround(b,ctx)
         ctx.restore()
-
+        this.setOutputClear()
         console.log(b)
         return b
     }

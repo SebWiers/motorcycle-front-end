@@ -60,6 +60,12 @@ div#data table td.number{
 	padding-right: 25px;
 	border: 1px solid black;
 	width: 75px; 
+	font-family: sans-serif;
+	font-size: smaller;
+}
+div#data table td.stale{
+	opacity: .5;
+	background-color: #bbb;
 }
 div#data table td input[type="number"], 
 div#data table td input[type="range"] {
