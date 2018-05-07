@@ -1,0 +1,79 @@
+body {	
+	background-color: #eee;
+	color: #333;
+	padding: 10px;
+	display: grid;
+	grid-template-columns: 520px 520px;
+	grid-column-gap: 0px;
+	grid-row-gap: 30px;
+}
+div {
+	padding: 0;
+	margin: 0;
+	border-radius: 1em;
+}
+.hidden {
+	display: none;
+}
+input[type="number"] { 
+	text-align: right; 
+	margin: 0;
+}
+canvas#bikeCanvas {
+	background-color: #fff;
+	border-radius: 10px;
+	width: 1000;
+	height: 400;
+}
+div#bikeCanvasDiv{
+	display: inline-grid;
+	grid-column-start: 1;
+	grid-column-end: 3;
+}
+.stale{
+	opacity: .75;
+	filter: brightness(.5);
+}
+button#drawButton{
+	margin: 10px 0px;
+}
+div#data, div#charts{
+    display: table;
+	background-color: #ddd;
+	width: 465px; height: 490px;
+	margin: 0px;
+	padding: 10px;
+	display: inline-grid;
+}
+div#data table{
+	margin: 10px;
+	border-spacing: 0;
+	border-collapse: collapse;
+	table-layout: fixed;
+	position: absolute;
+}
+div#data table td {
+	text-align: right;
+	padding: 0px 10px 0px 0px;
+}
+div#data table td.number{
+	padding-right: 25px;
+	border: 1px solid black;
+	width: 75px; 
+	font-family: sans-serif;
+	font-size: smaller;
+}
+div#data table td.stale{
+	opacity: .5;
+	background-color: #bbb;
+}
+div#data table td input[type="number"], 
+div#data table td input[type="range"] {
+	width: 100%;
+}	
+div#data table td input.readOnly {
+	background-color: hsla(0, 0, 0, .5);
+}	
+div#data table td#color-td{
+	background-color: hsla(180, 100%, 75%, 1);
+}
