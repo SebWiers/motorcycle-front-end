@@ -635,7 +635,7 @@ function drawAll(fromHash){//function with no required inputs for form onchange
 }
 // bikes selector setup & functions
 var savedBikes = localStorage.getItem('savedBikes');
-if (!savedBikes){
+if (!savedBikes || savedBikes === "[]"){
 	savedBikes = JSON.stringify(setups); localStorage.setItem('savedBikes',savedBikes); 
 } else {
 	setups = $.parseJSON(savedBikes);
