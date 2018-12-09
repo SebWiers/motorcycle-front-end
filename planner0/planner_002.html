@@ -269,7 +269,7 @@ function setFormFromHash(){
 	var hash = window.location.hash.substr(1);
 	var inputs = hash.split(/([1234567890\-\.]+)/);
 	for (var i=0; i<inputs.length && inputs[i]!=""; i+=2){
-		if (/-?(\d+|\d+\.\d+|\.\d+)([eE][-+]?\d+)?/.test(inputs[i+1])){
+		if (inputs[i] && /-?(\d+|\d+\.\d+|\.\d+)([eE][-+]?\d+)?/.test(inputs[i+1])){
 			$('#'+inputs[i]).val(inputs[i+1]);
 		} else {
 			$('#'+inputs[i]).val('0');
@@ -620,7 +620,7 @@ function drawBike(ctx,bike){
 	ctx.setLineDash([]);
 	//return canvas to base state 
 	ctx.restore();
-	console.log(bike);
+	//console.log(bike);
 	//debugger;
 };
 function redrawAll(ctx,fromHash){
