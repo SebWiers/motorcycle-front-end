@@ -20,14 +20,14 @@ input = {
         if (value === '' || isNaN(value)){ 
             input.style.color = '#fff'
             input.style.backgroundColor = '#f00'
-            this.validated = false && validated
+            this.validated = false
             return null
         } else {
             input.style.color = '#000'
             input.style.backgroundColor = '#fff'
             this.validated = true && this.validated
-            //value = parseFloat(value,10).toFixed(this.precision)
-            //input.value = value
+            value = parseFloat(value,10).toFixed(this.precision)
+            input.value = value
             return Number(value)
         }
     }, 
